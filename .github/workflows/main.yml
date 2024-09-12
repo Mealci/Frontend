@@ -3,12 +3,7 @@ name: CI
 on:
   push:
     branches:
-      - main
-      - develop
-      - 'feature/**'
-      - 'bugfix/**'
-      - 'hotfix/**'
-      - 'release/**'
+      - '**'
 
 jobs:
   ci:
