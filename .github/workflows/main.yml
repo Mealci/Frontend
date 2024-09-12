@@ -8,80 +8,78 @@ on:
     branches:
       - '**'
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
-  ci-base:
-    name: Vérifications de base
+  ci-check:
+    name: Vérifications CI
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
-    
+
+    # Détermine si nous devons exécuter la CI
+    - name: Vérifier si la CI doit être exécutée
+      id: check_run
+      run: |
+        if [[ ${{ github.event_name }} == 'push' ]]; then
+          # Vérifier s'il y a une PR active pour cette branche
+          PR_URL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+                   "https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:${{ github.ref_name }}&state=open" \
+                   | jq -r '.[0].url')
+          if [[ $PR_URL != "null" ]]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "Une PR est active pour cette branche. Skipping CI pour le push."
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+        else
+          echo "skip=false" >> $GITHUB_OUTPUT
+        fi
+
     - name: Configuration de Flutter
+      if: steps.check_run.outputs.skip != 'true'
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.2'
         channel: 'stable'
     
     - name: Désactiver les animations CLI
+      if: steps.check_run.outputs.skip != 'true'
       run: flutter config --no-cli-animations
     
     - name: Obtenir les dépendances
+      if: steps.check_run.outputs.skip != 'true'
       run: |
         echo -e "\e[1;34m🔍 Obtention des dépendances...\e[0m"
         flutter pub get
         echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
     
     - name: Formater le code
+      if: steps.check_run.outputs.skip != 'true'
       run: |
         echo -e "\e[1;34m🖌️ Formatage du code...\e[0m"
         dart format --set-exit-if-changed .
         echo -e "\e[1;32m✅ Code formaté avec succès !\e[0m"
     
     - name: Exécuter les tests
+      if: steps.check_run.outputs.skip != 'true'
       run: |
         echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
         echo "espace réservé pour flutter test"
         echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
     
-    - name: Vérifier la porte de qualité
-      if: success()
-      run: |
-        echo -e "\e[1;32m✅ Porte de qualité de base passée\e[0m"
-    
-    - name: Notifier l'échec
-      if: failure()
-      run: |
-        echo -e "\e[1;31m❌ Les vérifications de base ont échoué. Veuillez corriger les problèmes et pousser à nouveau.\e[0m"
-        exit 1
-
-  ci-pr:
-    name: Vérifications de Pull Request
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    needs: ci-base
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Configuration de Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.24.2'
-        channel: 'stable'
-    
-    - name: Désactiver les animations CLI
-      run: flutter config --no-cli-animations
-    
-    - name: Obtenir les dépendances
-      run: flutter pub get
-    
     - name: Analyser le code
+      if: steps.check_run.outputs.skip != 'true' && github.event_name == 'pull_request'
       run: |
         echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
         dart analyze
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
     
     - name: Exécuter Dart Code Metrics
+      if: steps.check_run.outputs.skip != 'true' && github.event_name == 'pull_request'
       id: dart_code_metrics
       run: |
         echo -e "\e[1;34m📊 Exécution de Dart Code Metrics...\e[0m"
@@ -93,6 +91,7 @@ jobs:
         echo -e "\e[1;32m✅ Analyse Dart Code Metrics terminée !\e[0m"
     
     - name: Commenter les résultats de Dart Code Metrics
+      if: steps.check_run.outputs.skip != 'true' && github.event_name == 'pull_request'
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
@@ -104,26 +103,28 @@ jobs:
           ```
           
           Veuillez examiner ces métriques et apporter les améliorations nécessaires.
-  
+
     - name: Exécuter les tests d'intégration
+      if: steps.check_run.outputs.skip != 'true' && github.event_name == 'pull_request'
       run: |
         echo -e "\e[1;34m🧪 Exécution des tests d'intégration...\e[0m"
         echo "espace réservé pour flutter drive --target=test_driver/app.dart"
         echo -e "\e[1;32m✅ Tests d'intégration terminés avec succès !\e[0m"
     
     - name: Analyse de sécurité
+      if: steps.check_run.outputs.skip != 'true' && github.event_name == 'pull_request'
       run: |
         echo -e "\e[1;34m🔒 Exécution de l'analyse de sécurité...\e[0m"
         echo "espace réservé pour l'outil d'analyse de sécurité"
         echo -e "\e[1;32m✅ Analyse de sécurité terminée !\e[0m"
     
-    - name: Vérifier la porte de qualité PR
-      if: success()
+    - name: Vérifier la porte de qualité
+      if: steps.check_run.outputs.skip != 'true' && success()
       run: |
-        echo -e "\e[1;32m✅ Porte de qualité PR passée\e[0m"
+        echo -e "\e[1;32m✅ Porte de qualité passée\e[0m"
     
-    - name: Notifier l'échec PR
-      if: failure()
+    - name: Notifier l'échec
+      if: steps.check_run.outputs.skip != 'true' && failure()
       run: |
-        echo -e "\e[1;31m❌ Les vérifications de PR ont échoué. Veuillez corriger les problèmes et mettre à jour la pull request.\e[0m"
+        echo -e "\e[1;31m❌ Les vérifications ont échoué. Veuillez corriger les problèmes et mettre à jour.\e[0m"
         exit 1
