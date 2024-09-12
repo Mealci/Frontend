@@ -73,36 +73,36 @@ jobs:
     
     - name: Analyser le code
       if: steps.check_run.outputs.skip != 'true' && github.event_name == 'pull_request'
+      id: code_analysis
       run: |
         echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
-        dart analyze
+        echo "dart_output<<EOF" >> $GITHUB_OUTPUT
+        dart analyze >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        echo "flutter_output<<EOF" >> $GITHUB_OUTPUT
+        flutter analyze >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
     
-    - name: Exécuter Dart Code Metrics
-      if: steps.check_run.outputs.skip != 'true' && github.event_name == 'pull_request'
-      id: dart_code_metrics
-      run: |
-        echo -e "\e[1;34m📊 Exécution de Dart Code Metrics...\e[0m"
-        flutter pub add --dev dart_code_metrics
-        OUTPUT=$(flutter pub run dart_code_metrics:metrics analyze lib --reporter=console --set-exit-on-violation-level=warning)
-        echo "metrics_output<<EOF" >> $GITHUB_OUTPUT
-        echo "$OUTPUT" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-        echo -e "\e[1;32m✅ Analyse Dart Code Metrics terminée !\e[0m"
-    
-    - name: Commenter les résultats de Dart Code Metrics
+    - name: Commenter les résultats de l'analyse
       if: steps.check_run.outputs.skip != 'true' && github.event_name == 'pull_request'
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          ## Résultats de Dart Code Metrics
+          ## Résultats de l'analyse de code
           
+          ### Dart Analyze
           ```
-          ${{ steps.dart_code_metrics.outputs.metrics_output }}
+          ${{ steps.code_analysis.outputs.dart_output }}
           ```
           
-          Veuillez examiner ces métriques et apporter les améliorations nécessaires.
+          ### Flutter Analyze
+          ```
+          ${{ steps.code_analysis.outputs.flutter_output }}
+          ```
+          
+          Veuillez examiner ces résultats et apporter les améliorations nécessaires.
 
     - name: Exécuter les tests d'intégration
       if: steps.check_run.outputs.skip != 'true' && github.event_name == 'pull_request'
