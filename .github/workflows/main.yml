@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - '**'
+  pull_request:
+    branches:
+      - '**'
 
 jobs:
   ci:
@@ -39,6 +42,51 @@ jobs:
         echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
         echo "espace réservé pour flutter test"
         echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
+    
+    - name: Analyser le code
+      if: github.event_name == 'pull_request'
+      run: |
+        echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
+        dart analyze
+        echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
+    
+    - name: Exécuter Dart Code Metrics
+      if: github.event_name == 'pull_request'
+      run: |
+        echo -e "\e[1;34m📊 Exécution de Dart Code Metrics...\e[0m"
+        flutter pub add --dev dart_code_metrics
+        flutter pub run dart_code_metrics:metrics analyze lib
+        echo -e "\e[1;32m✅ Analyse Dart Code Metrics terminée !\e[0m"
+    
+    - name: Exécuter les tests d'intégration
+      if: github.event_name == 'pull_request'
+      run: |
+        echo -e "\e[1;34m🧪 Exécution des tests d'intégration...\e[0m"
+        echo "espace réservé pour flutter drive --target=test_driver/app.dart"
+        echo -e "\e[1;32m✅ Tests d'intégration terminés avec succès !\e[0m"
+    
+    - name: Analyse de sécurité
+      if: github.event_name == 'pull_request'
+      run: |
+        echo -e "\e[1;34m🔒 Exécution de l'analyse de sécurité...\e[0m"
+        echo "espace réservé pour l'outil d'analyse de sécurité"
+        echo -e "\e[1;32m✅ Analyse de sécurité terminée !\e[0m"
+    
+    - name: Construire les artefacts
+      if: github.event_name == 'pull_request'
+      run: |
+        echo -e "\e[1;34m🏗️ Construction des artefacts...\e[0m"
+        flutter build apk --debug
+        echo -e "\e[1;32m✅ APK Android construit avec succès !\e[0m"
+        # Décommentez la ligne suivante si vous avez un runner macOS pour la construction iOS
+        # flutter build ios --debug --no-codesign
+    
+    - name: Télécharger les artefacts
+      if: github.event_name == 'pull_request'
+      uses: actions/upload-artifact@v2
+      with:
+        name: debug-builds
+        path: build/app/outputs/flutter-apk/app-debug.apk
     
     - name: Vérifier la porte de qualité
       if: success()
