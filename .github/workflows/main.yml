@@ -9,8 +9,8 @@ on:
       - '**'
 
 jobs:
-  ci:
-    name: Porte de qualité
+  ci-base:
+    name: Vérifications de base
     runs-on: ubuntu-latest
     
     steps:
@@ -43,15 +43,45 @@ jobs:
         echo "espace réservé pour flutter test"
         echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
     
+    - name: Vérifier la porte de qualité
+      if: success()
+      run: |
+        echo -e "\e[1;32m✅ Porte de qualité de base passée\e[0m"
+    
+    - name: Notifier l'échec
+      if: failure()
+      run: |
+        echo -e "\e[1;31m❌ Les vérifications de base ont échoué. Veuillez corriger les problèmes et pousser à nouveau.\e[0m"
+        exit 1
+
+  ci-pr:
+    name: Vérifications de Pull Request
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: ci-base
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Configuration de Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.24.2'
+        channel: 'stable'
+    
+    - name: Désactiver les animations CLI
+      run: flutter config --no-cli-animations
+    
+    - name: Obtenir les dépendances
+      run: flutter pub get
+    
     - name: Analyser le code
-      if: github.event_name == 'pull_request'
       run: |
         echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
         dart analyze
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
     
     - name: Exécuter Dart Code Metrics
-      if: github.event_name == 'pull_request'
       run: |
         echo -e "\e[1;34m📊 Exécution de Dart Code Metrics...\e[0m"
         flutter pub add --dev dart_code_metrics
@@ -59,21 +89,18 @@ jobs:
         echo -e "\e[1;32m✅ Analyse Dart Code Metrics terminée !\e[0m"
     
     - name: Exécuter les tests d'intégration
-      if: github.event_name == 'pull_request'
       run: |
         echo -e "\e[1;34m🧪 Exécution des tests d'intégration...\e[0m"
         echo "espace réservé pour flutter drive --target=test_driver/app.dart"
         echo -e "\e[1;32m✅ Tests d'intégration terminés avec succès !\e[0m"
     
     - name: Analyse de sécurité
-      if: github.event_name == 'pull_request'
       run: |
         echo -e "\e[1;34m🔒 Exécution de l'analyse de sécurité...\e[0m"
         echo "espace réservé pour l'outil d'analyse de sécurité"
         echo -e "\e[1;32m✅ Analyse de sécurité terminée !\e[0m"
     
     - name: Construire les artefacts
-      if: github.event_name == 'pull_request'
       run: |
         echo -e "\e[1;34m🏗️ Construction des artefacts...\e[0m"
         flutter build apk --debug
@@ -82,19 +109,18 @@ jobs:
         # flutter build ios --debug --no-codesign
     
     - name: Télécharger les artefacts
-      if: github.event_name == 'pull_request'
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: debug-builds
         path: build/app/outputs/flutter-apk/app-debug.apk
     
-    - name: Vérifier la porte de qualité
+    - name: Vérifier la porte de qualité PR
       if: success()
       run: |
-        echo -e "\e[1;32m✅ Porte de qualité passée\e[0m"
+        echo -e "\e[1;32m✅ Porte de qualité PR passée\e[0m"
     
-    - name: Notifier l'échec
+    - name: Notifier l'échec PR
       if: failure()
       run: |
-        echo -e "\e[1;31m❌ Le pipeline CI a échoué. Veuillez corriger les problèmes et pousser à nouveau.\e[0m"
+        echo -e "\e[1;31m❌ Les vérifications de PR ont échoué. Veuillez corriger les problèmes et mettre à jour la pull request.\e[0m"
         exit 1
