@@ -82,12 +82,29 @@ jobs:
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
     
     - name: Exécuter Dart Code Metrics
+      id: dart_code_metrics
       run: |
         echo -e "\e[1;34m📊 Exécution de Dart Code Metrics...\e[0m"
         flutter pub add --dev dart_code_metrics
-        flutter pub run dart_code_metrics:metrics analyze lib
+        OUTPUT=$(flutter pub run dart_code_metrics:metrics analyze lib --reporter=console --set-exit-on-violation-level=warning)
+        echo "metrics_output<<EOF" >> $GITHUB_OUTPUT
+        echo "$OUTPUT" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
         echo -e "\e[1;32m✅ Analyse Dart Code Metrics terminée !\e[0m"
     
+    - name: Commenter les résultats de Dart Code Metrics
+      uses: peter-evans/create-or-update-comment@v3
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          ## Résultats de Dart Code Metrics
+          
+          ```
+          ${{ steps.dart_code_metrics.outputs.metrics_output }}
+          ```
+          
+          Veuillez examiner ces métriques et apporter les améliorations nécessaires.
+  
     - name: Exécuter les tests d'intégration
       run: |
         echo -e "\e[1;34m🧪 Exécution des tests d'intégration...\e[0m"
@@ -99,20 +116,6 @@ jobs:
         echo -e "\e[1;34m🔒 Exécution de l'analyse de sécurité...\e[0m"
         echo "espace réservé pour l'outil d'analyse de sécurité"
         echo -e "\e[1;32m✅ Analyse de sécurité terminée !\e[0m"
-    
-    - name: Construire les artefacts
-      run: |
-        echo -e "\e[1;34m🏗️ Construction des artefacts...\e[0m"
-        flutter build apk --debug
-        echo -e "\e[1;32m✅ APK Android construit avec succès !\e[0m"
-        # Décommentez la ligne suivante si vous avez un runner macOS pour la construction iOS
-        # flutter build ios --debug --no-codesign
-    
-    - name: Télécharger les artefacts
-      uses: actions/upload-artifact@v3
-      with:
-        name: debug-builds
-        path: build/app/outputs/flutter-apk/app-debug.apk
     
     - name: Vérifier la porte de qualité PR
       if: success()
