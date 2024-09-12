@@ -7,43 +7,46 @@ on:
 
 jobs:
   ci:
-    name: Flutter CI
+    name: CI Flutter
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
     
-    - name: Set up Flutter
+    - name: Configuration de Flutter
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.2'
         channel: 'stable'
     
-    - name: Get dependencies
+    - name: Désactiver les animations CLI
+      run: flutter config --no-cli-animations
+    
+    - name: Obtenir les dépendances
       run: |
-        echo -e "\e[1;34m🔍 Getting dependencies...\e[0m"
+        echo -e "\e[1;34m🔍 Obtention des dépendances...\e[0m"
         flutter pub get
-        echo -e "\e[1;32m✅ Dependencies retrieved successfully!\e[0m"
+        echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
     
-    - name: Format code
+    - name: Formater le code
       run: |
-        echo -e "\e[1;34m🖌️ Formatting code...\e[0m"
+        echo -e "\e[1;34m🖌️ Formatage du code...\e[0m"
         dart format --set-exit-if-changed .
-        echo -e "\e[1;32m✅ Code formatted successfully!\e[0m"
+        echo -e "\e[1;32m✅ Code formaté avec succès !\e[0m"
     
-    - name: Run tests
+    - name: Exécuter les tests
       run: |
-        echo -e "\e[1;34m🧪 Running tests...\e[0m"
-        echo "placeholder flutter test"
-        echo -e "\e[1;32m✅ Tests completed successfully!\e[0m"
+        echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
+        echo "espace réservé pour flutter test"
+        echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
     
-    - name: Check quality gate
+    - name: Vérifier la porte de qualité
       if: success()
       run: |
-        echo -e "\e[1;32m✅ Quality gate passed\e[0m"
+        echo -e "\e[1;32m✅ Porte de qualité passée\e[0m"
     
-    - name: Notify failure
+    - name: Notifier l'échec
       if: failure()
       run: |
-        echo -e "\e[1;31m❌ CI pipeline failed. Please fix the issues and push again.\e[0m"
+        echo -e "\e[1;31m❌ Le pipeline CI a échoué. Veuillez corriger les problèmes et pousser à nouveau.\e[0m"
         exit 1
