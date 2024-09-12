@@ -7,7 +7,7 @@ on:
 
 jobs:
   ci:
-    name: CI Flutter
+    name: Porte de qualité
     runs-on: ubuntu-latest
     
     steps:
