@@ -138,65 +138,58 @@ jobs:
     
     - name: Préparer le commentaire
       id: prepare_comment
-      if: failure() || steps.format_code.outputs.format_error == 'true' || steps.code_analysis.outputs.dart_error == 'true' || steps.code_analysis.outputs.flutter_error == 'true' || steps.vulnerability_check.outputs.vuln_error == 'true'
+      if: github.event_name == 'pull_request' && always()
       run: |
-        COMMENT_BODY="## Résultats des vérifications CI\n\n"
-        
-        if [ -f "format_output.txt" ]; then
-          FORMAT_OUTPUT=$(cat format_output.txt)
-          if [ -n "$FORMAT_OUTPUT" ]; then
-            COMMENT_BODY+="### Formatage du code\n\`\`\`\n$FORMAT_OUTPUT\n\`\`\`\n\n"
+        if [ "${{ job.status }}" == "success" ]; then
+          echo "comment_body=✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné." >> $GITHUB_OUTPUT
+        else
+          COMMENT_BODY="## ❌ Échec des vérifications CI\n\n"
+          
+          if [ -f "format_output.txt" ]; then
+            FORMAT_OUTPUT=$(cat format_output.txt)
+            if [ -n "$FORMAT_OUTPUT" ]; then
+              COMMENT_BODY+="### Formatage du code\n\`\`\`\n$FORMAT_OUTPUT\n\`\`\`\n\n"
+            fi
           fi
-        fi
-        
-        if [ -f "dart_analysis.txt" ]; then
-          DART_OUTPUT=$(cat dart_analysis.txt)
-          if [ -n "$DART_OUTPUT" ] && ! grep -q "No issues found" <<< "$DART_OUTPUT"; then
-            COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n$DART_OUTPUT\n\`\`\`\n\n"
+          
+          if [ -f "dart_analysis.txt" ]; then
+            DART_OUTPUT=$(cat dart_analysis.txt)
+            if [ -n "$DART_OUTPUT" ] && ! grep -q "No issues found" <<< "$DART_OUTPUT"; then
+              COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n$DART_OUTPUT\n\`\`\`\n\n"
+            fi
           fi
-        fi
-        
-        if [ -f "flutter_analysis.txt" ]; then
-          FLUTTER_OUTPUT=$(cat flutter_analysis.txt)
-          if [ -n "$FLUTTER_OUTPUT" ] && ! grep -q "No issues found" <<< "$FLUTTER_OUTPUT"; then
-            COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n$FLUTTER_OUTPUT\n\`\`\`\n\n"
+          
+          if [ -f "flutter_analysis.txt" ]; then
+            FLUTTER_OUTPUT=$(cat flutter_analysis.txt)
+            if [ -n "$FLUTTER_OUTPUT" ] && ! grep -q "No issues found" <<< "$FLUTTER_OUTPUT"; then
+              COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n$FLUTTER_OUTPUT\n\`\`\`\n\n"
+            fi
           fi
-        fi
-        
-        if [ -f "vulnerability_output.txt" ]; then
-          VULN_OUTPUT=$(cat vulnerability_output.txt)
-          if [ -n "$VULN_OUTPUT" ]; then
-            COMMENT_BODY+="### Analyse de sécurité\n\`\`\`\n$VULN_OUTPUT\n\`\`\`\n\n"
+          
+          if [ -f "test_output.txt" ]; then
+            TEST_OUTPUT=$(cat test_output.txt)
+            if [ -n "$TEST_OUTPUT" ] && grep -q "FAIL" <<< "$TEST_OUTPUT"; then
+              COMMENT_BODY+="### Résultats des tests\n\`\`\`\n$TEST_OUTPUT\n\`\`\`\n\n"
+            fi
           fi
+          
+          if [ -f "vulnerability_output.txt" ]; then
+            VULN_OUTPUT=$(cat vulnerability_output.txt)
+            if [ -n "$VULN_OUTPUT" ]; then
+              COMMENT_BODY+="### Analyse de sécurité\n\`\`\`\n$VULN_OUTPUT\n\`\`\`\n\n"
+            fi
+          fi
+          
+          COMMENT_BODY+="Veuillez examiner ces résultats et apporter les améliorations nécessaires."
+          
+          echo "comment_body<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMENT_BODY" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         fi
-        
-        COMMENT_BODY+="Veuillez examiner ces résultats et apporter les améliorations nécessaires."
-        
-        echo "comment_body<<EOF" >> $GITHUB_OUTPUT
-        echo "$COMMENT_BODY" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
 
-    - name: Commenter les résultats de l'analyse (PR)
-      if: github.event_name == 'pull_request' && steps.prepare_comment.outcome == 'success'
+    - name: Commenter les résultats de l'analyse
+      if: github.event_name == 'pull_request'
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: ${{ steps.prepare_comment.outputs.comment_body }}
-
-    - name: Commenter les résultats de l'analyse (Push)
-      if: github.event_name == 'push' && steps.prepare_comment.outcome == 'success'
-      uses: peter-evans/create-or-update-comment@v3
-      with:
-        commit-id: ${{ github.sha }}
-        body: ${{ steps.prepare_comment.outputs.comment_body }}
-
-    - name: Vérifier la porte de qualité
-      if: success()
-      run: |
-        echo -e "\e[1;32m✅ Porte de qualité passée\e[0m"
-    
-    - name: Notifier l'échec
-      if: failure()
-      run: |
-        echo -e "\e[1;31m❌ Les vérifications ont échoué. Veuillez corriger les problèmes et mettre à jour.\e[0m"
-        exit 1
