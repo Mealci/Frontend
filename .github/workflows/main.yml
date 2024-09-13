@@ -110,10 +110,8 @@ jobs:
       id: code_analysis
       run: |
         echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
-        dart_output=$(dart analyze)
-        flutter_output=$(flutter analyze)
-        echo "dart_output=$dart_output" >> $GITHUB_ENV
-        echo "flutter_output=$flutter_output" >> $GITHUB_ENV
+        dart analyze > dart_analysis.txt
+        flutter analyze > flutter_analysis.txt
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
 
     - name: Exécuter les tests d'intégration
@@ -155,11 +153,13 @@ jobs:
         COMMENT_BODY=""
         
         # Vérifier l'analyse du code Dart
+        DART_OUTPUT=$(cat dart_analysis.txt)
         if [[ ${#DART_OUTPUT} -gt 55 ]]; then
           COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n$DART_OUTPUT\n\`\`\`\n\n"
         fi
         
         # Vérifier l'analyse du code Flutter
+        FLUTTER_OUTPUT=$(cat flutter_analysis.txt)
         if [[ ${#FLUTTER_OUTPUT} -gt 55 ]]; then
           COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n$FLUTTER_OUTPUT\n\`\`\`\n\n"
         fi
