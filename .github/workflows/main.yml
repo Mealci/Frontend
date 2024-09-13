@@ -110,12 +110,10 @@ jobs:
       id: code_analysis
       run: |
         echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
-        echo "dart_output<<EOF" >> $GITHUB_OUTPUT
-        dart analyze >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-        echo "flutter_output<<EOF" >> $GITHUB_OUTPUT
-        flutter analyze >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+        dart_output=$(dart analyze)
+        flutter_output=$(flutter analyze)
+        echo "dart_output=$dart_output" >> $GITHUB_ENV
+        echo "flutter_output=$flutter_output" >> $GITHUB_ENV
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
 
     - name: Exécuter les tests d'intégration
@@ -128,14 +126,16 @@ jobs:
       id: vulnerability_check
       run: |
         echo -e "\e[1;34m🛡️ Vérification des vulnérabilités connues...\e[0m"
-        echo "vulnerability_output<<EOF" >> $GITHUB_OUTPUT
-        flutter pub deps --json | jq -r '.packages[] | .name + "@" + .version' | while read pkg; do
+        vulnerability_output=""
+        while read pkg; do
           result=$(curl -s "https://pub.dev/api/packages/${pkg%@*}/versions/${pkg#*@}" | jq -r '.vulnerability')
           if [ "$result" != "null" ]; then
-            echo "⚠️ Vulnérabilité détectée pour $pkg: $result"
+            vulnerability_output+="⚠️ Vulnérabilité détectée pour $pkg: $result\n"
           fi
-        done >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+        done < <(flutter pub deps --json | jq -r '.packages[] | .name + "@" + .version')
+        echo "vulnerability_output<<EOF" >> $GITHUB_ENV
+        echo "$vulnerability_output" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
         echo -e "\e[1;32m✅ Vérification des vulnérabilités terminée !\e[0m"
     
     - name: Vérifier la porte de qualité PR
@@ -155,18 +155,18 @@ jobs:
         COMMENT_BODY=""
         
         # Vérifier l'analyse du code Dart
-        if [[ -n "${{ steps.code_analysis.outputs.dart_output }}" ]]; then
-          COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n${{ steps.code_analysis.outputs.dart_output }}\n\`\`\`\n\n"
+        if [[ ${#DART_OUTPUT} -gt 55 ]]; then
+          COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n$DART_OUTPUT\n\`\`\`\n\n"
         fi
         
         # Vérifier l'analyse du code Flutter
-        if [[ -n "${{ steps.code_analysis.outputs.flutter_output }}" ]]; then
-          COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n${{ steps.code_analysis.outputs.flutter_output }}\n\`\`\`\n\n"
+        if [[ ${#FLUTTER_OUTPUT} -gt 55 ]]; then
+          COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n$FLUTTER_OUTPUT\n\`\`\`\n\n"
         fi
         
         # Vérifier les vulnérabilités
-        if [[ -n "${{ steps.vulnerability_check.outputs.vulnerability_output }}" ]]; then
-          COMMENT_BODY+="### Analyse de sécurité\n\`\`\`\n${{ steps.vulnerability_check.outputs.vulnerability_output }}\n\`\`\`\n\n"
+        if [[ -n "$VULNERABILITY_OUTPUT" ]]; then
+          COMMENT_BODY+="### Analyse de sécurité\n\`\`\`\n$VULNERABILITY_OUTPUT\n\`\`\`\n\n"
         fi
         
         # Si aucune information n'a été ajoutée, indiquer que tout est propre
