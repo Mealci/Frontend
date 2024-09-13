@@ -136,58 +136,67 @@ jobs:
         echo "EOF" >> $GITHUB_ENV
         echo -e "\e[1;32m✅ Vérification des vulnérabilités terminée !\e[0m"
     
-    - name: Vérifier la porte de qualité PR
-      if: success()
-      run: |
-        echo -e "\e[1;32m✅ Porte de qualité PR passée\e[0m"
-    
-    - name: Notifier l'échec PR
-      if: failure()
-      run: |
-        echo -e "\e[1;31m❌ Les vérifications de PR ont échoué. Veuillez corriger les problèmes et mettre à jour la pull request.\e[0m"
-        exit 1
-
     - name: Préparer le commentaire
       id: prepare_comment
+      if: failure() || steps.format_code.outputs.format_error == 'true' || steps.code_analysis.outputs.dart_error == 'true' || steps.code_analysis.outputs.flutter_error == 'true' || steps.vulnerability_check.outputs.vuln_error == 'true'
       run: |
-        COMMENT_BODY=""
+        COMMENT_BODY="## Résultats des vérifications CI\n\n"
         
-        # Fonction pour vérifier si l'analyse contient des problèmes
-        has_issues() {
-          ! grep -qE "^No issues found" <<< "$1"
-        }
-        
-        # Vérifier l'analyse du code Dart
-        DART_OUTPUT=$(cat dart_analysis.txt)
-        if has_issues "$DART_OUTPUT"; then
-          COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n$DART_OUTPUT\n\`\`\`\n\n"
+        if [ -f "format_output.txt" ]; then
+          FORMAT_OUTPUT=$(cat format_output.txt)
+          if [ -n "$FORMAT_OUTPUT" ]; then
+            COMMENT_BODY+="### Formatage du code\n\`\`\`\n$FORMAT_OUTPUT\n\`\`\`\n\n"
+          fi
         fi
         
-        # Vérifier l'analyse du code Flutter
-        FLUTTER_OUTPUT=$(cat flutter_analysis.txt)
-        if has_issues "$FLUTTER_OUTPUT"; then
-          COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n$FLUTTER_OUTPUT\n\`\`\`\n\n"
+        if [ -f "dart_analysis.txt" ]; then
+          DART_OUTPUT=$(cat dart_analysis.txt)
+          if [ -n "$DART_OUTPUT" ] && ! grep -q "No issues found" <<< "$DART_OUTPUT"; then
+            COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n$DART_OUTPUT\n\`\`\`\n\n"
+          fi
         fi
         
-        # Vérifier les vulnérabilités
-        if [[ -n "$VULNERABILITY_OUTPUT" ]]; then
-          COMMENT_BODY+="### Analyse de sécurité\n\`\`\`\n$VULNERABILITY_OUTPUT\n\`\`\`\n\n"
+        if [ -f "flutter_analysis.txt" ]; then
+          FLUTTER_OUTPUT=$(cat flutter_analysis.txt)
+          if [ -n "$FLUTTER_OUTPUT" ] && ! grep -q "No issues found" <<< "$FLUTTER_OUTPUT"; then
+            COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n$FLUTTER_OUTPUT\n\`\`\`\n\n"
+          fi
         fi
         
-        # Si aucune information n'a été ajoutée, indiquer que tout est propre
-        if [[ -z "$COMMENT_BODY" ]]; then
-          COMMENT_BODY="✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné."
-        else
-          COMMENT_BODY="## Résultats des vérifications CI\n\n${COMMENT_BODY}\nVeuillez examiner ces résultats et apporter les améliorations nécessaires."
+        if [ -f "vulnerability_output.txt" ]; then
+          VULN_OUTPUT=$(cat vulnerability_output.txt)
+          if [ -n "$VULN_OUTPUT" ]; then
+            COMMENT_BODY+="### Analyse de sécurité\n\`\`\`\n$VULN_OUTPUT\n\`\`\`\n\n"
+          fi
         fi
+        
+        COMMENT_BODY+="Veuillez examiner ces résultats et apporter les améliorations nécessaires."
         
         echo "comment_body<<EOF" >> $GITHUB_OUTPUT
         echo "$COMMENT_BODY" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
-    - name: Commenter les résultats de l'analyse
-      if: always()
+    - name: Commenter les résultats de l'analyse (PR)
+      if: github.event_name == 'pull_request' && steps.prepare_comment.outcome == 'success'
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: ${{ steps.prepare_comment.outputs.comment_body }}
+
+    - name: Commenter les résultats de l'analyse (Push)
+      if: github.event_name == 'push' && steps.prepare_comment.outcome == 'success'
+      uses: peter-evans/create-or-update-comment@v3
+      with:
+        commit-id: ${{ github.sha }}
+        body: ${{ steps.prepare_comment.outputs.comment_body }}
+
+    - name: Vérifier la porte de qualité
+      if: success()
+      run: |
+        echo -e "\e[1;32m✅ Porte de qualité passée\e[0m"
+    
+    - name: Notifier l'échec
+      if: failure()
+      run: |
+        echo -e "\e[1;31m❌ Les vérifications ont échoué. Veuillez corriger les problèmes et mettre à jour.\e[0m"
+        exit 1
