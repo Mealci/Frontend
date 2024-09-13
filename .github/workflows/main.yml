@@ -100,7 +100,11 @@ jobs:
       run: flutter config --no-cli-animations
     
     - name: Obtenir les dépendances
-      run: flutter pub get
+      run: |
+        echo -e "\e[1;34m🔍 Obtention des dépendances...\e[0m"
+        flutter pub add --dev flutter_vuln_detector
+        flutter pub get
+        echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
     
     - name: Analyser le code
       id: code_analysis
