@@ -152,15 +152,20 @@ jobs:
       run: |
         COMMENT_BODY=""
         
+        # Fonction pour vérifier si l'analyse contient des problèmes
+        has_issues() {
+          ! grep -qE "^No issues found" <<< "$1"
+        }
+        
         # Vérifier l'analyse du code Dart
         DART_OUTPUT=$(cat dart_analysis.txt)
-        if [[ ${#DART_OUTPUT} -gt 55 ]]; then
+        if has_issues "$DART_OUTPUT"; then
           COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n$DART_OUTPUT\n\`\`\`\n\n"
         fi
         
         # Vérifier l'analyse du code Flutter
         FLUTTER_OUTPUT=$(cat flutter_analysis.txt)
-        if [[ ${#FLUTTER_OUTPUT} -gt 55 ]]; then
+        if has_issues "$FLUTTER_OUTPUT"; then
           COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n$FLUTTER_OUTPUT\n\`\`\`\n\n"
         fi
         
