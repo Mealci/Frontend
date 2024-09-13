@@ -102,7 +102,7 @@ jobs:
     - name: Obtenir les dépendances
       run: |
         echo -e "\e[1;34m🔍 Obtention des dépendances...\e[0m"
-        flutter pub add --dev flutter_vuln_detector
+        flutter pub add --dev dependency_validator
         flutter pub get
         echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
     
@@ -124,17 +124,19 @@ jobs:
         echo "espace réservé pour flutter drive --target=test_driver/app.dart"
         echo -e "\e[1;32m✅ Tests d'intégration terminés avec succès !\e[0m"
     
-    - name: Analyse de sécurité avec Flutter Vuln Detector
-      id: vuln_detector
+    - name: Vérification des vulnérabilités
+      id: vulnerability_check
       run: |
-        echo -e "\e[1;34m🔒 Exécution de l'analyse de sécurité avec Flutter Vuln Detector...\e[0m"
-        # Installer Flutter Vuln Detector
-        dart pub global activate flutter_vuln_detector
-        # Exécuter l'analyse
-        echo "vuln_output<<EOF" >> $GITHUB_OUTPUT
-        flutter_vuln_detector >> $GITHUB_OUTPUT
+        echo -e "\e[1;34m🛡️ Vérification des vulnérabilités connues...\e[0m"
+        echo "vulnerability_output<<EOF" >> $GITHUB_OUTPUT
+        flutter pub deps --json | jq -r '.packages[] | .name + "@" + .version' | while read pkg; do
+          result=$(curl -s "https://pub.dev/api/packages/${pkg%@*}/versions/${pkg#*@}" | jq -r '.vulnerability')
+          if [ "$result" != "null" ]; then
+            echo "⚠️ Vulnérabilité détectée pour $pkg: $result"
+          fi
+        done >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-        echo -e "\e[1;32m✅ Analyse de sécurité terminée !\e[0m"
+        echo -e "\e[1;32m✅ Vérification des vulnérabilités terminée !\e[0m"
     
     - name: Vérifier la porte de qualité PR
       if: success()
