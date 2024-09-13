@@ -105,8 +105,8 @@ jobs:
         flutter pub add --dev dependency_validator
         flutter pub get
         echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
-    
-- name: Formater le code
+
+    - name: Formater le code
       id: format
       continue-on-error: true
       run: |
