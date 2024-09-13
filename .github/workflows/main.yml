@@ -113,25 +113,6 @@ jobs:
         flutter analyze >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
-    
-    - name: Commenter les résultats de l'analyse
-      uses: peter-evans/create-or-update-comment@v3
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          ## Résultats de l'analyse de code
-          
-          ### Dart Analyze
-          ```
-          ${{ steps.code_analysis.outputs.dart_output }}
-          ```
-          
-          ### Flutter Analyze
-          ```
-          ${{ steps.code_analysis.outputs.flutter_output }}
-          ```
-          
-          Veuillez examiner ces résultats et apporter les améliorations nécessaires.
 
     - name: Exécuter les tests d'intégration
       run: |
@@ -139,10 +120,16 @@ jobs:
         echo "espace réservé pour flutter drive --target=test_driver/app.dart"
         echo -e "\e[1;32m✅ Tests d'intégration terminés avec succès !\e[0m"
     
-    - name: Analyse de sécurité
+    - name: Analyse de sécurité avec Flutter Vuln Detector
+      id: vuln_detector
       run: |
-        echo -e "\e[1;34m🔒 Exécution de l'analyse de sécurité...\e[0m"
-        echo "espace réservé pour l'outil d'analyse de sécurité"
+        echo -e "\e[1;34m🔒 Exécution de l'analyse de sécurité avec Flutter Vuln Detector...\e[0m"
+        # Installer Flutter Vuln Detector
+        dart pub global activate flutter_vuln_detector
+        # Exécuter l'analyse
+        echo "vuln_output<<EOF" >> $GITHUB_OUTPUT
+        flutter_vuln_detector >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
         echo -e "\e[1;32m✅ Analyse de sécurité terminée !\e[0m"
     
     - name: Vérifier la porte de qualité PR
@@ -155,3 +142,28 @@ jobs:
       run: |
         echo -e "\e[1;31m❌ Les vérifications de PR ont échoué. Veuillez corriger les problèmes et mettre à jour la pull request.\e[0m"
         exit 1
+
+    - name: Commenter les résultats de l'analyse
+      if: always()
+      uses: peter-evans/create-or-update-comment@v3
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          ## Résultats des vérifications CI
+
+          ### Analyse du code Dart
+          ```
+          ${{ steps.code_analysis.outputs.dart_output }}
+          ```
+
+          ### Analyse du code Flutter
+          ```
+          ${{ steps.code_analysis.outputs.flutter_output }}
+          ```
+
+          ### Analyse de sécurité (Flutter Vuln Detector)
+          ```
+          ${{ steps.vuln_detector.outputs.vuln_output }}
+          ```
+
+          Veuillez examiner ces résultats et apporter les améliorations nécessaires.
