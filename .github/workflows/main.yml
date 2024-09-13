@@ -149,27 +149,40 @@ jobs:
         echo -e "\e[1;31m❌ Les vérifications de PR ont échoué. Veuillez corriger les problèmes et mettre à jour la pull request.\e[0m"
         exit 1
 
+    - name: Préparer le commentaire
+      id: prepare_comment
+      run: |
+        COMMENT_BODY=""
+        
+        # Vérifier l'analyse du code Dart
+        if [[ -n "${{ steps.code_analysis.outputs.dart_output }}" ]]; then
+          COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n${{ steps.code_analysis.outputs.dart_output }}\n\`\`\`\n\n"
+        fi
+        
+        # Vérifier l'analyse du code Flutter
+        if [[ -n "${{ steps.code_analysis.outputs.flutter_output }}" ]]; then
+          COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n${{ steps.code_analysis.outputs.flutter_output }}\n\`\`\`\n\n"
+        fi
+        
+        # Vérifier les vulnérabilités
+        if [[ -n "${{ steps.vulnerability_check.outputs.vulnerability_output }}" ]]; then
+          COMMENT_BODY+="### Analyse de sécurité\n\`\`\`\n${{ steps.vulnerability_check.outputs.vulnerability_output }}\n\`\`\`\n\n"
+        fi
+        
+        # Si aucune information n'a été ajoutée, indiquer que tout est propre
+        if [[ -z "$COMMENT_BODY" ]]; then
+          COMMENT_BODY="✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné."
+        else
+          COMMENT_BODY="## Résultats des vérifications CI\n\n${COMMENT_BODY}\nVeuillez examiner ces résultats et apporter les améliorations nécessaires."
+        fi
+        
+        echo "comment_body<<EOF" >> $GITHUB_OUTPUT
+        echo "$COMMENT_BODY" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
     - name: Commenter les résultats de l'analyse
       if: always()
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          ## Résultats des vérifications CI
-
-          ### Analyse du code Dart
-          ```
-          ${{ steps.code_analysis.outputs.dart_output }}
-          ```
-
-          ### Analyse du code Flutter
-          ```
-          ${{ steps.code_analysis.outputs.flutter_output }}
-          ```
-
-          ### Analyse de sécurité (Flutter Vuln Detector)
-          ```
-          ${{ steps.vuln_detector.outputs.vuln_output }}
-          ```
-
-          Veuillez examiner ces résultats et apporter les améliorations nécessaires.
+        body: ${{ steps.prepare_comment.outputs.comment_body }}
