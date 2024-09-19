@@ -121,7 +121,7 @@ jobs:
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
 
     - name: Commenter l'erreur d'analyse
-      if: failure() && steps.analyze.outputs.analyze_error == 'true'
+      if: steps.check_run.outputs.skip != 'true' && failure() && steps.analyze.outputs.analyze_error == 'true'
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
