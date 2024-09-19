@@ -152,11 +152,11 @@ jobs:
           ## Rapport CI : Analyse du code
           ### Analyse Dart
           ```
-          ${{ readFile('dart_analysis.txt') }}
+          ${{ steps.analyze.outputs.dart_analysis }}
           ```
           ### Analyse Flutter
           ```
-          ${{ readFile('flutter_analysis.txt') }}
+          ${{ steps.analyze.outputs.flutter_analysis }}
           ```
 
     - name: Exécuter les tests
@@ -164,6 +164,9 @@ jobs:
       run: |
         echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
         flutter test > test_output.txt 2>&1 || true
+        echo "test_output<<EOF" >> $GITHUB_OUTPUT
+        cat test_output.txt >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
         if [ $? -ne 0 ]; then
           echo "test_error=true" >> $GITHUB_OUTPUT
         else
@@ -179,7 +182,7 @@ jobs:
         body: |
           ## Rapport CI : Tests
           ```
-          ${{ readFile('test_output.txt') }}
+          ${{ steps.test.outputs.test_output }}
           ```
 
     - name: Vérification des vulnérabilités
@@ -194,6 +197,9 @@ jobs:
           fi
         done < <(flutter pub deps --json | jq -r '.packages[] | .name + "@" + .version')
         echo "$vulnerability_output" > vulnerability_output.txt
+        echo "vuln_output<<EOF" >> $GITHUB_OUTPUT
+        cat vulnerability_output.txt >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
         if [ -n "$vulnerability_output" ]; then
           echo "vuln_error=true" >> $GITHUB_OUTPUT
         else
@@ -209,7 +215,7 @@ jobs:
         body: |
           ## Rapport CI : Vulnérabilités
           ```
-          ${{ readFile('vulnerability_output.txt') }}
+          ${{ steps.vulnerability.outputs.vuln_output }}
           ```
 
     - name: Vérifier le statut final
