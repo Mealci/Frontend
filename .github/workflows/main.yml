@@ -214,7 +214,12 @@ jobs:
             ## Rapport CI : Code propre et sécurisé
             
             ✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné.
-            ${{ steps.test.outputs.test_error == 'false' && !contains(steps.test.outputs.stdout, 'Aucun fichier de test trouvé') && '✅ Les tests sont passés avec succès.' || '⚠️ Aucun test n\'a été exécuté.' }}
+            ${{ 
+              steps.test.outputs.test_error == 'false' && 
+              !contains(steps.test.outputs.stdout, 'Aucun fichier de test trouvé') && 
+              '✅ Les tests sont passés avec succès.' || 
+              '⚠️ Aucun test n\'a été exécuté.' 
+            }}
             ✅ Aucune vulnérabilité connue n'a été détectée dans les dépendances.
 
     # - name: Vérification des vulnérabilités
