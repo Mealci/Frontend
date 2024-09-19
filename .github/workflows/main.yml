@@ -76,7 +76,7 @@ jobs:
         echo -e "\e[1;32m✅ Porte de qualité de base passée\e[0m"
     
     - name: Notifier l'échec
-      if: steps.check_run.outputs.skip != 'true' && failure()
+      if: steps.check_run.outputs.skip != 'true' && failure() && github.event_name != 'pull_request'
       run: |
         echo -e "\e[1;31m❌ Les vérifications de base ont échoué. Veuillez corriger les problèmes et mettre à jour.\e[0m"
         exit 1
