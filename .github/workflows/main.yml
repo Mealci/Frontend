@@ -205,6 +205,15 @@ jobs:
         run: |
           echo -e "\e[1;32m✅ Toutes les vérifications CI sont passées avec succès !\e[0m"
 
+      - name: Déterminer le statut des tests
+        id: test_status
+        run: |
+          if [ "${{ steps.test.outputs.test_error }}" == "false" ] && ! echo "${{ steps.test.outputs.stdout }}" | grep -q "Aucun fichier de test trouvé"; then
+            echo "message=✅ Les tests sont passés avec succès." >> $GITHUB_OUTPUT
+          else
+            echo "message=⚠️ Aucun test n'a été exécuté." >> $GITHUB_OUTPUT
+          fi
+
       - name: Commenter le succès de l'analyse, des tests et de la vérification des vulnérabilités
         if: steps.analyze.outputs.analyze_error == 'false' && steps.test.outputs.test_error == 'false' && steps.vulnerability.outputs.vuln_error == 'false'
         uses: peter-evans/create-or-update-comment@v3
@@ -214,44 +223,6 @@ jobs:
             ## Rapport CI : Code propre et sécurisé
             
             ✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné.
-            ${{ 
-              steps.test.outputs.test_error == 'false' && 
-              !contains(steps.test.outputs.stdout, 'Aucun fichier de test trouvé') && 
-              '✅ Les tests sont passés avec succès.' || 
-              '⚠️ Aucun test n\'a été exécuté.' 
-            }}
+            ${{ steps.test_status.outputs.message }}
             ✅ Aucune vulnérabilité connue n'a été détectée dans les dépendances.
-
-    # - name: Vérification des vulnérabilités
-    #   id: vulnerability
-    #   run: |
-    #     echo -e "\e[1;34m🛡️ Vérification des vulnérabilités connues...\e[0m"
-    #     vulnerability_output=""
-    #     while read pkg; do
-    #       result=$(curl -s "https://pub.dev/api/packages/${pkg%@*}/versions/${pkg#*@}" | jq -r '.vulnerability')
-    #       if [ "$result" != "null" ]; then
-    #         vulnerability_output+="⚠️ Vulnérabilité détectée pour $pkg: $result\n"
-    #       fi
-    #     done < <(flutter pub deps --json | jq -r '.packages[] | .name + "@" + .version')
-    #     if [ -n "$vulnerability_output" ]; then
-    #       echo "vuln_error=true" >> $GITHUB_OUTPUT
-    #       echo "vuln_output<<EOF" >> $GITHUB_OUTPUT
-    #       echo "$vulnerability_output" >> $GITHUB_OUTPUT
-    #       echo "EOF" >> $GITHUB_OUTPUT
-    #       exit 1
-    #     else
-    #       echo "vuln_error=false" >> $GITHUB_OUTPUT
-    #     fi
-    #     echo -e "\e[1;32m✅ Vérification des vulnérabilités terminée !\e[0m"
-
-    # - name: Commenter les vulnérabilités
-    #   if: failure() && steps.vulnerability.outputs.vuln_error == 'true'
-    #   uses: peter-evans/create-or-update-comment@v3
-    #   with:
-    #     issue-number: ${{ github.event.pull_request.number }}
-    #     body: |
-    #       ## ⚠️ Rapport CI : Vulnérabilités détectées
-    #       ```
-    #       ${{ steps.vulnerability.outputs.vuln_output }}
-    #       ```
-    #       Des vulnérabilités ont été détectées dans les dépendances. Veuillez examiner et mettre à jour les dépendances concernées avant de fusionner.
+    
