@@ -113,10 +113,10 @@ jobs:
         echo "flutter_analysis<<EOF" >> $GITHUB_OUTPUT
         cat flutter_analysis.txt >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-        if grep -q "issues found" flutter_analysis.txt; then
-          echo "analyze_error=true" >> $GITHUB_OUTPUT
-        else
+        if grep -q "No issues found!" flutter_analysis.txt; then
           echo "analyze_error=false" >> $GITHUB_OUTPUT
+        else
+          echo "analyze_error=true" >> $GITHUB_OUTPUT
         fi
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
 
