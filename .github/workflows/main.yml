@@ -120,7 +120,8 @@ jobs:
         fi
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
 
-    - name: Commenter le résultat d'analyse
+    - name: Commenter l'erreur d'analyse
+      if: steps.analyze.outputs.analyze_error == 'true'
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
@@ -130,11 +131,7 @@ jobs:
           ```
           ${{ steps.analyze.outputs.flutter_analysis }}
           ```
-          ${{ if steps.analyze.outputs.analyze_error == 'true' }}
           ❌ Des problèmes ont été détectés lors de l'analyse.
-          ${{ else }}
-          ✅ Aucun problème détecté lors de l'analyse.
-          ${{ endif }}
 
     - name: Exécuter les tests
       id: test
