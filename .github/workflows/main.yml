@@ -130,7 +130,11 @@ jobs:
           ```
           ${{ steps.analyze.outputs.flutter_analysis }}
           ```
-          ${{ steps.analyze.outputs.analyze_error == 'true' && '❌ Des problèmes ont été détectés lors de l\'analyse.' || '✅ Aucun problème détecté lors de l\'analyse.' }}
+          ${{ if steps.analyze.outputs.analyze_error == 'true' }}
+          ❌ Des problèmes ont été détectés lors de l'analyse.
+          ${{ else }}
+          ✅ Aucun problème détecté lors de l'analyse.
+          ${{ endif }}
 
     - name: Exécuter les tests
       id: test
