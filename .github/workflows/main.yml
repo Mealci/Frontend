@@ -187,8 +187,10 @@ jobs:
         
         if [[ $ERROR_COUNT -eq 0 ]]; then
           COMMENT_BODY+="✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné."
+          echo "job_status=success" >> $GITHUB_OUTPUT
         else
           COMMENT_BODY+="⚠️ Des problèmes ont été détectés. Veuillez examiner ces résultats et apporter les améliorations nécessaires."
+          echo "job_status=failure" >> $GITHUB_OUTPUT
         fi
         
         echo "comment_body<<EOF" >> $GITHUB_OUTPUT
@@ -201,3 +203,11 @@ jobs:
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: ${{ steps.prepare_comment.outputs.comment_body }}
+
+    - name: Vérifier le statut final
+      if: always()
+      run: |
+        if [[ "${{ steps.prepare_comment.outputs.job_status }}" == "failure" ]]; then
+          echo "Des erreurs ont été détectées dans le processus CI."
+          exit 1
+        fi
