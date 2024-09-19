@@ -109,10 +109,10 @@ jobs:
       id: format
       run: |
         echo -e "\e[1;34m🖌️ Formatage du code...\e[0m"
-        OUTPUT=$(dart format --set-exit-if-changed . 2>&1) || true
+        OUTPUT=$(dart format --set-exit-if-changed . 2>&1) || echo "Format failed"
         echo "$OUTPUT"
         echo "$OUTPUT" > format_output.txt
-        if echo "$OUTPUT" | grep -q "Could not format"; then
+        if echo "$OUTPUT" | grep -q "Could not format" || echo "$OUTPUT" | grep -q "Format failed"; then
           echo "format_error=true" >> $GITHUB_OUTPUT
         fi
         echo -e "\e[1;32m✅ Formatage du code terminé !\e[0m"
@@ -159,31 +159,36 @@ jobs:
       if: always()
       id: prepare_comment
       run: |
-        COMMENT_BODY=""
+        COMMENT_BODY="## Rapport de CI\n\n"
         
-        if [[ "${{ steps.format.outputs.format_error }}" == "true" || "${{ steps.analyze.outputs.analyze_error }}" == "true" || "${{ steps.test.outputs.test_error }}" == "true" || "${{ steps.vulnerability.outputs.vuln_error }}" == "true" ]]; then
-          COMMENT_BODY="## ⚠️ Avertissements des vérifications CI\n\n"
-          
-          if [[ "${{ steps.format.outputs.format_error }}" == "true" ]]; then
-            COMMENT_BODY+="### Formatage du code\n\`\`\`\n$(cat format_output.txt)\n\`\`\`\n\n"
-          fi
-          
-          if [[ "${{ steps.analyze.outputs.analyze_error }}" == "true" ]]; then
-            COMMENT_BODY+="### Analyse du code Dart\n\`\`\`\n$(cat dart_analysis.txt)\n\`\`\`\n\n"
-            COMMENT_BODY+="### Analyse du code Flutter\n\`\`\`\n$(cat flutter_analysis.txt)\n\`\`\`\n\n"
-          fi
-          
-          if [[ "${{ steps.test.outputs.test_error }}" == "true" ]]; then
-            COMMENT_BODY+="### Résultats des tests\n\`\`\`\n$(cat test_output.txt)\n\`\`\`\n\n"
-          fi
-          
-          if [[ "${{ steps.vulnerability.outputs.vuln_error }}" == "true" ]]; then
-            COMMENT_BODY+="### Analyse de sécurité\n\`\`\`\n$(cat vulnerability_output.txt)\n\`\`\`\n\n"
-          fi
-          
-          COMMENT_BODY+="Veuillez examiner ces résultats et apporter les améliorations nécessaires."
+        ERROR_COUNT=0
+
+        if [[ "${{ steps.format.outputs.format_error }}" == "true" ]]; then
+          COMMENT_BODY+="### Erreur de format\n\`\`\`\n$(cat format_output.txt)\n\`\`\`\n\n"
+          ((ERROR_COUNT++))
+        fi
+        
+        if [[ "${{ steps.analyze.outputs.analyze_error }}" == "true" ]]; then
+          COMMENT_BODY+="### Erreur d'analyse\n"
+          COMMENT_BODY+="#### Analyse du code Dart\n\`\`\`\n$(cat dart_analysis.txt)\n\`\`\`\n\n"
+          COMMENT_BODY+="#### Analyse du code Flutter\n\`\`\`\n$(cat flutter_analysis.txt)\n\`\`\`\n\n"
+          ((ERROR_COUNT++))
+        fi
+        
+        if [[ "${{ steps.test.outputs.test_error }}" == "true" ]]; then
+          COMMENT_BODY+="### Erreur de test\n\`\`\`\n$(cat test_output.txt)\n\`\`\`\n\n"
+          ((ERROR_COUNT++))
+        fi
+        
+        if [[ "${{ steps.vulnerability.outputs.vuln_error }}" == "true" ]]; then
+          COMMENT_BODY+="### Vulnérabilités détectées\n\`\`\`\n$(cat vulnerability_output.txt)\n\`\`\`\n\n"
+          ((ERROR_COUNT++))
+        fi
+        
+        if [[ $ERROR_COUNT -eq 0 ]]; then
+          COMMENT_BODY+="✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné."
         else
-          COMMENT_BODY="✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné."
+          COMMENT_BODY+="⚠️ Des problèmes ont été détectés. Veuillez examiner ces résultats et apporter les améliorations nécessaires."
         fi
         
         echo "comment_body<<EOF" >> $GITHUB_OUTPUT
