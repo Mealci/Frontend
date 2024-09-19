@@ -102,13 +102,15 @@ jobs:
         id: analyze
         run: |
           echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
-          if flutter analyze > flutter_analysis.txt 2>&1; then
+          if flutter analyze > flutter_analysis_full.txt 2>&1; then
             echo "analyze_error=false" >> $GITHUB_OUTPUT
             echo -e "\e[1;32m✅ Analyse du code terminée sans erreur !\e[0m"
           else
             echo "analyze_error=true" >> $GITHUB_OUTPUT
             echo -e "\e[1;31m❌ Erreurs détectées lors de l'analyse du code.\e[0m"
           fi
+          # Filter out dependency information and keep only analysis results
+          sed -n '/Analyzing/,$p' flutter_analysis_full.txt | grep -v "Got dependencies" > flutter_analysis.txt
           echo "flutter_analysis<<EOF" >> $GITHUB_OUTPUT
           cat flutter_analysis.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -211,7 +213,7 @@ jobs:
           if [ "${{ steps.test.outputs.test_error }}" == "false" ] && ! echo "${{ steps.test.outputs.stdout }}" | grep -q "any test files"; then
             echo "message=✅ Les tests sont passés avec succès." >> $GITHUB_OUTPUT
           else
-            echo "message=⚠️ Aucun test n'a été exécuté." >> $GITHUB_OUTPUT
+            echo "message=⚠️ Aucun test n'a été trouvé." >> $GITHUB_OUTPUT
           fi
 
       - name: Commenter le succès de l'analyse, des tests et de la vérification des vulnérabilités
