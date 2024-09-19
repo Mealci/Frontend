@@ -109,19 +109,18 @@ jobs:
       id: analyze
       run: |
         echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
-        flutter analyze > flutter_analysis.txt 2>&1 || true
+        flutter analyze > flutter_analysis.txt 2>&1
         echo "flutter_analysis<<EOF" >> $GITHUB_OUTPUT
         cat flutter_analysis.txt >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-        if [ -s flutter_analysis.txt ]; then
+        if grep -q "issues found" flutter_analysis.txt; then
           echo "analyze_error=true" >> $GITHUB_OUTPUT
         else
           echo "analyze_error=false" >> $GITHUB_OUTPUT
         fi
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
 
-    - name: Commenter l'erreur d'analyse
-      if: steps.analyze.outputs.analyze_error == 'true'
+    - name: Commenter le résultat d'analyse
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
@@ -131,6 +130,7 @@ jobs:
           ```
           ${{ steps.analyze.outputs.flutter_analysis }}
           ```
+          ${{ steps.analyze.outputs.analyze_error == 'true' && '❌ Des problèmes ont été détectés lors de l\'analyse.' || '✅ Aucun problème détecté lors de l\'analyse.' }}
 
     - name: Exécuter les tests
       id: test
