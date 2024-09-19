@@ -101,7 +101,6 @@ jobs:
     - name: Obtenir les dépendances
       run: |
         echo -e "\e[1;34m🔍 Obtention des dépendances...\e[0m"
-        flutter pub add --dev dependency_validator
         flutter pub get
         echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
 
@@ -117,6 +116,7 @@ jobs:
           echo "analyze_error=false" >> $GITHUB_OUTPUT
         else
           echo "analyze_error=true" >> $GITHUB_OUTPUT
+          exit 1
         fi
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
 
@@ -137,27 +137,28 @@ jobs:
       id: test
       run: |
         echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
-        flutter test > test_output.txt 2>&1 || true
-        echo "test_output<<EOF" >> $GITHUB_OUTPUT
-        cat test_output.txt >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-        if [ $? -ne 0 ]; then
-          echo "test_error=true" >> $GITHUB_OUTPUT
-        else
+        if flutter test > test_output.txt 2>&1; then
           echo "test_error=false" >> $GITHUB_OUTPUT
+        else
+          echo "test_error=true" >> $GITHUB_OUTPUT
+          echo "test_output<<EOF" >> $GITHUB_OUTPUT
+          cat test_output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          exit 1
         fi
         echo -e "\e[1;32m✅ Tests terminés !\e[0m"
 
     - name: Commenter l'erreur de test
-      if: steps.test.outputs.test_error == 'true'
+      if: failure() && steps.test.outputs.test_error == 'true'
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          ## Rapport CI : Tests
+          ## ❌ Rapport CI : Erreur de tests
           ```
           ${{ steps.test.outputs.test_output }}
           ```
+          Des erreurs ont été détectées lors de l'exécution des tests. Veuillez corriger ces problèmes avant de fusionner.
 
     - name: Vérification des vulnérabilités
       id: vulnerability
@@ -170,44 +171,30 @@ jobs:
             vulnerability_output+="⚠️ Vulnérabilité détectée pour $pkg: $result\n"
           fi
         done < <(flutter pub deps --json | jq -r '.packages[] | .name + "@" + .version')
-        echo "vuln_output<<EOF" >> $GITHUB_OUTPUT
-        echo "$vulnerability_output" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
         if [ -n "$vulnerability_output" ]; then
           echo "vuln_error=true" >> $GITHUB_OUTPUT
+          echo "vuln_output<<EOF" >> $GITHUB_OUTPUT
+          echo "$vulnerability_output" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          exit 1
         else
           echo "vuln_error=false" >> $GITHUB_OUTPUT
         fi
         echo -e "\e[1;32m✅ Vérification des vulnérabilités terminée !\e[0m"
 
     - name: Commenter les vulnérabilités
-      if: steps.vulnerability.outputs.vuln_error == 'true'
+      if: failure() && steps.vulnerability.outputs.vuln_error == 'true'
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          ## Rapport CI : Vulnérabilités
+          ## ⚠️ Rapport CI : Vulnérabilités détectées
           ```
           ${{ steps.vulnerability.outputs.vuln_output }}
           ```
+          Des vulnérabilités ont été détectées dans les dépendances. Veuillez examiner et mettre à jour les dépendances concernées avant de fusionner.
 
-    - name: Vérifier le statut final
-      id: final_check
+    - name: Notification de succès
+      if: success()
       run: |
-        if [[ "${{ steps.analyze.outputs.analyze_error }}" == "false" && \
-              "${{ steps.test.outputs.test_error }}" == "false" && \
-              "${{ steps.vulnerability.outputs.vuln_error }}" == "false" ]]; then
-          echo "all_passed=true" >> $GITHUB_OUTPUT
-        else
-          echo "all_passed=false" >> $GITHUB_OUTPUT
-          exit 1
-        fi
-
-    - name: Commenter le succès
-      if: steps.final_check.outputs.all_passed == 'true'
-      uses: peter-evans/create-or-update-comment@v3
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          ## Rapport CI : Code propre
-          ✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné.
+        echo -e "\e[1;32m✅ Toutes les vérifications CI sont passées avec succès !\e[0m"
