@@ -135,6 +135,16 @@ jobs:
         run: |
           echo -e "\e[1;32m✅ Toutes les vérifications CI sont passées avec succès !\e[0m"
 
+      - name: Commenter le succès de l'analyse
+        if: steps.analyze.outputs.analyze_error == 'false'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## Rapport CI : Code propre
+
+            ✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné.
+
     #     - name: Exécuter les tests
     #   id: test
     #   run: |
