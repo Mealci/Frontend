@@ -121,17 +121,17 @@ jobs:
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
 
     - name: Commenter l'erreur d'analyse
-      if: steps.analyze.outputs.analyze_error == 'true'
+      if: failure() && steps.analyze.outputs.analyze_error == 'true'
       uses: peter-evans/create-or-update-comment@v3
       with:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
-          ## Rapport CI : Analyse du code
+          ## ❌ Rapport CI : Erreur d'analyse du code
           ### Analyse Flutter
           ```
           ${{ steps.analyze.outputs.flutter_analysis }}
           ```
-          ❌ Des problèmes ont été détectés lors de l'analyse.
+          Des problèmes ont été détectés lors de l'analyse. Veuillez corriger ces problèmes avant de fusionner.
 
     - name: Exécuter les tests
       id: test
