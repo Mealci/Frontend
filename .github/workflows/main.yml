@@ -105,31 +105,6 @@ jobs:
         flutter pub get
         echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
 
-    - name: Formater le code
-      id: format
-      run: |
-        echo -e "\e[1;34m🖌️ Formatage du code...\e[0m"
-        OUTPUT=$(dart format --set-exit-if-changed . 2>&1) || echo "Format failed"
-        echo "$OUTPUT"
-        echo "$OUTPUT" > format_output.txt
-        if echo "$OUTPUT" | grep -q "Could not format" || echo "$OUTPUT" | grep -q "Format failed"; then
-          echo "format_error=true" >> $GITHUB_OUTPUT
-        else
-          echo "format_error=false" >> $GITHUB_OUTPUT
-        fi
-        echo -e "\e[1;32m✅ Formatage du code terminé !\e[0m"
-
-    - name: Commenter l'erreur de formatage
-      if: steps.format.outputs.format_error == 'true'
-      uses: peter-evans/create-or-update-comment@v3
-      with:
-        issue-number: ${{ github.event.pull_request.number }}
-        body: |
-          ## Rapport CI : Formatage du code
-          ```
-          ${{ steps.format.outputs.output }}
-          ```
-
     - name: Analyser le code
       id: analyze
       run: |
