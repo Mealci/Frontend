@@ -83,95 +83,95 @@ jobs:
 
   ci-pr:
     name: Vérifications CI (Pull Request)
-if: github.event_name == 'pull_request'
-runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
 
-steps:
-  - uses: actions/checkout@v3
+    steps:
+      - uses: actions/checkout@v3
 
-  - name: Configuration de Flutter
-    uses: subosito/flutter-action@v2
-    with:
-      flutter-version: '3.24.2'
-      channel: 'stable'
-  
-  - name: Désactiver les animations CLI
-    run: flutter config --no-cli-animations
+      - name: Configuration de Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.2'
+          channel: 'stable'
+      
+      - name: Désactiver les animations CLI
+        run: flutter config --no-cli-animations
 
-  - name: Analyser le code
-    id: analyze
-    run: |
-      echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
-      if flutter analyze > flutter_analysis.txt 2>&1; then
-        echo "analyze_error=false" >> $GITHUB_OUTPUT
-        echo -e "\e[1;32m✅ Analyse du code terminée sans erreur !\e[0m"
-      else
-        echo "analyze_error=true" >> $GITHUB_OUTPUT
-        echo -e "\e[1;31m❌ Erreurs détectées lors de l'analyse du code.\e[0m"
-      fi
-      echo "flutter_analysis<<EOF" >> $GITHUB_OUTPUT
-      cat flutter_analysis.txt >> $GITHUB_OUTPUT
-      echo "EOF" >> $GITHUB_OUTPUT
+      - name: Analyser le code
+        id: analyze
+        run: |
+          echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
+          if flutter analyze > flutter_analysis.txt 2>&1; then
+            echo "analyze_error=false" >> $GITHUB_OUTPUT
+            echo -e "\e[1;32m✅ Analyse du code terminée sans erreur !\e[0m"
+          else
+            echo "analyze_error=true" >> $GITHUB_OUTPUT
+            echo -e "\e[1;31m❌ Erreurs détectées lors de l'analyse du code.\e[0m"
+          fi
+          echo "flutter_analysis<<EOF" >> $GITHUB_OUTPUT
+          cat flutter_analysis.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
-  - name: Commenter l'erreur d'analyse
-    if: steps.analyze.outputs.analyze_error == 'true'
-    uses: peter-evans/create-or-update-comment@v3
-    with:
-      issue-number: ${{ github.event.pull_request.number }}
-      body: |
-        ## ❌ Rapport CI : Erreur d'analyse du code
-        ### Analyse Flutter
-        ```
-        ${{ steps.analyze.outputs.flutter_analysis }}
-        ```
-        Des problèmes ont été détectés lors de l'analyse. Veuillez corriger ces problèmes avant de fusionner.
+      - name: Commenter l'erreur d'analyse
+        if: steps.analyze.outputs.analyze_error == 'true'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## ❌ Rapport CI : Erreur d'analyse du code
+            ### Analyse Flutter
+            ```
+            ${{ steps.analyze.outputs.flutter_analysis }}
+            ```
+            Des problèmes ont été détectés lors de l'analyse. Veuillez corriger ces problèmes avant de fusionner.
 
-  - name: Exécuter les tests
-    id: test
-    run: |
-      echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
-      if flutter test > test_output.txt 2>&1; then
-        echo "test_error=false" >> $GITHUB_OUTPUT
-      else
-        echo "test_error=true" >> $GITHUB_OUTPUT
-        echo "test_output<<EOF" >> $GITHUB_OUTPUT
-        cat test_output.txt >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
-        exit 1
-      fi
-      echo -e "\e[1;32m✅ Tests terminés !\e[0m"
+      - name: Exécuter les tests
+        id: test
+        run: |
+          echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
+          if flutter test > test_output.txt 2>&1; then
+            echo "test_error=false" >> $GITHUB_OUTPUT
+          else
+            echo "test_error=true" >> $GITHUB_OUTPUT
+            echo "test_output<<EOF" >> $GITHUB_OUTPUT
+            cat test_output.txt >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          echo -e "\e[1;32m✅ Tests terminés !\e[0m"
 
-  - name: Commenter l'erreur de test
-    if: failure() && steps.test.outputs.test_error == 'true'
-    uses: peter-evans/create-or-update-comment@v3
-    with:
-      issue-number: ${{ github.event.pull_request.number }}
-      body: |
-        ## ❌ Rapport CI : Erreur d'exécution des tests
-        ### Résultats des tests
-        ```
-        ${{ steps.test.outputs.test_output }}
-        ```
-        Des problèmes ont été détectés lors de l'exécution des tests. Veuillez corriger ces problèmes avant de fusionner.
+      - name: Commenter l'erreur de test
+        if: failure() && steps.test.outputs.test_error == 'true'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## ❌ Rapport CI : Erreur d'exécution des tests
+            ### Résultats des tests
+            ```
+            ${{ steps.test.outputs.test_output }}
+            ```
+            Des problèmes ont été détectés lors de l'exécution des tests. Veuillez corriger ces problèmes avant de fusionner.
 
-  - name: Vérifier le statut de l'analyse et des tests
-    if: steps.analyze.outputs.analyze_error == 'true' || steps.test.outputs.test_error == 'true'
-    run: exit 1
+      - name: Vérifier le statut de l'analyse et des tests
+        if: steps.analyze.outputs.analyze_error == 'true' || steps.test.outputs.test_error == 'true'
+        run: exit 1
 
-  - name: Notification de succès
-    if: steps.analyze.outputs.analyze_error == 'false' && steps.test.outputs.test_error == 'false'
-    run: |
-      echo -e "\e[1;32m✅ Toutes les vérifications CI sont passées avec succès !\e[0m"
+      - name: Notification de succès
+        if: steps.analyze.outputs.analyze_error == 'false' && steps.test.outputs.test_error == 'false'
+        run: |
+          echo -e "\e[1;32m✅ Toutes les vérifications CI sont passées avec succès !\e[0m"
 
-  - name: Commenter le succès de l'analyse et des tests
-    if: steps.analyze.outputs.analyze_error == 'false' && steps.test.outputs.test_error == 'false'
-    uses: peter-evans/create-or-update-comment@v3
-    with:
-      issue-number: ${{ github.event.pull_request.number }}
-      body: |
-        ## Rapport CI : Code propre et tests réussis
+      - name: Commenter le succès de l'analyse et des tests
+        if: steps.analyze.outputs.analyze_error == 'false' && steps.test.outputs.test_error == 'false'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ## Rapport CI : Code propre et tests réussis
 
-        ✅ Toutes les vérifications sont passées. Le code est propre et les tests sont réussis. Prêt à être fusionné.
+            ✅ Toutes les vérifications sont passées. Le code est propre et les tests sont réussis. Prêt à être fusionné.
 
     #     - name: Exécuter les tests
     #   id: test
