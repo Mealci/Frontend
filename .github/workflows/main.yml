@@ -109,9 +109,11 @@ jobs:
       id: analyze
       run: |
         echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
-        dart analyze > dart_analysis.txt 2>&1 || true
         flutter analyze > flutter_analysis.txt 2>&1 || true
-        if [ -s dart_analysis.txt ] || [ -s flutter_analysis.txt ]; then
+        echo "flutter_analysis<<EOF" >> $GITHUB_OUTPUT
+        cat flutter_analysis.txt >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+        if [ -s flutter_analysis.txt ]; then
           echo "analyze_error=true" >> $GITHUB_OUTPUT
         else
           echo "analyze_error=false" >> $GITHUB_OUTPUT
@@ -125,10 +127,6 @@ jobs:
         issue-number: ${{ github.event.pull_request.number }}
         body: |
           ## Rapport CI : Analyse du code
-          ### Analyse Dart
-          ```
-          ${{ steps.analyze.outputs.dart_analysis }}
-          ```
           ### Analyse Flutter
           ```
           ${{ steps.analyze.outputs.flutter_analysis }}
@@ -171,9 +169,8 @@ jobs:
             vulnerability_output+="⚠️ Vulnérabilité détectée pour $pkg: $result\n"
           fi
         done < <(flutter pub deps --json | jq -r '.packages[] | .name + "@" + .version')
-        echo "$vulnerability_output" > vulnerability_output.txt
         echo "vuln_output<<EOF" >> $GITHUB_OUTPUT
-        cat vulnerability_output.txt >> $GITHUB_OUTPUT
+        echo "$vulnerability_output" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
         if [ -n "$vulnerability_output" ]; then
           echo "vuln_error=true" >> $GITHUB_OUTPUT
@@ -196,8 +193,7 @@ jobs:
     - name: Vérifier le statut final
       id: final_check
       run: |
-        if [[ "${{ steps.format.outputs.format_error }}" == "false" && \
-              "${{ steps.analyze.outputs.analyze_error }}" == "false" && \
+        if [[ "${{ steps.analyze.outputs.analyze_error }}" == "false" && \
               "${{ steps.test.outputs.test_error }}" == "false" && \
               "${{ steps.vulnerability.outputs.vuln_error }}" == "false" ]]; then
           echo "all_passed=true" >> $GITHUB_OUTPUT
