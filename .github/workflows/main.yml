@@ -129,17 +129,25 @@ jobs:
       - name: Exécuter les tests
         id: test
         run: |
-          echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
-          if flutter test > test_output.txt 2>&1; then
-            echo "test_error=false" >> $GITHUB_OUTPUT
+          echo -e "\e[1;34m🧪 Vérification des tests...\e[0m"
+          if [ -d "test" ] && [ "$(find test -name '*_test.dart' | wc -l)" -gt 0 ]; then
+            echo -e "Exécution des tests..."
+            if flutter test > test_output.txt 2>&1; then
+              echo "test_error=false" >> $GITHUB_OUTPUT
+              echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
+            else
+              echo "test_error=true" >> $GITHUB_OUTPUT
+              echo "test_output<<EOF" >> $GITHUB_OUTPUT
+              cat test_output.txt >> $GITHUB_OUTPUT
+              echo "EOF" >> $GITHUB_OUTPUT
+              echo -e "\e[1;31m❌ Erreurs détectées lors de l'exécution des tests.\e[0m"
+              exit 1
+            fi
           else
-            echo "test_error=true" >> $GITHUB_OUTPUT
-            echo "test_output<<EOF" >> $GITHUB_OUTPUT
-            cat test_output.txt >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-            exit 1
+            echo "test_error=false" >> $GITHUB_OUTPUT
+            echo -e "\e[1;33m⚠️ Aucun fichier de test trouvé. Les tests sont ignorés.\e[0m"
           fi
-          echo -e "\e[1;32m✅ Tests terminés !\e[0m"
+
 
       - name: Commenter l'erreur de test
         if: failure() && steps.test.outputs.test_error == 'true'
