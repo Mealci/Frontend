@@ -11,14 +11,15 @@ permissions:
   pull-requests: write
 
 jobs:
-  setup:
-    uses: ./.github/workflows/flutter-setup.yml
-
   analyze:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.2'
+          channel: 'stable'
+      - run: flutter pub get
       - name: Analyze code
         run: |
           flutter analyze > analysis.txt
@@ -28,7 +29,7 @@ jobs:
           grep -q "No issues found!" analysis.txt && echo "ANALYSIS_ERROR=false" >> $GITHUB_ENV || echo "ANALYSIS_ERROR=true" >> $GITHUB_ENV
 
       - name: Comment analysis errors
-        if: env.ANALYSIS_ERROR == 'true'
+        if: env.ANALYSIS_ERROR == 'true' && github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -39,10 +40,14 @@ jobs:
             ```
 
   test:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.2'
+          channel: 'stable'
+      - run: flutter pub get
       - name: Run tests
         run: |
           if [ -d "test" ] && [ "$(find test -name '*_test.dart' | wc -l)" -gt 0 ]; then
@@ -53,7 +58,7 @@ jobs:
           fi
 
       - name: Comment test errors
-        if: env.TEST_ERROR == 'true'
+        if: env.TEST_ERROR == 'true' && github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -62,10 +67,14 @@ jobs:
             Tests failed. Please fix before merging.
 
   vulnerability:
-    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.2'
+          channel: 'stable'
+      - run: flutter pub get
       - name: Check vulnerabilities
         run: |
           vuln_output=""
@@ -85,7 +94,7 @@ jobs:
           fi
 
       - name: Comment vulnerabilities
-        if: env.VULN_ERROR == 'true'
+        if: env.VULN_ERROR == 'true' && github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -98,7 +107,7 @@ jobs:
   success:
     needs: [analyze, test, vulnerability]
     runs-on: ubuntu-latest
-    if: success()
+    if: success() && github.event_name == 'pull_request'
     steps:
       - name: Comment success
         uses: peter-evans/create-or-update-comment@v3
