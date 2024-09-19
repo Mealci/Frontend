@@ -100,6 +100,7 @@ jobs:
 
       - name: Analyser le code
         id: analyze
+        continue-on-error: true
         run: |
           echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
           flutter analyze > flutter_analysis.txt 2>&1
@@ -116,7 +117,7 @@ jobs:
           fi
 
       - name: Commenter l'erreur d'analyse
-        if: failure() && steps.analyze.outputs.analyze_error == 'true'
+        if: steps.analyze.outputs.analyze_error == 'true'
         uses: peter-evans/create-or-update-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -128,8 +129,12 @@ jobs:
             ```
             Des problèmes ont été détectés lors de l'analyse. Veuillez corriger ces problèmes avant de fusionner.
 
+      - name: Vérifier le statut de l'analyse
+        if: steps.analyze.outputs.analyze_error == 'true'
+        run: exit 1
+
       - name: Notification de succès
-        if: success()
+        if: steps.analyze.outputs.analyze_error != 'true'
         run: |
           echo -e "\e[1;32m✅ Toutes les vérifications CI sont passées avec succès !\e[0m"
 
