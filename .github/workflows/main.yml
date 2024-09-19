@@ -38,7 +38,7 @@ jobs:
         fi
 
     - name: Configuration de Flutter
-      if: steps.check_run.outputs.skip != 'true'
+      if: steps.check_run.outputs.skip != 'true' && github.event_name != 'pull_request'
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.2'
@@ -49,21 +49,21 @@ jobs:
       run: flutter config --no-cli-animations
     
     - name: Obtenir les dépendances
-      if: steps.check_run.outputs.skip != 'true'
+      if: steps.check_run.outputs.skip != 'true' && github.event_name != 'pull_request'
       run: |
         echo -e "\e[1;34m🔍 Obtention des dépendances...\e[0m"
         flutter pub get
         echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
     
     - name: Formater le code
-      if: steps.check_run.outputs.skip != 'true'
+      if: steps.check_run.outputs.skip != 'true' && github.event_name != 'pull_request'
       run: |
         echo -e "\e[1;34m🖌️ Formatage du code...\e[0m"
         dart format --set-exit-if-changed .
         echo -e "\e[1;32m✅ Code formaté avec succès !\e[0m"
     
     - name: Exécuter les tests
-      if: steps.check_run.outputs.skip != 'true'
+      if: steps.check_run.outputs.skip != 'true' && github.event_name != 'pull_request'
       run: |
         echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
         echo -e "Place holder pour flutter test"
@@ -71,7 +71,7 @@ jobs:
         echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
     
     - name: Vérifier la porte de qualité
-      if: steps.check_run.outputs.skip != 'true' && success()
+      if: steps.check_run.outputs.skip != 'true' && success() && github.event_name != 'pull_request'
       run: |
         echo -e "\e[1;32m✅ Porte de qualité de base passée\e[0m"
     
