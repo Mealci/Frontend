@@ -152,11 +152,11 @@ jobs:
           ## Rapport CI : Analyse du code
           ### Analyse Dart
           ```
-          ${{ cat dart_analysis.txt }}
+          ${{ github.workspace }}/dart_analysis.txt
           ```
           ### Analyse Flutter
           ```
-          ${{ cat flutter_analysis.txt }}
+          ${{ github.workspace }}/flutter_analysis.txt
           ```
 
     - name: Exécuter les tests
@@ -179,7 +179,7 @@ jobs:
         body: |
           ## Rapport CI : Tests
           ```
-          ${{ cat test_output.txt }}
+          ${{ github.workspace }}/test_output.txt
           ```
 
     - name: Vérification des vulnérabilités
@@ -209,7 +209,7 @@ jobs:
         body: |
           ## Rapport CI : Vulnérabilités
           ```
-          ${{ cat vulnerability_output.txt }}
+          ${{ github.workspace }}/vulnerability_output.txt
           ```
 
     - name: Vérifier le statut final
@@ -233,3 +233,4 @@ jobs:
         body: |
           ## Rapport CI : Code propre
           ✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné.
+          
