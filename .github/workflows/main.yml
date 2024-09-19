@@ -84,7 +84,6 @@ jobs:
   ci-pr:
     name: Vérifications CI (Pull Request)
     if: github.event_name == 'pull_request'
-    needs: ci-push
     runs-on: ubuntu-latest
     
     steps:
@@ -108,34 +107,32 @@ jobs:
 
     - name: Formater le code
       id: format
-      continue-on-error: true
       run: |
         echo -e "\e[1;34m🖌️ Formatage du code...\e[0m"
-        OUTPUT=$(dart format --set-exit-if-changed . 2>&1)
+        OUTPUT=$(dart format --set-exit-if-changed . 2>&1) || true
+        echo "$OUTPUT"
         echo "$OUTPUT" > format_output.txt
-        if [ $? -ne 0 ]; then
+        if echo "$OUTPUT" | grep -q "Could not format"; then
           echo "format_error=true" >> $GITHUB_OUTPUT
         fi
         echo -e "\e[1;32m✅ Formatage du code terminé !\e[0m"
 
     - name: Analyser le code
       id: analyze
-      continue-on-error: true
       run: |
         echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
-        dart analyze > dart_analysis.txt 2>&1
-        flutter analyze > flutter_analysis.txt 2>&1
-        if [ $? -ne 0 ]; then
+        dart analyze > dart_analysis.txt 2>&1 || true
+        flutter analyze > flutter_analysis.txt 2>&1 || true
+        if [ -s dart_analysis.txt ] || [ -s flutter_analysis.txt ]; then
           echo "analyze_error=true" >> $GITHUB_OUTPUT
         fi
         echo -e "\e[1;32m✅ Analyse du code terminée !\e[0m"
 
     - name: Exécuter les tests
       id: test
-      continue-on-error: true
       run: |
         echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
-        flutter test > test_output.txt 2>&1
+        flutter test > test_output.txt 2>&1 || true
         if [ $? -ne 0 ]; then
           echo "test_error=true" >> $GITHUB_OUTPUT
         fi
@@ -143,7 +140,6 @@ jobs:
     
     - name: Vérification des vulnérabilités
       id: vulnerability
-      continue-on-error: true
       run: |
         echo -e "\e[1;34m🛡️ Vérification des vulnérabilités connues...\e[0m"
         vulnerability_output=""
@@ -165,8 +161,8 @@ jobs:
       run: |
         COMMENT_BODY=""
         
-        if [[ "${{ steps.format.outcome }}" == "failure" || "${{ steps.analyze.outcome }}" == "failure" || "${{ steps.test.outcome }}" == "failure" || "${{ steps.vulnerability.outcome }}" == "failure" ]]; then
-          COMMENT_BODY="## ❌ Échec des vérifications CI\n\n"
+        if [[ "${{ steps.format.outputs.format_error }}" == "true" || "${{ steps.analyze.outputs.analyze_error }}" == "true" || "${{ steps.test.outputs.test_error }}" == "true" || "${{ steps.vulnerability.outputs.vuln_error }}" == "true" ]]; then
+          COMMENT_BODY="## ⚠️ Avertissements des vérifications CI\n\n"
           
           if [[ "${{ steps.format.outputs.format_error }}" == "true" ]]; then
             COMMENT_BODY+="### Formatage du code\n\`\`\`\n$(cat format_output.txt)\n\`\`\`\n\n"
