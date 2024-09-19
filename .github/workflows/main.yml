@@ -208,7 +208,7 @@ jobs:
       - name: Déterminer le statut des tests
         id: test_status
         run: |
-          if [ "${{ steps.test.outputs.test_error }}" == "false" ] && ! echo "${{ steps.test.outputs.stdout }}" | grep -q "Aucun fichier de test trouvé"; then
+          if [ "${{ steps.test.outputs.test_error }}" == "false" ] && ! echo "${{ steps.test.outputs.stdout }}" | grep -q "any test files"; then
             echo "message=✅ Les tests sont passés avec succès." >> $GITHUB_OUTPUT
           else
             echo "message=⚠️ Aucun test n'a été exécuté." >> $GITHUB_OUTPUT
@@ -220,7 +220,7 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ## Rapport CI : Code propre et sécurisé
+            ## ✅ Rapport CI : Code propre et sécurisé
             
             ✅ Toutes les vérifications sont passées. Le code est propre et prêt à être fusionné.
             ${{ steps.test_status.outputs.message }}
