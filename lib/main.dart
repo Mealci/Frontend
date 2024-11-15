@@ -1,6 +1,6 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import './pages/register_page.dart';
+import 'pages/registerpage.dart';
 import 'dart:io';
 
 void main() {

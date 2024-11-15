@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/utils/I18N/I18N.dart';
-import 'package:mealci/utils/I18N/RegisterI18nTranslation.dart';
+import 'package:mealci/utils/I18N/registeri18ntranslation.dart';
 
 class InputField extends StatelessWidget {
   const InputField({super.key, required this.label});
