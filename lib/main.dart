@@ -1,20 +1,26 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
+import './pages/register_page.dart';
+import 'dart:io';
 
 void main() {
-  runApp(const MainApp());
+  runApp(const MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  
+  // Get the default locale
+  String get defaultLocale => Platform.localeName;
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: const RegisterPage(),
     );
   }
 }
