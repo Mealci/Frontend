@@ -1,11 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:mealci/utils/I18N/I18n.dart';
 import '../utils/style.dart';
-import '../utils/I18N/RegisterI18nTranslation.dart';
-import '../components/InputFieldLoginRegister.dart';
-import '../components/ButtonLoginRegister.dart';
+import '../utils/I18N/registeri18ntranslation.dart';
+import '../components/inputfieldloginregister.dart';
+import '../components/buttonloginregister.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
