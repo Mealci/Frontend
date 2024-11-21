@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/utils/I18N/I18N.dart';
-import 'package:mealci/utils/I18N/registeri18ntranslation.dart';
 
 class InputField extends StatelessWidget {
-  const InputField({super.key, required this.label});
 
   final dynamic label;
+  final Map<dynamic, String> map;
+
+  const InputField({
+    required this.label,
+    required this.map,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +26,7 @@ class InputField extends StatelessWidget {
         textAlign: TextAlign.center, // Centrer le texte saisi
         decoration: InputDecoration(
           border: InputBorder.none,
-          hintText: I18n.getTranslation(RegisterPageI18n.registerPageTranslations, label) ?? '',
+          hintText: I18n.getTranslation(map, label) ?? '',
           hintStyle: const TextStyle(
             color: Color(0xFF000000), // Couleur du texte (noir)
           ),

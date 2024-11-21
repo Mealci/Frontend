@@ -48,13 +48,13 @@ class RegisterPage extends StatelessWidget {
                   const SizedBox(height: 62), // Espacement entre le logo et les champs de texte
 
                   // Champs de saisie
-                  const InputField(label: RegisterPageTranslation.email),
+                  const InputField(label: RegisterPageTranslation.email, map: RegisterPageI18n.registerPageTranslations),
                   const SizedBox(height: 20),
-                  const InputField(label: RegisterPageTranslation.password),
+                  const InputField(label: RegisterPageTranslation.password, map: RegisterPageI18n.registerPageTranslations),
                   const SizedBox(height: 20),
-                  const InputField(label: RegisterPageTranslation.confirmPassword),
+                  const InputField(label: RegisterPageTranslation.confirmPassword, map: RegisterPageI18n.registerPageTranslations),
                   const SizedBox(height: 20),
-                  const InputField(label: RegisterPageTranslation.screenName),
+                  const InputField(label: RegisterPageTranslation.screenName, map: RegisterPageI18n.registerPageTranslations),
                   const SizedBox(height: 20),
 
                   const Buttonloginregister(label: RegisterPageTranslation.register, map: RegisterPageI18n.registerPageTranslations),
