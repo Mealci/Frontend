@@ -117,8 +117,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       final Map<String, String> userData = {
                         'email': _emailController.text,
                         'password': _passwordController.text,
-                        'first_name': _firstNameController.text,
-                        'last_name': _lastNameController.text,
+                        'firstName': _firstNameController.text,
+                        'lastName': _lastNameController.text,
                         'age': _ageController.text,
                       };
 
