@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/utils/I18N/i18n.dart';
-import 'package:mealci/utils/style.dart';
+import 'package:mealci/utils/styles/style.dart';
 
 class Buttonloginregister extends StatelessWidget {
   
   final dynamic label;
   final Map<dynamic, String> map;
+  final VoidCallback? onPressed;
 
   const Buttonloginregister({
     required this.label,
     required this.map,
+    this.onPressed,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-            onPressed: () {
-              
-            },
+            onPressed: onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: Style.styles[AppStyle.buttonColor],
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),

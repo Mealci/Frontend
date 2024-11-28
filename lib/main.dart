@@ -1,33 +1,45 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:mealci/utils/env/environnementvariable.dart';
 import 'pages/registerpage.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:logging/logging.dart';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
+import 'package:mealci/utils/logger/logger.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   
-  // Get the default locale
-  String get defaultLocale => Platform.localeName;
+  bool get isDarkMode {
+    var brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    return brightness == Brightness.dark;
+  }
+
+  String get locale {
+    return Platform.localeName;
+  }
+
+  void checkAppMode() {
+    if (kDebugMode) {
+      EnvironnementVariable.apiUrl = EnvironnementVariable.apiUrlDev;
+    } else {
+      EnvironnementVariable.apiUrl = EnvironnementVariable.apiUrlProd;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    var brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    bool isDarkMode = brightness == Brightness.dark;
 
-    Logger.root.level = Level.ALL;
-    Logger.root.onRecord.listen((record) {
-      print('${record.level.name}: ${record.time}: ${record.message}');
-    });
+    // Check app mode
+    checkAppMode();
 
-    Logger logger = Logger('main');
-    logger.info('Default locale: $defaultLocale');
-    logger.info('Dark mode: $isDarkMode');
+    //init logger
+    MealciLogger.initialize();
   
     return MaterialApp(
       title: 'Flutter Demo',

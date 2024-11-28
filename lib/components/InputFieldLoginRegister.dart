@@ -5,10 +5,12 @@ class InputField extends StatelessWidget {
 
   final dynamic label;
   final Map<dynamic, String> map;
+  final TextEditingController controller;
 
   const InputField({
     required this.label,
     required this.map,
+    required this.controller,
     super.key,
   });
 
@@ -23,6 +25,7 @@ class InputField extends StatelessWidget {
         borderRadius: BorderRadius.circular(40), // Coins arrondis
       ),
       child: TextField(
+        controller: controller,
         textAlign: TextAlign.center, // Centrer le texte saisi
         decoration: InputDecoration(
           border: InputBorder.none,
