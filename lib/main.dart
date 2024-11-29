@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       initialRoute: Routes.loginthirdpage,
       routes: {
-        Routes.home: (context) => HomePage(),
+        Routes.home: (context) => const HomePage(),
         Routes.loginPage: (context) => const LoginPage(),
         Routes.loginthirdpage: (context) => const LoginThirdPage(),
         Routes.registerpage: (context) => const RegisterPage(),

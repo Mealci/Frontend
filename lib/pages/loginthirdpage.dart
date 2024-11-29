@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mealci/utils/I18N/LoginI18nTranslation.dart';
+import 'package:mealci/utils/I18N/login_i18n_translation.dart';
 import '../utils/styles/style.dart';
-import '../components/ButtonPadding.dart';
+import '../components/button_padding.dart';
 
 class LoginThirdPage extends StatelessWidget {
   const LoginThirdPage({super.key});

@@ -12,8 +12,8 @@ import '../utils/logger/logger.dart';
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
-    @override
-  _RegisterPageState createState() => _RegisterPageState();
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
