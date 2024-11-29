@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:mealci/utils/I18N/I18n.dart';
 import 'package:mealci/utils/styles/style.dart';
@@ -5,46 +7,50 @@ import 'package:mealci/utils/styles/style.dart';
 class ButtonPadding extends StatelessWidget {
   final dynamic label;
   final Map<dynamic, String> map;
-  final EdgeInsets padding;
-  final int icon;
+  final IconData icon;
+  final VoidCallback? onPressed;  // Notez que `VoidCallback` est maintenant nullable
 
   const ButtonPadding({
     required this.label,
     required this.map,
-    required this.padding,
-    this.icon = 0x0,
+    this.icon = Icons.abc_rounded,
+    this.onPressed,  // Il n'est plus nécessaire de donner une valeur par défaut ici
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding,
       width: double.infinity,
+      height: 60,
+      decoration: BoxDecoration(
+        color: const Color(0xFFC1A4F7), // Couleur du champ de texte (violet clair)
+        borderRadius: BorderRadius.circular(40), // Coins arrondis
+      ),
       child: ElevatedButton(
-        onPressed: () {},
         style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFFC1A4F7),
-          padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30.0),
-          ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        onPressed: onPressed ?? () {},  // Si `onPressed` est nul, une fonction vide est utilisée
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            Icon(
-              IconData(icon, fontFamily: 'MaterialIcons'),
-              color: Style.styles[AppStyle.textColor],
+            // Icône alignée à gauche
+            Positioned(
+              left: 15,
+              child: Icon(
+                icon,
+                color: Colors.white,
+                size: 30,
+              ),
             ),
-            SizedBox(width: icon == 0x0 ? 0 : 32),
-            Text(
-              I18n.getTranslation(map, label) ?? '',
-              style: TextStyle(
-                color: Style.styles[AppStyle.textColor],
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
+
+            // Texte centré
+            Center(
+              child: Text(
+                I18n.getTranslation(map, label) ?? '',
+                style: Style.styles[AppStyle.buttonTextStyle],
+                textAlign: TextAlign.center,
               ),
             ),
           ],
