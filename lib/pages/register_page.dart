@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../utils/styles/style.dart';
-import '../utils/I18N/registeri18ntranslation.dart';
-import '../components/inputfieldloginregister.dart';
-import '../components/buttonloginregister.dart';
+import '../utils/I18N/register_i18n_translation.dart';
+import '../components/input_field_login_register.dart';
+import '../components/button_login_register.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../utils/env/environnementvariable.dart';
@@ -12,8 +12,8 @@ import '../utils/logger/logger.dart';
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
 
-    @override
-  _RegisterPageState createState() => _RegisterPageState();
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
