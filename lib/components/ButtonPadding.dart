@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/utils/I18N/I18n.dart';
-import 'package:mealci/utils/style.dart';
+import 'package:mealci/utils/styles/style.dart';
 
 class ButtonPadding extends StatelessWidget {
   final dynamic label;

@@ -1,11 +1,12 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
-import 'pages/registerpage.dart';
 import 'package:flutter/scheduler.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:mealci/utils/logger/logger.dart';
+import 'package:mealci/pages/loginthirdpage.dart';
+import 'package:mealci/pages/loginpage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,7 +47,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginThirdPage(),
+      home: const LoginPage()
     );
   }
 }

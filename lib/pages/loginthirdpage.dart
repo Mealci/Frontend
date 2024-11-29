@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/components/ButtonPadding.dart';
-import '../utils/style.dart';
+import '../utils/styles/style.dart';
 import '../utils/I18N/logini18ntranslation.dart';
 
 class LoginThirdPage extends StatelessWidget {
