@@ -8,9 +8,9 @@ import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/routes/routes.dart';
 
 // pages
-import 'package:mealci/pages/registerpage.dart';
-import 'package:mealci/pages/loginthirdpage.dart';
-import 'package:mealci/pages/loginpage.dart';
+import 'package:mealci/pages/register_page.dart';
+import 'package:mealci/pages/loginthird_page.dart';
+import 'package:mealci/pages/login_page.dart';
 import 'package:mealci/pages/home.dart';
 
 void main() {
