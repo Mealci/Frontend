@@ -19,9 +19,10 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-  
+
   bool get isDarkMode {
-    var brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+    var brightness =
+        SchedulerBinding.instance.platformDispatcher.platformBrightness;
     return brightness == Brightness.dark;
   }
 
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
 
     // Init logger
     MealciLogger.initialize();
-  
+
     return MaterialApp(
       title: 'Flutter Demo',
       initialRoute: Routes.loginthirdpage,

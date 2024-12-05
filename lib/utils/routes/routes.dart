@@ -1,5 +1,4 @@
 class Routes {
-
   // make routes constants
   static const String home = '/';
   static const String loginthirdpage = '/loginThirdPage';
