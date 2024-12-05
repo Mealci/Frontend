@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/routes/routes.dart';
+import 'package:mealci/utils/ocr/ocr.dart';
 
 // pages
 import 'package:mealci/pages/register_page.dart';
