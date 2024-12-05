@@ -12,7 +12,6 @@ import 'package:mealci/pages/register_page.dart';
 import 'package:mealci/pages/loginthird_page.dart';
 import 'package:mealci/pages/login_page.dart';
 import 'package:mealci/pages/home.dart';
-import 'package:mealci/pages/genericlayout_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,7 +54,6 @@ class MyApp extends StatelessWidget {
         Routes.loginPage: (context) => const LoginPage(),
         Routes.loginthirdpage: (context) => const LoginThirdPage(),
         Routes.registerpage: (context) => const RegisterPage(),
-        Routes.genericlayout: (context) => const GenericLayout(title: 'Mealci'),
       },
     );
   }

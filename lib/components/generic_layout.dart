@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
-import '../components/navbar.dart';
+import 'navbar.dart';
 
 class GenericLayout extends StatefulWidget {
   const GenericLayout({super.key, this.title});
