@@ -7,8 +7,10 @@ environment:
   sdk: ^3.5.1
 
 dependencies:
+  circle_nav_bar: ^2.1.1
   flutter:
     sdk: flutter
+  motion_tab_bar: ^2.0.4
 
 dev_dependencies:
   flutter_test:
