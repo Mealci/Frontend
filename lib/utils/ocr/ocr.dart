@@ -43,13 +43,9 @@ class _TextRecognitionScreenState extends State<TextRecognitionScreen> {
     super.dispose();
   }
 
-List<List<String>> _splitText(String text) {
+List<List<String>> _splitTextAndFilter(String text) {
   // Split the input string by newlines
   List<String> elements = text.split('\n');
-
-  // Filter out empty strings and only keep elements containing numbers with valid units
-  elements = elements.where((element) => element.isNotEmpty && 
-    element.contains(RegExp(r'\d+(?:G|KG|x|\s?pièces?)'))).toList();
 
   // List to store the final result
   List<List<String>> result = [];
@@ -57,19 +53,27 @@ List<List<String>> _splitText(String text) {
   // Process each element and break it into separate components
   for (int i = 0; i < elements.length; i++) {
     // Split the element by spaces
-    List<String> components = elements[i].split(' ');
+    List<String> components = elements[i].split(RegExp(r'\d+(?:G|KG|XMG|X|CL|x|\s?pièces?)'));
 
-    // List to store the final components
-    List<String> finalComponents = [];
+    // Filter out empty strings
+    components = components.where((component) => component != ' ').toList();
+    components = components.where((component) => !RegExp(r'^\d+([.,]\d*)?$').hasMatch(component)).toList();
+    components = components.where((component) => component.length > 3).toList();
+    components = components.where((component) => component.isNotEmpty).toList();
+    components = components.map((component) => component.trim()).toList();
 
-    // Process each component
-    for (int j = 0; j < components.length; j++) {
-      components[j] = components[j].contains(
-    }
+    // Add the components to the result list
+    result.add(components);
 
-    // Add the final components list to the result list
-    result.add(finalComponents);
   }
+  // Remove empty lists
+  result = result.where((element) => element.isNotEmpty).toList();
+
+  // Remove elements like "Total 11 articles"
+  result = result.where((element) => !element.any(
+      (component) => RegExp(r'\btotal\b', caseSensitive: false).hasMatch(component) ||
+                     RegExp(r'\d+.*articles', caseSensitive: false).hasMatch(component)
+  )).toList();
 
   return result;
 }
@@ -88,7 +92,7 @@ List<List<String>> _splitText(String text) {
           ),
           const SizedBox(height: 16),
           Text(
-            _recognizedText.isNotEmpty ? _splitText(_recognizedText).toString() : 'No text recognized.',
+            _recognizedText.isNotEmpty ? _splitTextAndFilter(_recognizedText).toString() : 'No text recognized.',
             textAlign: TextAlign.center,
           ),
         ],

@@ -53,8 +53,9 @@ class MyApp extends StatelessWidget {
       routes: {
         Routes.home: (context) => const HomePage(),
         Routes.loginPage: (context) => const LoginPage(),
-        Routes.loginthirdpage: (context) => TextRecognitionScreen(),
+        Routes.loginthirdpage: (context) => const LoginThirdPage(),
         Routes.registerpage: (context) => const RegisterPage(),
+        Routes.textRecognitionScreen: (context) => const TextRecognitionScreen(),
       },
     );
   }
