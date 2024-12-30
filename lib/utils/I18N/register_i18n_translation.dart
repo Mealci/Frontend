@@ -16,18 +16,19 @@ enum RegisterPageTranslation {
 
 class RegisterPageI18n {
   static const Map<RegisterPageTranslation, String> registerPageTranslations = {
-      RegisterPageTranslation.title: 'Register',
-      RegisterPageTranslation.email: 'Email',
-      RegisterPageTranslation.password: 'Password',
-      RegisterPageTranslation.firstName: 'First name',
-      RegisterPageTranslation.lastName: 'Last name',
-      RegisterPageTranslation.age: 'Age',
-      RegisterPageTranslation.register: 'Register',
-      RegisterPageTranslation.emailEmpty: 'Email cannot be empty',
-      RegisterPageTranslation.passwordEmpty: 'Password cannot be empty',
-      RegisterPageTranslation.emailInvalid: 'Email is invalid',
-      RegisterPageTranslation.registerSuccess: 'Register success',
-      RegisterPageTranslation.registerFailed: 'Register failed',
+    RegisterPageTranslation.title: 'Veuillez vous inscrire 🌹',
+    RegisterPageTranslation.email: 'E-mail',
+    RegisterPageTranslation.password: 'Mot de passe',
+    RegisterPageTranslation.firstName: 'Prénom',
+    RegisterPageTranslation.lastName: 'Nom de famille',
+    RegisterPageTranslation.age: 'Âge',
+    RegisterPageTranslation.register: 'S\'inscrire',
+    RegisterPageTranslation.emailEmpty: 'L\'e-mail ne peut pas être vide',
+    RegisterPageTranslation.passwordEmpty:
+        'Le mot de passe ne peut pas être vide',
+    RegisterPageTranslation.emailInvalid: 'L\'e-mail est invalide',
+    RegisterPageTranslation.registerSuccess: 'Inscription réussie',
+    RegisterPageTranslation.registerFailed: 'Inscription échouée',
   };
 
   static String? getTranslation(RegisterPageTranslation key) {

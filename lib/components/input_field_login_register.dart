@@ -1,18 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:mealci/utils/I18N/I18N.dart';
+import 'package:mealci/utils/I18N/i18n.dart';
+import 'package:mealci/utils/styles/style.dart';
 
-class InputField extends StatelessWidget {
-
-  final dynamic label;
-  final Map<dynamic, String> map;
+class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
+  final Map<dynamic, String> map;
+  final dynamic label;
 
-  const InputField({
-    required this.label,
-    required this.map,
+  const CustomTextField({
+    Key? key,
     required this.controller,
-    super.key,
-  });
+    required this.map,
+    required this.label,
+  }) : super(key: key);
+
+  @override
+  _CustomTextFieldState createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  late FocusNode focusNode;
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode = FocusNode();
+
+    // Écoute les changements de focus et met à jour l'état
+    focusNode.addListener(() {
+      setState(() {}); // Met à jour l'interface chaque fois que le focus change
+    });
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,19 +45,51 @@ class InputField extends StatelessWidget {
       width: double.infinity, // Prend toute la largeur disponible
       height: 60,
       decoration: BoxDecoration(
-        color: const Color(0xFFC1A4F7), // Couleur du champ de texte (violet clair)
+        color: focusNode.hasFocus
+            ? Colors.white // Couleur de fond au focus
+            : Color(Style.styles[AppStyle.buttonColor].value ??
+                Colors.white), // Couleur de fond standard
         borderRadius: BorderRadius.circular(40), // Coins arrondis
+        boxShadow: focusNode.hasFocus
+            ? [
+                BoxShadow(color: Colors.green.withOpacity(0.3), blurRadius: 10)
+              ] // Ombre visible au focus
+            : [],
+        border: Border.all(
+          color: focusNode.hasFocus
+              ? Color(
+                  Style.styles[AppStyle.secondaryColor].value ?? Colors.green)
+              : Color(Style.styles[AppStyle.buttonColor].value ?? Colors.black)
+                  .withOpacity(0.3),
+          width: 2.5, // Bordure plus épaisse au focus
+        ),
       ),
       child: TextField(
-        controller: controller,
+        controller: widget.controller,
         textAlign: TextAlign.center, // Centrer le texte saisi
+        style: TextStyle(
+          color: focusNode.hasFocus
+              ? Colors.black
+              : Colors.white, // Couleur du texte
+        ),
         decoration: InputDecoration(
-          border: InputBorder.none,
-          hintText: I18n.getTranslation(map, label) ?? '',
-          hintStyle: const TextStyle(
-            color: Color(0xFF000000), // Couleur du texte (noir)
+          border: InputBorder.none, // Pas de bordure interne
+          hintText: I18n.getTranslation(widget.map, widget.label) ??
+              '', // Texte d'indication
+          hintStyle: TextStyle(
+            color: Color(Style.styles[AppStyle.textColor].value ??
+                Colors.grey), // Couleur du texte d'indication
+          ),
+          prefixIcon: Icon(
+            Icons.edit, // Icône représentant un champ de texte
+            color: focusNode.hasFocus
+                ? Color(
+                    Style.styles[AppStyle.secondaryColor].value ?? Colors.green)
+                : Color(Style.styles[AppStyle.textColor].value ?? Colors.grey),
+            size: 24, // Taille de l'icône
           ),
         ),
+        focusNode: focusNode, // Ajout du focusNode pour le focus visuel
       ),
     );
   }

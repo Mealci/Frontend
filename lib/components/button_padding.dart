@@ -6,13 +6,14 @@ class ButtonPadding extends StatelessWidget {
   final dynamic label;
   final Map<dynamic, String> map;
   final IconData icon;
-  final VoidCallback? onPressed;  // Notez que `VoidCallback` est maintenant nullable
+  final VoidCallback?
+      onPressed; // Notez que `VoidCallback` est maintenant nullable
 
   const ButtonPadding({
     required this.label,
     required this.map,
     this.icon = Icons.abc_rounded,
-    this.onPressed,  // Il n'est plus nécessaire de donner une valeur par défaut ici
+    this.onPressed, // Il n'est plus nécessaire de donner une valeur par défaut ici
     super.key,
   });
 
@@ -22,14 +23,16 @@ class ButtonPadding extends StatelessWidget {
       width: double.infinity,
       height: 60,
       decoration: BoxDecoration(
-        color: const Color(0xFFC1A4F7), // Couleur du champ de texte (violet clair)
+        color: Color(Style.styles[AppStyle.buttonColor].value ?? Colors.black),
         borderRadius: BorderRadius.circular(40), // Coins arrondis
       ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFC1A4F7),
+          backgroundColor:
+              Color(Style.styles[AppStyle.buttonColor].value ?? Colors.black),
         ),
-        onPressed: onPressed ?? () {},  // Si `onPressed` est nul, une fonction vide est utilisée
+        onPressed: onPressed ??
+            () {}, // Si `onPressed` est nul, une fonction vide est utilisée
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -38,7 +41,8 @@ class ButtonPadding extends StatelessWidget {
               left: 15,
               child: Icon(
                 icon,
-                color: Colors.white,
+                color: Color(
+                    Style.styles[AppStyle.textColor].value ?? Colors.black),
                 size: 30,
               ),
             ),
