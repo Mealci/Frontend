@@ -12,11 +12,13 @@ class LoginThirdPage extends StatelessWidget {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.bottomCenter,  // Début du gradient en bas
-            end: Alignment.topCenter,      // Fin du gradient en haut
+            begin: Alignment.bottomCenter, // Début du gradient en bas
+            end: Alignment.topCenter, // Fin du gradient en haut
             colors: [
-              Style.styles[AppStyle.backgroundColorGL], // Couleur foncée en haut (violet)
-              Style.styles[AppStyle.backgroundColor],  // Couleur claire en bas (violet)
+              Style.styles[AppStyle
+                  .backgroundColorGL], // Couleur foncée en haut (violet)
+              Style.styles[
+                  AppStyle.backgroundColor], // Couleur claire en bas (violet)
             ],
           ),
         ),
@@ -45,7 +47,9 @@ class LoginThirdPage extends StatelessWidget {
                     backgroundImage: AssetImage(CustomMealciAsset.logo),
                   ),
                 ),
-                const SizedBox(height: 62), // Espacement entre le logo et les champs de texte
+                const SizedBox(
+                    height:
+                        62), // Espacement entre le logo et les champs de texte
 
                 // Bouton Login
                 ButtonPadding(
@@ -68,25 +72,26 @@ class LoginThirdPage extends StatelessWidget {
 
                 // Bouton Apple
                 const ButtonPadding(
-                  icon: Icons.apple,
-                  label: LoginThirdPageTranslation.apple,
-                  map: LoginThirdPageI18n.loginThirdPageTranslation
-                  ),
+                    icon: Icons.apple,
+                    label: LoginThirdPageTranslation.apple,
+                    map: LoginThirdPageI18n.loginThirdPageTranslation),
                 const SizedBox(height: 20),
 
                 // Bouton Google
                 const ButtonPadding(
-                  icon: Icons.g_mobiledata, 
+                  icon: Icons.g_mobiledata,
                   label: LoginThirdPageTranslation.google,
                   map: LoginThirdPageI18n.loginThirdPageTranslation,
                 ),
                 const SizedBox(height: 20),
 
                 // Bouton Facebook
-                const ButtonPadding(
+                ButtonPadding(
                   icon: Icons.facebook,
                   label: LoginThirdPageTranslation.facebook,
                   map: LoginThirdPageI18n.loginThirdPageTranslation,
+                  onPressed: () =>
+                      Navigator.pushNamed(context, '/textRecognitionScreen'),
                 ),
               ],
             ),

@@ -4,4 +4,5 @@ class Routes {
   static const String loginthirdpage = '/loginThirdPage';
   static const String loginPage = '/login';
   static const String registerpage = '/register';
+  static const String textRecognitionScreen = '/textRecognitionScreen';
 }
