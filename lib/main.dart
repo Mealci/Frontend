@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
         Routes.loginPage: (context) => const LoginPage(),
         Routes.loginthirdpage: (context) => const LoginThirdPage(),
         Routes.registerpage: (context) => const RegisterPage(),
-        Routes.textRecognitionScreen: (context) => ocrLogic()
+        Routes.textRecognitionScreen: (context) => const OcrLogic()
       },
     );
   }

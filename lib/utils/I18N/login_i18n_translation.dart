@@ -10,12 +10,12 @@ enum LoginPageTranslation {
 
 class LoginPageI18n {
   static const Map<LoginPageTranslation, String> loginPageTranslations = {
-      LoginPageTranslation.title: 'Login',
-      LoginPageTranslation.email: 'Email',
-      LoginPageTranslation.password: 'Password',
-      LoginPageTranslation.login: 'Login',
-      LoginPageTranslation.loginSuccess: 'Login success',
-      LoginPageTranslation.loginFailed: 'Login failed',
+    LoginPageTranslation.title: 'Veuillez vous connecter 💜',
+    LoginPageTranslation.email: 'Email',
+    LoginPageTranslation.password: 'Mot de passe',
+    LoginPageTranslation.login: 'Connexion',
+    LoginPageTranslation.loginSuccess: 'Connexion réussie',
+    LoginPageTranslation.loginFailed: 'Erreur lors de la connexion',
   };
 
   static String? getTranslation(LoginPageTranslation key) {
@@ -30,20 +30,24 @@ enum LoginThirdPageTranslation {
   apple,
   google,
   facebook,
+  welcomeToMealci,
+  or,
 }
 
 class LoginThirdPageI18n {
-  static const Map<LoginThirdPageTranslation, String> loginThirdPageTranslation = {
-      LoginThirdPageTranslation.title: 'LoginThird',
-      LoginThirdPageTranslation.login: 'Se connecter',
-      LoginThirdPageTranslation.register: 'S\'inscrire avec email',
-      LoginThirdPageTranslation.apple: 'Apple',
-      LoginThirdPageTranslation.google: 'Google',
-      LoginThirdPageTranslation.facebook: 'Facebook',
+  static const Map<LoginThirdPageTranslation, String>
+      loginThirdPageTranslation = {
+    LoginThirdPageTranslation.title: 'LoginThird',
+    LoginThirdPageTranslation.login: 'Se connecter',
+    LoginThirdPageTranslation.register: 'Créer un compte',
+    LoginThirdPageTranslation.apple: 'Apple',
+    LoginThirdPageTranslation.google: 'Google',
+    LoginThirdPageTranslation.facebook: 'Facebook',
+    LoginThirdPageTranslation.welcomeToMealci: 'Bienvenue sur MealSCI !',
+    LoginThirdPageTranslation.or: 'ou',
   };
 
   static String? getTranslation(LoginThirdPageTranslation key) {
     return loginThirdPageTranslation[key];
   }
 }
-

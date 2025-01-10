@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../utils/env/environnementvariable.dart';
 import '../utils/logger/logger.dart';
+import '../utils/I18N/i18n.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -57,74 +58,59 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-            colors: [
-              Style.styles[AppStyle.backgroundColorGL],
-              Style.styles[AppStyle.backgroundColor],
-            ],
-          ),
-        ),
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Style.styles[AppStyle.boxShadowColor],
-                          spreadRadius: 0,
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: const CircleAvatar(
-                      radius: 90.0,
-                      backgroundImage: AssetImage(CustomMealciAsset.logo),
-                    ),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(40),
+        child: AppBar(),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  I18n.getTranslation(LoginPageI18n.loginPageTranslations,
+                      LoginPageTranslation.title) as String,
+                  style: TextStyle(
+                    color: Color(Style.styles[AppStyle.primaryColor].value ??
+                        Colors.black),
+                    fontSize: 25,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Voltaire',
                   ),
-                  const SizedBox(height: 62),
+                ),
+                const SizedBox(height: 50),
 
-                  // Champs de saisie
-                  InputField(
-                    label: LoginPageTranslation.email,
-                    map: LoginPageI18n.loginPageTranslations,
-                    controller: _emailController,
-                  ),
-                  const SizedBox(height: 20),
-                  InputField(
-                    label: LoginPageTranslation.password,
-                    map: LoginPageI18n.loginPageTranslations,
-                    controller: _passwordController,
-                  ),
-                  const SizedBox(height: 20),
+                // Champs de saisie
+                CustomTextField(
+                  label: LoginPageTranslation.email,
+                  map: LoginPageI18n.loginPageTranslations,
+                  controller: _emailController,
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
+                  label: LoginPageTranslation.password,
+                  map: LoginPageI18n.loginPageTranslations,
+                  controller: _passwordController,
+                ),
+                const SizedBox(height: 20),
 
-                  Buttonloginregister(
-                    label: LoginPageTranslation.login,
-                    map: LoginPageI18n.loginPageTranslations,
-                    onPressed: () {
-                      // Récupérer les données des champs
-                      final Map<String, String> loginData = {
-                        'email': _emailController.text,
-                        'password': _passwordController.text,
-                      };
+                Buttonloginregister(
+                  label: LoginPageTranslation.login,
+                  map: LoginPageI18n.loginPageTranslations,
+                  onPressed: () {
+                    // Récupérer les données des champs
+                    final Map<String, String> loginData = {
+                      'email': _emailController.text,
+                      'password': _passwordController.text,
+                    };
 
-                      // Appeler la méthode loginUser
-                      loginUser(loginData);
-                    },
-                  ),
-                ],
-              ),
+                    // Appeler la méthode loginUser
+                    loginUser(loginData);
+                  },
+                ),
+              ],
             ),
           ),
         ),

@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../utils/env/environnementvariable.dart';
 import '../utils/logger/logger.dart';
-
+import '../utils/I18N/i18n.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -17,7 +17,6 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  
   static final MealciLogger _logger = MealciLogger('RegisterPage');
 
   final TextEditingController _emailController = TextEditingController();
@@ -29,7 +28,8 @@ class _RegisterPageState extends State<RegisterPage> {
   // Fonction d'inscription
   Future<void> registerUser(Map<String, String> userData) async {
     const String registerPath = '/register';
-    final Uri registerUri = Uri.parse('${EnvironnementVariable.apiUrl}$registerPath');
+    final Uri registerUri =
+        Uri.parse('${EnvironnementVariable.apiUrl}$registerPath');
 
     try {
       final response = await http.post(
@@ -60,77 +60,77 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomCenter,  // Début du gradient en bas
-            end: Alignment.topCenter,      // Fin du gradient en haut
-            colors: [
-              Style.styles[AppStyle.backgroundColorGL], // Couleur foncée en haut (violet)
-              Style.styles[AppStyle.backgroundColor] // Couleur claire en bas (violet)
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(40),
+        child: AppBar(),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 40.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                I18n.getTranslation(RegisterPageI18n.registerPageTranslations,
+                    RegisterPageTranslation.title) as String,
+                style: TextStyle(
+                  color: Color(Style.styles[AppStyle.primaryColor].value ??
+                      Colors.black),
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Voltaire',
+                ),
+              ),
+              const SizedBox(height: 50),
+
+              // Champs de saisie
+              CustomTextField(
+                  label: RegisterPageTranslation.email,
+                  map: RegisterPageI18n.registerPageTranslations,
+                  controller: _emailController),
+              const SizedBox(height: 20),
+              CustomTextField(
+                  label: RegisterPageTranslation.password,
+                  map: RegisterPageI18n.registerPageTranslations,
+                  controller: _passwordController),
+              const SizedBox(height: 20),
+              CustomTextField(
+                  label: RegisterPageTranslation.firstName,
+                  map: RegisterPageI18n.registerPageTranslations,
+                  controller: _firstNameController),
+              const SizedBox(height: 20),
+              CustomTextField(
+                  label: RegisterPageTranslation.lastName,
+                  map: RegisterPageI18n.registerPageTranslations,
+                  controller: _lastNameController),
+              const SizedBox(height: 20),
+              CustomTextField(
+                  label: RegisterPageTranslation.age,
+                  map: RegisterPageI18n.registerPageTranslations,
+                  controller: _ageController),
+              const SizedBox(height: 20),
+
+              Buttonloginregister(
+                label: RegisterPageTranslation.register,
+                map: RegisterPageI18n.registerPageTranslations,
+                onPressed: () {
+                  // Récupérer les données des champs
+                  final Map<String, String> userData = {
+                    'email': _emailController.text,
+                    'password': _passwordController.text,
+                    'firstName': _firstNameController.text,
+                    'lastName': _lastNameController.text,
+                    'age': _ageController.text,
+                  };
+
+                  // Appeler la méthode registerUser
+                  registerUser(userData);
+                },
+              ),
             ],
           ),
         ),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Style.styles[AppStyle.boxShadowColor],
-                          spreadRadius: 0,
-                          blurRadius: 10,
-                          offset: const Offset(0, 5), // Ombre décalée vers le bas
-                        ),
-                      ],
-                    ),
-                    child: const CircleAvatar(
-                      radius: 90.0,
-                      backgroundImage: AssetImage(CustomMealciAsset.logo),
-                    ),
-                  ),
-                  const SizedBox(height: 62), // Espacement entre le logo et les champs de texte
-
-                  // Champs de saisie
-                  InputField(label: RegisterPageTranslation.email, map: RegisterPageI18n.registerPageTranslations, controller: _emailController),
-                  const SizedBox(height: 20),
-                  InputField(label: RegisterPageTranslation.password, map: RegisterPageI18n.registerPageTranslations, controller: _passwordController),
-                  const SizedBox(height: 20),
-                  InputField(label: RegisterPageTranslation.firstName, map: RegisterPageI18n.registerPageTranslations, controller: _firstNameController),
-                  const SizedBox(height: 20),
-                  InputField(label: RegisterPageTranslation.lastName, map: RegisterPageI18n.registerPageTranslations, controller: _lastNameController),
-                  const SizedBox(height: 20),
-                  InputField(label: RegisterPageTranslation.age, map: RegisterPageI18n.registerPageTranslations, controller: _ageController),
-                  const SizedBox(height: 20),
-
-                  Buttonloginregister(
-                    label: RegisterPageTranslation.register, 
-                    map: RegisterPageI18n.registerPageTranslations,
-                    onPressed: () {
-                      // Récupérer les données des champs
-                      final Map<String, String> userData = {
-                        'email': _emailController.text,
-                        'password': _passwordController.text,
-                        'firstName': _firstNameController.text,
-                        'lastName': _lastNameController.text,
-                        'age': _ageController.text,
-                      };
-
-                      // Appeler la méthode registerUser
-                      registerUser(userData);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      );
+      ),
+    );
   }
 }
