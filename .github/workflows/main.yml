@@ -18,18 +18,24 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Configuration de Flutter
+      id: flutter-setup
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.2'
         channel: 'stable'
     
     - name: Désactiver les animations CLI
+      id: disable-animations
       run: flutter config --no-cli-animations
     
     - name: Obtenir les dépendances
+      id: get-deps
       run: |
         echo -e "\e[1;34m🔍 Obtention des dépendances...\e[0m"
-        flutter pub get
+        flutter pub get || {
+          echo "step_error=Échec de l'obtention des dépendances" >> $GITHUB_OUTPUT
+          exit 1
+        }
         echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
 
     - name: Analyser le code
@@ -42,16 +48,21 @@ jobs:
           echo "analysis_output<<EOF" >> $GITHUB_OUTPUT
           cat flutter_analysis.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          echo "step_error=Échec de l'analyse du code" >> $GITHUB_OUTPUT
           exit 1
         }
         echo "analyze_error=false" >> $GITHUB_OUTPUT
         echo -e "\e[1;32m✅ Analyse terminée avec succès !\e[0m"
 
     - name: Formater le code
+      id: format
       if: github.event_name == 'push'
       run: |
         echo -e "\e[1;34m🖌️ Formatage du code...\e[0m"
-        dart format --set-exit-if-changed .
+        dart format --set-exit-if-changed . || {
+          echo "step_error=Échec du formatage du code" >> $GITHUB_OUTPUT
+          exit 1
+        }
         echo -e "\e[1;32m✅ Formatage terminé avec succès !\e[0m"
     
     - name: Exécuter les tests
@@ -61,6 +72,7 @@ jobs:
           echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
           flutter test || {
             echo "test_error=true" >> $GITHUB_OUTPUT
+            echo "step_error=Échec des tests" >> $GITHUB_OUTPUT
             exit 1
           }
           echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
@@ -79,3 +91,17 @@ jobs:
           ${{ steps.analyze.outputs.analyze_error == 'true' && format('### ❌ Erreurs d''analyse détectées\n```\n{0}\n```', steps.analyze.outputs.analysis_output) || '### ✅ Analyse du code réussie' }}
           
           ${{ steps.test.outputs.test_error == 'true' && '### ❌ Les tests ont échoué' || '### ✅ Tests réussis' }}
+
+    - name: Commenter en cas d'échec
+      if: failure() && github.event_name == 'pull_request'
+      uses: peter-evans/create-or-update-comment@v3
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          # ❌ Échec de la CI
+          
+          La CI a échoué lors de l'étape : ${{ steps.get-deps.outputs.step_error || steps.analyze.outputs.step_error || steps.format.outputs.step_error || steps.test.outputs.step_error }}
+          
+          Veuillez vérifier les logs de la CI pour plus de détails et corriger les erreurs avant de continuer.
+          
+          [Voir les détails de l'exécution](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
