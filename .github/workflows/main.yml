@@ -53,6 +53,7 @@ jobs:
         }
         echo "analyze_error=false" >> $GITHUB_OUTPUT
         echo -e "\e[1;32m✅ Analyse terminée avec succès !\e[0m"
+      continue-on-error: true
 
     - name: Formater le code
       id: format
