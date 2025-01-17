@@ -1,5 +1,6 @@
 enum RegisterPageTranslation {
-  title,
+  title1,
+  title2,
   email,
   password,
   register,
@@ -16,7 +17,8 @@ enum RegisterPageTranslation {
 
 class RegisterPageI18n {
   static const Map<RegisterPageTranslation, String> registerPageTranslations = {
-    RegisterPageTranslation.title: 'Veuillez vous inscrire 🌹',
+    RegisterPageTranslation.title1: 'Veuillez vous ',
+    RegisterPageTranslation.title2: 'inscrire 💜',
     RegisterPageTranslation.email: 'E-mail',
     RegisterPageTranslation.password: 'Mot de passe',
     RegisterPageTranslation.firstName: 'Prénom',
