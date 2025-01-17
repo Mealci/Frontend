@@ -19,7 +19,7 @@ class Buttonloginregister extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Style.styles[AppStyle.validationColor],
+        backgroundColor: Style.styles[AppStyle.secondaryColor],
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),

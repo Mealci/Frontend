@@ -41,13 +41,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       width: double.infinity, // Prend toute la largeur disponible
       height: 60,
       decoration: BoxDecoration(
         color: focusNode.hasFocus
             ? Colors.white // Couleur de fond au focus
-            : Color(Style.styles[AppStyle.buttonColor].value ??
+            : Color(Style.styles[AppStyle.primaryColor].value ??
                 Colors.white), // Couleur de fond standard
         borderRadius: BorderRadius.circular(40), // Coins arrondis
         boxShadow: focusNode.hasFocus
@@ -59,37 +58,52 @@ class _CustomTextFieldState extends State<CustomTextField> {
           color: focusNode.hasFocus
               ? Color(
                   Style.styles[AppStyle.secondaryColor].value ?? Colors.green)
-              : Color(Style.styles[AppStyle.buttonColor].value ?? Colors.black)
+              : Color(Style.styles[AppStyle.primaryColor].value ?? Colors.black)
                   .withOpacity(0.3),
           width: 2.5, // Bordure plus épaisse au focus
         ),
       ),
-      child: TextField(
-        controller: widget.controller,
-        textAlign: TextAlign.center, // Centrer le texte saisi
-        style: TextStyle(
-          color: focusNode.hasFocus
-              ? Colors.black
-              : Colors.white, // Couleur du texte
-        ),
-        decoration: InputDecoration(
-          border: InputBorder.none, // Pas de bordure interne
-          hintText: I18n.getTranslation(widget.map, widget.label) ??
-              '', // Texte d'indication
-          hintStyle: TextStyle(
-            color: Color(Style.styles[AppStyle.textColor].value ??
-                Colors.grey), // Couleur du texte d'indication
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          // Icône alignée à gauche
+          Positioned(
+            left: 30,
+            child: Icon(
+              Icons.edit, // Icône représentant un champ de texte
+              color: focusNode.hasFocus
+                  ? Color(Style.styles[AppStyle.secondaryColor].value ??
+                      Colors.green)
+                  : Color(
+                      Style.styles[AppStyle.textColor].value ?? Colors.grey),
+              size: 24, // Taille de l'icône
+            ),
           ),
-          prefixIcon: Icon(
-            Icons.edit, // Icône représentant un champ de texte
-            color: focusNode.hasFocus
-                ? Color(
-                    Style.styles[AppStyle.secondaryColor].value ?? Colors.green)
-                : Color(Style.styles[AppStyle.textColor].value ?? Colors.grey),
-            size: 24, // Taille de l'icône
+
+          // Champ de texte centré
+          Center(
+            child: TextField(
+              controller: widget.controller,
+              textAlign: TextAlign.center, // Centrer le texte saisi
+              style: TextStyle(
+                color: focusNode.hasFocus ? Colors.black : Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold, // Couleur du texte
+              ),
+              decoration: InputDecoration(
+                border: InputBorder.none, // Pas de bordure interne
+                hintText: I18n.getTranslation(widget.map, widget.label) ??
+                    '', // Texte d'indication
+                hintStyle: TextStyle(
+                  color: Color(Style.styles[AppStyle.textColor].value ??
+                      Colors.grey), // Couleur du texte d'indication
+                ),
+                // Suppression de prefixIcon pour éviter un conflit
+              ),
+              focusNode: focusNode, // Ajout du focusNode pour le focus visuel
+            ),
           ),
-        ),
-        focusNode: focusNode, // Ajout du focusNode pour le focus visuel
+        ],
       ),
     );
   }

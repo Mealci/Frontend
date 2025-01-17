@@ -23,13 +23,13 @@ class ButtonPadding extends StatelessWidget {
       width: double.infinity,
       height: 60,
       decoration: BoxDecoration(
-        color: Color(Style.styles[AppStyle.buttonColor].value ?? Colors.black),
+        color: Color(Style.styles[AppStyle.primaryColor].value ?? Colors.black),
         borderRadius: BorderRadius.circular(40), // Coins arrondis
       ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor:
-              Color(Style.styles[AppStyle.buttonColor].value ?? Colors.black),
+              Color(Style.styles[AppStyle.primaryColor].value ?? Colors.black),
         ),
         onPressed: onPressed ??
             () {}, // Si `onPressed` est nul, une fonction vide est utilisée

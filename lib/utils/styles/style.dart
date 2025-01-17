@@ -6,22 +6,18 @@ enum AppStyle {
   backgroundColor,
   backgroundColorGL,
   textColor,
-  buttonColor,
   buttonTextStyle,
-  validationColor,
   boxShadowColor
 }
 
 class Style {
   static const Map<AppStyle, dynamic> styles = {
     //colors
-    AppStyle.primaryColor: Color(0xFF5A23B1),
-    AppStyle.secondaryColor: Color.fromRGBO(193, 173, 255, 100),
+    AppStyle.primaryColor: Color.fromARGB(255, 163, 134, 250),
+    AppStyle.secondaryColor: Color(0xFF5A23B1),
     AppStyle.backgroundColor: Color(0xFFFFF3FF),
     AppStyle.textColor: Colors.white,
     AppStyle.boxShadowColor: Color.fromRGBO(0, 0, 0, 0.5),
-    AppStyle.buttonColor: Color(0xFF5A23B1),
-    AppStyle.validationColor: Color.fromARGB(255, 163, 134, 250),
 
     //text styles
     AppStyle.buttonTextStyle: TextStyle(
