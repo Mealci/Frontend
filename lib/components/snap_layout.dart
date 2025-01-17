@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CameraPreviewScreen extends StatefulWidget {
+  const CameraPreviewScreen({super.key});
+
   @override
-  _CameraPreviewScreenState createState() => _CameraPreviewScreenState();
+  State<CameraPreviewScreen> createState() => _CameraPreviewScreenState();
 }
 
 class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
@@ -48,8 +50,8 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
   }
 
   Future<void> pickFromGallery() async {
-    final ImagePicker _picker = ImagePicker();
-    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     Navigator.pop(context, image?.path); // Retourne le chemin
     if (image != null) {
       print('Image sélectionnée : ${image.path}');

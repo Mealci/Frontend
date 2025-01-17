@@ -72,10 +72,10 @@ class ResultScreen extends StatelessWidget {
   final String recognizedText;
 
   const ResultScreen({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.recognizedText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
