@@ -1,5 +1,6 @@
 enum LoginPageTranslation {
-  title,
+  title1,
+  title2,
   email,
   password,
   login,
@@ -10,7 +11,8 @@ enum LoginPageTranslation {
 
 class LoginPageI18n {
   static const Map<LoginPageTranslation, String> loginPageTranslations = {
-    LoginPageTranslation.title: 'Veuillez vous connecter 💜',
+    LoginPageTranslation.title1: 'Veuillez vous ',
+    LoginPageTranslation.title2: 'connecter 💜',
     LoginPageTranslation.email: 'Email',
     LoginPageTranslation.password: 'Mot de passe',
     LoginPageTranslation.login: 'Connexion',
