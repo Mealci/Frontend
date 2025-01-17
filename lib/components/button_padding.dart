@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mealci/utils/I18N/i18n.dart';
+import 'package:mealci/utils/i18N/i18n.dart';
 import 'package:mealci/utils/styles/style.dart';
 
 class ButtonPadding extends StatelessWidget {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mealci/utils/I18N/i18n.dart';
-import 'package:mealci/utils/I18N/login_i18n_translation.dart';
-import '../utils/styles/style.dart';
+import 'package:mealci/utils/i18N/i18n.dart';
+import 'package:mealci/utils/i18N/login_i18n_translation.dart';
 import '../components/button_padding.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 
@@ -38,7 +37,7 @@ class LoginThirdPage extends StatelessWidget {
                           ColorizeAnimatedText(
                             I18n.getTranslation(
                                 LoginThirdPageI18n.loginThirdPageTranslation,
-                                LoginThirdPageTranslation.MealSCI) as String,
+                                LoginThirdPageTranslation.mealSCI) as String,
                             textStyle: const TextStyle(
                               fontSize: 50,
                               fontWeight: FontWeight.bold,

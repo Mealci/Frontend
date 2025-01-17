@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import '../utils/I18N/login_i18n_translation.dart';
+import '../utils/i18N/login_i18n_translation.dart';
 import '../components/input_field_login_register.dart';
 import '../components/button_login_register.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../utils/env/environnementvariable.dart';
 import '../utils/logger/logger.dart';
-import '../utils/I18N/i18n.dart';
+import '../utils/i18N/i18n.dart';
 import '../utils/secure_storage/secure_storage_management.dart';
 
 class LoginPage extends StatefulWidget {
@@ -65,7 +65,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (error, stackTrace) {
       // Gérer les exceptions (erreurs réseau, JSON, etc.)
-      print(error);
+      _logger.severe('Erreur lors de la connexion: $error , $stackTrace');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('Erreur lors de la connexion : ${error.toString()}')),

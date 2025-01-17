@@ -27,8 +27,3 @@ class Style {
     ),
   };
 }
-
-class CustomMealciAsset {
-  static const String logo = 'assets/images/logo.png';
-  static const String logoWhite = 'assets/svg/tst.svg';
-}

@@ -33,7 +33,7 @@ enum LoginThirdPageTranslation {
   google,
   facebook,
   welcomeTo,
-  MealSCI,
+  mealSCI,
   or,
 }
 
@@ -47,7 +47,7 @@ class LoginThirdPageI18n {
     LoginThirdPageTranslation.google: 'Google',
     LoginThirdPageTranslation.facebook: 'Facebook',
     LoginThirdPageTranslation.welcomeTo: 'Bienvenue sur ',
-    LoginThirdPageTranslation.MealSCI: 'MealSCI',
+    LoginThirdPageTranslation.mealSCI: 'MealSCI',
     LoginThirdPageTranslation.or: 'ou',
   };
 

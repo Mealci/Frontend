@@ -27,13 +27,3 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
-  assets:
-    - assets/images/logo.png
-    - assets/svg/tst.svg
-  fonts:
-    - family: Voltaire
-      fonts:
-        - asset: assets/fonts/Voltaire.ttf
-    - family: Designer
-      fonts:
-        - asset: assets/fonts/Designer.otf

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
-import '../utils/I18N/register_i18n_translation.dart';
+import '../utils/i18N/register_i18n_translation.dart';
 import '../components/input_field_login_register.dart';
 import '../components/button_login_register.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../utils/env/environnementvariable.dart';
 import '../utils/logger/logger.dart';
-import '../utils/I18N/i18n.dart';
+import '../utils/i18N/i18n.dart';
 import '../utils/secure_storage/secure_storage_management.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -91,7 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           color: Colors.black,
                           fontSize: 23,
                           fontWeight: FontWeight.bold,
-                          fontFamily: 'Voltaire',
+                          fontFamily: 'Raleway',
                         ),
                       ),
                       WidgetSpan(

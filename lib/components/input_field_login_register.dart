@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mealci/utils/I18N/i18n.dart';
+import 'package:mealci/utils/i18N/i18n.dart';
 import 'package:mealci/utils/styles/style.dart';
 
 class CustomTextField extends StatefulWidget {
@@ -8,14 +8,14 @@ class CustomTextField extends StatefulWidget {
   final dynamic label;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.map,
     required this.label,
-  }) : super(key: key);
+  });
 
   @override
-  _CustomTextFieldState createState() => _CustomTextFieldState();
+  State<CustomTextField> createState() => _CustomTextFieldState();
 }
 
 class _CustomTextFieldState extends State<CustomTextField> {
