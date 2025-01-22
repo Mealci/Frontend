@@ -13,6 +13,7 @@ import 'package:mealci/pages/register_page.dart';
 import 'package:mealci/pages/loginthird_page.dart';
 import 'package:mealci/pages/login_page.dart';
 import 'package:mealci/pages/home.dart';
+import 'package:mealci/pages/toilet_map_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -55,7 +56,8 @@ class MyApp extends StatelessWidget {
         Routes.loginPage: (context) => const LoginPage(),
         Routes.loginthirdpage: (context) => const LoginThirdPage(),
         Routes.registerpage: (context) => const RegisterPage(),
-        Routes.textRecognitionScreen: (context) => const OcrLogic()
+        Routes.textRecognitionScreen: (context) => const OcrLogic(),
+        Routes.toiletMap: (context) => const ToiletMapPage(),
       },
     );
   }
