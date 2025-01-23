@@ -36,34 +36,30 @@ class _GenericLayoutState extends State<GenericLayout>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _motionTabBarController,
-            children: <Widget>[
-              MainPageContentComponent(
-                  title: "Recipes Page", controller: _motionTabBarController!),
-              const ToiletMapPage(),
-              MainPageContentComponent(
-                  title: "Map Page", controller: _motionTabBarController!),
-              MainPageContentComponent(
-                  title: "Mealci Page", controller: _motionTabBarController!),
-              MainPageContentComponent(
-                  title: "Calendar Page", controller: _motionTabBarController!),
-              MainPageContentComponent(
-                  title: "Chart Page", controller: _motionTabBarController!)
-            ],
-          ),
-          NavBar(
-            controller: _motionTabBarController!,
-            onTabSelected: (int value) {
-              setState(() {
-                _motionTabBarController!.index = value;
-              });
-            },
-          ),
+      body: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: _motionTabBarController,
+        children: <Widget>[
+          MainPageContentComponent(
+              title: "Recipes Page", controller: _motionTabBarController!),
+          const ToiletMapPage(),
+          MainPageContentComponent(
+              title: "Map Page", controller: _motionTabBarController!),
+          MainPageContentComponent(
+              title: "Mealci Page", controller: _motionTabBarController!),
+          MainPageContentComponent(
+              title: "Calendar Page", controller: _motionTabBarController!),
+          MainPageContentComponent(
+              title: "Chart Page", controller: _motionTabBarController!)
         ],
+      ),
+      bottomNavigationBar: NavBar(
+        controller: _motionTabBarController!,
+        onTabSelected: (int value) {
+          setState(() {
+            _motionTabBarController!.index = value;
+          });
+        },
       ),
     );
   }
