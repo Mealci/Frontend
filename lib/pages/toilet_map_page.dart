@@ -14,52 +14,67 @@ class ToiletMapPage extends StatefulWidget {
 
 class _ToiletMapPageState extends State<ToiletMapPage> {
   late GoogleMapController _mapController;
-  late CameraPosition _initialPosition;
+  CameraPosition _initialPosition = const CameraPosition(
+    target: LatLng(0.0, 0.0), // Default initial position
+    zoom: 2.0, // Default zoom level
+  );
   final List<Marker> _markers = [];
-  late String apiKey; // La clé API sera chargée ici
+  late String apiKey;
 
-  // Initialiser la position de la caméra
   @override
   void initState() {
     super.initState();
-    _initialPosition = const CameraPosition(
-      target: LatLng(0.0, 0.0), // Position initiale par défaut
-      zoom: 2.0, // Zoom de la carte pour voir la vue mondiale
-    );
+    _loadApiKey();
+    _initializeLocation();
+  }
 
-    // Charger la clé API depuis le fichier .env
-    apiKey = dotenv.env['GOOGLE_MAPS_API_KEY'] ??
-        ''; // Charger la clé à partir du fichier .env
+  // Load the API key from .env
+  void _loadApiKey() {
+    apiKey = dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
     if (apiKey.isEmpty) {
-      print(
-          "La clé API n'a pas été trouvée. Veuillez vérifier votre fichier .env.");
+      debugPrint(
+          "API key not found. Please add GOOGLE_MAPS_API_KEY to your .env file.");
     }
   }
 
-  // Obtenir la position actuelle de l'utilisateur
-  Future<Position> _getCurrentLocation() async {
-    return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+  // Get current location and set the camera position
+  Future<void> _initializeLocation() async {
+    try {
+      final position = await _getCurrentLocation();
+      _setCameraPosition(position);
+    } catch (e) {
+      debugPrint("Error getting current location: $e");
+    }
   }
 
-  // Requête pour obtenir les toilettes proches
+  Future<Position> _getCurrentLocation() async {
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+  }
+
   Future<void> _fetchNearbyToilets(Position position) async {
     final url =
         'https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=toilet&location=${position.latitude},${position.longitude}&radius=1500&type=toilet&key=$apiKey';
 
-    final response = await http.get(Uri.parse(url));
+    try {
+      final response = await http.get(Uri.parse(url));
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      final results = data['results'];
-      _addMarkers(results);
-    } else {
-      throw Exception('Failed to load toilets');
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final results = data['results'];
+        _addMarkers(results);
+      } else {
+        debugPrint('Failed to load toilets: ${response.reasonPhrase}');
+      }
+    } catch (e) {
+      debugPrint("Error fetching nearby toilets: $e");
     }
   }
 
-  // Ajouter des marqueurs sur la carte à partir des données
   void _addMarkers(List<dynamic> toilets) {
+    if (!mounted) return;
+
     setState(() {
       _markers.clear();
       for (var toilet in toilets) {
@@ -76,23 +91,28 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
               title: name,
               snippet: vicinity,
             ),
-            onTap: () => _showToiletDetails(
-                toilet), // Afficher les détails lorsqu'on clique
+            onTap: () => _showToiletDetails(toilet),
           ),
         );
       }
     });
   }
 
-  // Configurer la position de la caméra
   void _setCameraPosition(Position position) {
-    _initialPosition = CameraPosition(
-      target: LatLng(position.latitude, position.longitude),
-      zoom: 14.4746,
+    if (!mounted) return;
+
+    setState(() {
+      _initialPosition = CameraPosition(
+        target: LatLng(position.latitude, position.longitude),
+        zoom: 14.4746,
+      );
+    });
+
+    _mapController.animateCamera(
+      CameraUpdate.newCameraPosition(_initialPosition),
     );
   }
 
-  // Afficher les détails de la toilette dans un dialogue ou une nouvelle page
   void _showToiletDetails(Map<String, dynamic> toilet) {
     showDialog(
       context: context,
@@ -107,11 +127,10 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
           ),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize
-                .min, // Ensure the column takes only necessary space
+            mainAxisSize: MainAxisSize.min,
             children: [
               _buildDetailRow('Address:', toilet['vicinity']),
-              const SizedBox(height: 8), // Add spacing between rows
+              const SizedBox(height: 8),
               _buildDetailRow(
                   'Rating:', toilet['rating']?.toString() ?? 'Not available'),
             ],
@@ -130,7 +149,6 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
     );
   }
 
-// Helper widget to display details in a row format
   Widget _buildDetailRow(String label, String value) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,16 +177,19 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
         markers: Set<Marker>.of(_markers),
         onMapCreated: (controller) {
           _mapController = controller;
-          _getCurrentLocation().then((position) {
-            _setCameraPosition(position);
-            _mapController.animateCamera(
-              CameraUpdate.newCameraPosition(_initialPosition),
-            );
-            // Appel pour obtenir les toilettes proches
-            _fetchNearbyToilets(position);
+          _initializeLocation().then((_) {
+            _getCurrentLocation().then((position) {
+              _fetchNearbyToilets(position);
+            });
           });
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
   }
 }

@@ -44,8 +44,6 @@ class _GenericLayoutState extends State<GenericLayout>
               title: "Recipes Page", controller: _motionTabBarController!),
           const ToiletMapPage(),
           MainPageContentComponent(
-              title: "Map Page", controller: _motionTabBarController!),
-          MainPageContentComponent(
               title: "Mealci Page", controller: _motionTabBarController!),
           MainPageContentComponent(
               title: "Calendar Page", controller: _motionTabBarController!),
