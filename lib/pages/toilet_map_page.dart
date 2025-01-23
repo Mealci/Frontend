@@ -9,7 +9,7 @@ class ToiletMapPage extends StatefulWidget {
   const ToiletMapPage({super.key});
 
   @override
-  _ToiletMapPageState createState() => _ToiletMapPageState();
+  State<ToiletMapPage> createState() => _ToiletMapPageState();
 }
 
 class _ToiletMapPageState extends State<ToiletMapPage> {

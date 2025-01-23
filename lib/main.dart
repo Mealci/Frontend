@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/utils/ocr/ocr.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 // pages
 import 'package:mealci/pages/register_page.dart';
@@ -15,7 +16,9 @@ import 'package:mealci/pages/login_page.dart';
 import 'package:mealci/pages/home.dart';
 import 'package:mealci/pages/toilet_map_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 

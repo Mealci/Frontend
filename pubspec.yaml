@@ -1,10 +1,13 @@
 name: mealci
 description: "Mealci App"
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
   sdk: ^3.5.1
+
+assets:
+  - .env
 
 dependencies:
   flutter:
@@ -30,3 +33,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env
