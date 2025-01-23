@@ -1,6 +1,6 @@
 name: mealci
 description: "Mealci App"
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -18,6 +18,9 @@ dependencies:
   google_mlkit_text_recognition: ^0.13.1
   flutter_svg: ^2.0.16
   animated_text_kit: ^4.2.2
+  google_maps_flutter: ^2.1.0
+  geolocator: ^7.6.2
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -27,3 +30,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - .env
