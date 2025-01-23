@@ -67,8 +67,6 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
         final lng = toilet['geometry']['location']['lng'];
         final name = toilet['name'];
         final vicinity = toilet['vicinity'];
-        final placeId =
-            toilet['place_id']; // Récupérer place_id pour les détails
 
         _markers.add(
           Marker(
@@ -86,35 +84,6 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
     });
   }
 
-  // Afficher les détails de la toilette dans un dialogue ou une nouvelle page
-  void _showToiletDetails(Map<String, dynamic> toilet) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(toilet['name']),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text('Address: ${toilet['vicinity']}'),
-              Text('Rating: ${toilet['rating'] ?? 'Not available'}'),
-              Text('Place ID: ${toilet['place_id']}'), // Afficher le place_id
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Close'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   // Configurer la position de la caméra
   void _setCameraPosition(Position position) {
     _initialPosition = CameraPosition(
@@ -123,12 +92,66 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
     );
   }
 
+  // Afficher les détails de la toilette dans un dialogue ou une nouvelle page
+  void _showToiletDetails(Map<String, dynamic> toilet) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            toilet['name'],
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+            ),
+          ),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize
+                .min, // Ensure the column takes only necessary space
+            children: [
+              _buildDetailRow('Address:', toilet['vicinity']),
+              const SizedBox(height: 8), // Add spacing between rows
+              _buildDetailRow(
+                  'Rating:', toilet['rating']?.toString() ?? 'Not available'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).primaryColor,
+              ),
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+// Helper widget to display details in a row format
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '$label ',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(color: Colors.black54),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Toilet Finder - Google Map'),
-      ),
       body: GoogleMap(
         initialCameraPosition: _initialPosition,
         myLocationButtonEnabled: true,

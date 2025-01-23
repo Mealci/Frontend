@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
+import '../components/generic_layout.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home Page'),
-      ),
-      body: const Center(
-        child: Text('Welcome to the Home Page!'),
-      ),
+    return const GenericLayout(
+      title: 'Home',
     );
   }
 }

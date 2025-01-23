@@ -111,10 +111,11 @@ class LoginThirdPage extends StatelessWidget {
               const SizedBox(height: 20),
 
               // Boutons tiers (Apple, Google, Facebook)
-              const ButtonPadding(
+              ButtonPadding(
                   icon: Icons.apple,
                   label: LoginThirdPageTranslation.apple,
-                  map: LoginThirdPageI18n.loginThirdPageTranslation),
+                  map: LoginThirdPageI18n.loginThirdPageTranslation,
+                  onPressed: () => Navigator.pushNamed(context, '/home')),
               const SizedBox(height: 20),
 
               ButtonPadding(

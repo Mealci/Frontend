@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'navbar.dart';
+import '../pages/toilet_map_page.dart';
 
 class GenericLayout extends StatefulWidget {
   const GenericLayout({super.key, this.title});
@@ -35,9 +36,6 @@ class _GenericLayoutState extends State<GenericLayout>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title!),
-      ),
       body: Stack(
         children: [
           TabBarView(
@@ -46,6 +44,7 @@ class _GenericLayoutState extends State<GenericLayout>
             children: <Widget>[
               MainPageContentComponent(
                   title: "Recipes Page", controller: _motionTabBarController!),
+              const ToiletMapPage(),
               MainPageContentComponent(
                   title: "Map Page", controller: _motionTabBarController!),
               MainPageContentComponent(
