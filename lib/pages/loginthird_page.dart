@@ -118,11 +118,10 @@ class LoginThirdPage extends StatelessWidget {
                   onPressed: () => Navigator.pushNamed(context, '/home')),
               const SizedBox(height: 20),
 
-              ButtonPadding(
+              const ButtonPadding(
                 icon: Icons.g_mobiledata,
                 label: LoginThirdPageTranslation.google,
                 map: LoginThirdPageI18n.loginThirdPageTranslation,
-                onPressed: () => Navigator.pushNamed(context, '/toiletMap'),
               ),
               const SizedBox(height: 20),
 
