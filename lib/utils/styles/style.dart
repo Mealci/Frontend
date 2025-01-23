@@ -27,3 +27,22 @@ class Style {
     ),
   };
 }
+
+class CustomMealciAsset {
+  static const String logo = 'assets/images/logo.png';
+  static const String logoWhite = 'assets/svg/login_third_icon.svg';
+
+  static const String profileIcon = 'assets/svg/profile_icon.svg';
+  static const String fridgeIcon = 'assets/svg/fridge_icon.svg';
+  static const String drinkIcon = 'assets/svg/drink_icon.svg';
+  static const String milkIcon = 'assets/svg/milk_icon.svg';
+  static const String fruitIcon = 'assets/svg/fruit_icon.svg';
+  static const String legumineuseIcon = 'assets/svg/legumineuse_icon.svg';
+  static const String legumeIcon = 'assets/svg/legume_icon.svg';
+  static const String feculentIcon = 'assets/svg/feculent_icon.svg';
+  static const String sugarIcon = 'assets/svg/sugar_icon.svg';
+  static const String spicyIcon = 'assets/svg/spicy_icon.svg';
+  static const String oilIcon = 'assets/svg/oil_icon.svg';
+  static const String junkFoodIcon = 'assets/svg/junk_food_icon.svg';
+  static const String dietIcon = 'assets/svg/aliment_dietetique_icon.svg';
+}
