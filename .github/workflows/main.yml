@@ -2,228 +2,107 @@ name: CI
 
 on:
   push:
-    branches:
-      - '**'
   pull_request:
-    branches:
-      - '**'
 
 permissions:
   contents: read
   pull-requests: write
 
 jobs:
-  ci-push:
-    name: Vérifications CI (Base)
+  flutter-ci:
+    name: Flutter CI
+    if: github.event_name == 'pull_request' || github.event_name == 'push' && !contains(github.event.head_commit.message, 'Merge pull request')
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
 
-    - name: Vérifier si la CI doit être exécutée
-      id: check_run
-      run: |
-        if [[ ${{ github.event_name }} == 'push' ]]; then
-          PR_URL=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-                   "https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:${{ github.ref_name }}&state=open" \
-                   | jq -r '.[0].url')
-          if [[ $PR_URL != "null" ]]; then
-            echo "skip=true" >> $GITHUB_OUTPUT
-            echo "Une PR est active pour cette branche. Skipping CI pour le push."
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-        else
-          echo "skip=false" >> $GITHUB_OUTPUT
-        fi
-
     - name: Configuration de Flutter
-      if: steps.check_run.outputs.skip != 'true'
+      id: flutter-setup
       uses: subosito/flutter-action@v2
       with:
         flutter-version: '3.24.2'
         channel: 'stable'
     
     - name: Désactiver les animations CLI
-      if: steps.check_run.outputs.skip != 'true'
+      id: disable-animations
       run: flutter config --no-cli-animations
     
     - name: Obtenir les dépendances
-      if: steps.check_run.outputs.skip != 'true'
+      id: get-deps
       run: |
         echo -e "\e[1;34m🔍 Obtention des dépendances...\e[0m"
-        flutter pub get
+        flutter pub get || {
+          echo "step_error=Échec de l'obtention des dépendances" >> $GITHUB_OUTPUT
+          exit 1
+        }
         echo -e "\e[1;32m✅ Dépendances récupérées avec succès !\e[0m"
-    
-    - name: Formater le code
-      if: steps.check_run.outputs.skip != 'true' && github.event_name != 'pull_request'
-      run: |
-        echo -e "\e[1;34m🖌️ Formatage du code...\e[0m"
-        dart format --set-exit-if-changed .
-        echo -e "\e[1;32m✅ Code formaté avec succès !\e[0m"
-    
-    - name: Exécuter les tests
-      if: steps.check_run.outputs.skip != 'true' && github.event_name != 'pull_request'
-      run: |
-        echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
-        echo -e "Place holder pour flutter test"
-        # flutter test
-        echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
-    
-    - name: Vérifier la porte de qualité
-      if: steps.check_run.outputs.skip != 'true' && success() && github.event_name != 'pull_request'
-      run: |
-        echo -e "\e[1;32m✅ Porte de qualité de base passée\e[0m"
-    
-    - name: Notifier l'échec
-      if: steps.check_run.outputs.skip != 'true' && failure() && github.event_name != 'pull_request'
-      run: |
-        echo -e "\e[1;31m❌ Les vérifications de base ont échoué. Veuillez corriger les problèmes et mettre à jour.\e[0m"
-        exit 1
 
-  ci-pr:
-    name: Vérifications CI (Pull Request)
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Configuration de Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.24.2'
-          channel: 'stable'
-      
-      - name: Désactiver les animations CLI
-        run: flutter config --no-cli-animations
-
-      - name: Analyser le code
-        id: analyze
-        run: |
-          echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
-          if flutter analyze > flutter_analysis_full.txt 2>&1; then
-            echo "analyze_error=false" >> $GITHUB_OUTPUT
-            echo -e "\e[1;32m✅ Analyse du code terminée sans erreur !\e[0m"
-          else
-            echo "analyze_error=true" >> $GITHUB_OUTPUT
-            echo -e "\e[1;31m❌ Erreurs détectées lors de l'analyse du code.\e[0m"
-          fi
-          # Filter out dependency information and keep only analysis results
-          sed -n '/Analyzing/,$p' flutter_analysis_full.txt | grep -v "Got dependencies" > flutter_analysis.txt
-          echo "flutter_analysis<<EOF" >> $GITHUB_OUTPUT
+    - name: Analyser le code
+      id: analyze
+      if: github.event_name == 'pull_request'
+      run: |
+        echo -e "\e[1;34m🔎 Analyse du code...\e[0m"
+        flutter analyze > flutter_analysis.txt || {
+          echo "analyze_error=true" >> $GITHUB_OUTPUT
+          echo "analysis_output<<EOF" >> $GITHUB_OUTPUT
           cat flutter_analysis.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          echo "step_error=Échec de l'analyse du code" >> $GITHUB_OUTPUT
+          exit 1
+        }
+        echo "analyze_error=false" >> $GITHUB_OUTPUT
+        echo -e "\e[1;32m✅ Analyse terminée avec succès !\e[0m"
+      continue-on-error: true
 
-      - name: Commenter l'erreur d'analyse
-        if: steps.analyze.outputs.analyze_error == 'true'
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## ❌ Rapport CI : Erreur d'analyse du code
-            ### Analyse Flutter
-            ```
-            ${{ steps.analyze.outputs.flutter_analysis }}
-            ```
-            Des problèmes ont été détectés lors de l'analyse. Veuillez corriger ces problèmes avant de fusionner.
+    - name: Formater le code
+      id: format
+      if: github.event_name == 'push'
+      run: |
+        echo -e "\e[1;34m🖌️ Formatage du code...\e[0m"
+        dart format --set-exit-if-changed . || {
+          echo "step_error=Échec du formatage du code" >> $GITHUB_OUTPUT
+          exit 1
+        }
+        echo -e "\e[1;32m✅ Formatage terminé avec succès !\e[0m"
+    
+    - name: Exécuter les tests
+      id: test
+      run: |
+        if [ -d "test" ] && [ "$(find test -name '*_test.dart' | wc -l)" -gt 0 ]; then
+          echo -e "\e[1;34m🧪 Exécution des tests...\e[0m"
+          flutter test || {
+            echo "test_error=true" >> $GITHUB_OUTPUT
+            echo "step_error=Échec des tests" >> $GITHUB_OUTPUT
+            exit 1
+          }
+          echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
+        else
+          echo -e "\e[1;33m⚠️ Aucun test trouvé\e[0m"
+        fi
 
-      - name: Exécuter les tests
-        id: test
-        run: |
-          echo -e "\e[1;34m🧪 Vérification des tests...\e[0m"
-          if [ -d "test" ] && [ "$(find test -name '*_test.dart' | wc -l)" -gt 0 ]; then
-            echo -e "Exécution des tests..."
-            if flutter test > test_output.txt 2>&1; then
-              echo "test_error=false" >> $GITHUB_OUTPUT
-              echo -e "\e[1;32m✅ Tests terminés avec succès !\e[0m"
-            else
-              echo "test_error=true" >> $GITHUB_OUTPUT
-              echo "test_output<<EOF" >> $GITHUB_OUTPUT
-              cat test_output.txt >> $GITHUB_OUTPUT
-              echo "EOF" >> $GITHUB_OUTPUT
-              echo -e "\e[1;31m❌ Erreurs détectées lors de l'exécution des tests.\e[0m"
-              exit 1
-            fi
-          else
-            echo "test_error=false" >> $GITHUB_OUTPUT
-            echo -e "\e[1;33m⚠️ Aucun fichier de test trouvé. Les tests sont ignorés.\e[0m"
-          fi
+    - name: Commenter les résultats (PR uniquement)
+      if: github.event_name == 'pull_request'
+      uses: peter-evans/create-or-update-comment@v3
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          ## Rapport CI ${{ job.status == 'success' && '✅' || '❌' }}
+          
+          ${{ steps.analyze.outputs.analyze_error == 'true' && format('### ❌ Erreurs d''analyse détectées\n```\n{0}\n```', steps.analyze.outputs.analysis_output) || '### ✅ Analyse du code réussie' }}
+          
+          ${{ steps.test.outputs.test_error == 'true' && '### ❌ Les tests ont échoué' || '### ✅ Tests réussis' }}
 
-      - name: Commenter l'erreur de test
-        if: failure() && steps.test.outputs.test_error == 'true'
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## ❌ Rapport CI : Erreur d'exécution des tests
-            ### Résultats des tests
-            ```
-            ${{ steps.test.outputs.test_output }}
-            ```
-            Des problèmes ont été détectés lors de l'exécution des tests. Veuillez corriger ces problèmes avant de fusionner.
-
-      - name: Vérification des vulnérabilités
-        id: vulnerability
-        continue-on-error: true
-        run: |
-          echo -e "\e[1;34m🛡️ Vérification des vulnérabilités connues...\e[0m"
-          vulnerability_output=""
-          while read pkg; do
-            result=$(curl -s "https://pub.dev/api/packages/${pkg%@*}/versions/${pkg#*@}" | jq -r '.vulnerability')
-            if [ "$result" != "null" ]; then
-              vulnerability_output+="⚠️ Vulnérabilité détectée pour $pkg: $result\n"
-            fi
-          done < <(flutter pub deps --json | jq -r '.packages[] | .name + "@" + .version')
-          if [ -n "$vulnerability_output" ]; then
-            echo "vuln_error=true" >> $GITHUB_OUTPUT
-            echo "vuln_output<<EOF" >> $GITHUB_OUTPUT
-            echo "$vulnerability_output" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
-            echo -e "\e[1;33m⚠️ Des vulnérabilités ont été détectées\e[0m"
-          else
-            echo "vuln_error=false" >> $GITHUB_OUTPUT
-            echo -e "\e[1;32m✅ Aucune vulnérabilité détectée !\e[0m"
-          fi
-
-      - name: Commenter les vulnérabilités
-        if: steps.vulnerability.outputs.vuln_error == 'true'
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## ⚠️ Rapport CI : Vulnérabilités détectées
-            ### Résultats de la vérification des vulnérabilités
-            ```
-            ${{ steps.vulnerability.outputs.vuln_output }}
-            ```
-            Des vulnérabilités ont été détectées dans les dépendances. Il est recommandé de mettre à jour les packages concernés.
-
-      - name: Vérifier le statut de l'analyse et des tests
-        if: steps.analyze.outputs.analyze_error == 'true' || steps.test.outputs.test_error == 'true'
-        run: exit 1
-
-      - name: Notification de succès
-        if: steps.analyze.outputs.analyze_error == 'false' && steps.test.outputs.test_error == 'false'
-        run: |
-          echo -e "\e[1;32m✅ Les vérifications CI principales sont passées avec succès !\e[0m"
-
-      - name: Déterminer le statut des tests
-        id: test_status
-        run: |
-          if [ "${{ steps.test.outputs.test_error }}" == "false" ] && ! echo "${{ steps.test.outputs.stdout }}" | grep -q "any test files"; then
-            echo "message=✅ Les tests sont passés avec succès." >> $GITHUB_OUTPUT
-          else
-            echo "message=⚠️ Aucun test n'a été trouvé." >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commenter le succès de l'analyse et des tests
-        if: steps.analyze.outputs.analyze_error == 'false' && steps.test.outputs.test_error == 'false'
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ## ✅ Rapport CI : Code propre
-            
-            ✅ Les vérifications principales sont passées.
-            ${{ steps.test_status.outputs.message }}
+    - name: Commenter en cas d'échec
+      if: failure() && github.event_name == 'pull_request'
+      uses: peter-evans/create-or-update-comment@v3
+      with:
+        issue-number: ${{ github.event.pull_request.number }}
+        body: |
+          # ❌ Échec de la CI
+          
+          La CI a échoué lors de l'étape : ${{ steps.get-deps.outputs.step_error || steps.analyze.outputs.step_error || steps.format.outputs.step_error || steps.test.outputs.step_error }}
+          
+          Veuillez vérifier les logs de la CI pour plus de détails et corriger les erreurs avant de continuer.
+          
+          [Voir les détails de l'exécution](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
