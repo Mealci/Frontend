@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'navbar.dart';
 import '../pages/toilet_map_page.dart';
+import '../pages/frigo_page.dart';
 
 class GenericLayout extends StatefulWidget {
   const GenericLayout({super.key, this.title});
@@ -43,8 +44,7 @@ class _GenericLayoutState extends State<GenericLayout>
           MainPageContentComponent(
               title: "Recipes Page", controller: _motionTabBarController!),
           const ToiletMapPage(),
-          MainPageContentComponent(
-              title: "Mealci Page", controller: _motionTabBarController!),
+          const FrigoPage(),
           MainPageContentComponent(
               title: "Calendar Page", controller: _motionTabBarController!),
           MainPageContentComponent(

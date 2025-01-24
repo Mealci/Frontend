@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/styles/style.dart';
 
 class FeedFridgeButton extends StatelessWidget {
   final VoidCallback onPressed;
@@ -13,12 +14,13 @@ class FeedFridgeButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        minimumSize: const Size(1500, 50), // Taille minimale du bouton
-        backgroundColor: Colors.purple[200], // Couleur de fond
+        minimumSize: const Size(1000, 35), // Taille minimale du bouton
+        backgroundColor: Style.styles[AppStyle.primaryColor], // Couleur de fond
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30), // Bordures arrondies
         ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16), // Padding du bouton
+        padding: const EdgeInsets.symmetric(
+            horizontal: 24, vertical: 16), // Padding du bouton
       ),
       child: const Row(
         mainAxisSize: MainAxisSize.min, // Taille adaptée au contenu
@@ -26,7 +28,7 @@ class FeedFridgeButton extends StatelessWidget {
           Text(
             'Nourrissez le frigo',
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
               color: Colors.black, // Couleur du texte
             ),

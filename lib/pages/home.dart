@@ -9,8 +9,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  double _opacity = 1.0;
-
   @override
   Widget build(BuildContext context) {
     return const GenericLayout(

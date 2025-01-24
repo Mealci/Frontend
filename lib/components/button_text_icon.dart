@@ -19,8 +19,8 @@ class ButtonTextIcon extends StatelessWidget {
     return GestureDetector(
       onTap: onPressed,
       child: Container(
-        width: 120, // Ajustez la largeur si nécessaire
-        height: 120, // Ajustez la hauteur si nécessaire
+        width: 100, // Ajustez la largeur si nécessaire
+        height: 100, // Ajustez la hauteur si nécessaire
         decoration: BoxDecoration(
           color: const Color(0xFFDCC6F5), // Couleur de fond violet
           borderRadius: BorderRadius.circular(20), // Coins arrondis
@@ -34,17 +34,16 @@ class ButtonTextIcon extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     svgPath,
-                    height: 60, // Taille minimale de l'image
-                    width: 60, // Taille minimale de l'image
+                    height: 40, // Taille minimale de l'image
+                    width: 40, // Taille minimale de l'image
                   ),
-
                   Text(
                     maxLines: 2,
                     textAlign: TextAlign.center,
                     text,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.black, // Couleur du texte
-                      fontSize: 16, // Taille du texte
+                      fontSize: text.length > 10 ? 11 : 14, // Taille du texte
                       fontWeight: FontWeight.bold, // Gras
                     ),
                   )
