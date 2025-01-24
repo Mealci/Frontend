@@ -21,7 +21,7 @@ class _GenericLayoutState extends State<GenericLayout>
     super.initState();
 
     _motionTabBarController = MotionTabBarController(
-      initialIndex: 1,
+      initialIndex: 2,
       length: 5,
       vsync: this,
     );

@@ -47,10 +47,23 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
     }
   }
 
+  Future<void> _checkPermissions() async {
+    final permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      final requestedPermission = await Geolocator.requestPermission();
+
+      if (requestedPermission == LocationPermission.denied ||
+          requestedPermission == LocationPermission.deniedForever) {
+        throw Exception("Location permission denied");
+      }
+    }
+  }
+
   Future<Position> _getCurrentLocation() async {
-    return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
+    await _checkPermissions();
+    return Geolocator.getCurrentPosition();
   }
 
   Future<void> _fetchNearbyToilets(Position position) async {
