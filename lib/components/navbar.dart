@@ -14,15 +14,19 @@ class NavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Récupérer les dimensions de l'écran
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final textScale = MediaQuery.textScaleFactorOf(context);
+
     return Positioned(
-      left: 20,
-      right: 20,
-      bottom: 20,
+      left: screenWidth * 0.05, // 5% de la largeur de l'écran
+      right: screenWidth * 0.05,
+      bottom: screenHeight * 0.02, // 2% de la hauteur de l'écran
       child: Container(
-        height: 75,
+        height: screenHeight * 0.1, // 10% de la hauteur de l'écran
         decoration: BoxDecoration(
           color: const Color(0xFFC1ADFF),
-          borderRadius: BorderRadius.circular(30),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -42,19 +46,19 @@ class NavBar extends StatelessWidget {
             Icons.map,
             Icons.food_bank,
             Icons.calendar_month_rounded,
-            Icons.bar_chart_rounded
+            Icons.bar_chart_rounded,
           ],
-          tabSize: 50,
-          tabBarHeight: 55,
-          textStyle: const TextStyle(
-            fontSize: 12,
+          tabSize: screenHeight * 0.07, // Taille proportionnelle à la hauteur
+          tabBarHeight: screenHeight * 0.08, // Hauteur proportionnelle
+          textStyle: TextStyle(
+            fontSize: 12 * textScale,
             color: Colors.white,
             fontWeight: FontWeight.w500,
           ),
           tabBarColor: Colors.transparent,
           tabIconColor: Colors.white,
-          tabIconSize: 28.0,
-          tabIconSelectedSize: 26.0,
+          tabIconSize: screenHeight * 0.035, // Adapter la taille des icônes
+          tabIconSelectedSize: screenHeight * 0.032,
           tabSelectedColor: const Color(0xFFE3BDFF),
           tabIconSelectedColor: Colors.white,
           onTabItemSelected: onTabSelected,

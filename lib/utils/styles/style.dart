@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 enum AppStyle {
   primaryColor,
   secondaryColor,
+  thirdColor,
   backgroundColor,
   backgroundColorGL,
   textColor,
@@ -15,6 +16,7 @@ class Style {
     //colors
     AppStyle.primaryColor: Color.fromARGB(255, 163, 134, 250),
     AppStyle.secondaryColor: Color(0xFF5A23B1),
+    AppStyle.thirdColor: Color(0xFFDCC6F5),
     AppStyle.backgroundColor: Color(0xFFFFF3FF),
     AppStyle.textColor: Colors.white,
     AppStyle.boxShadowColor: Color.fromRGBO(0, 0, 0, 0.5),
@@ -45,4 +47,6 @@ class CustomMealciAsset {
   static const String oilIcon = 'assets/svg/oil_icon.svg';
   static const String junkFoodIcon = 'assets/svg/junk_food_icon.svg';
   static const String dietIcon = 'assets/svg/aliment_dietetique_icon.svg';
+  static const String meatIcon = 'assets/svg/meat_icon.svg';
+  static const String fishIcon = 'assets/svg/fish_icon.svg';
 }

@@ -51,6 +51,8 @@ flutter:
     - assets/svg/oil_icon.svg                 # Oil Icon
     - assets/svg/junk_food_icon.svg           # Junk Food Icon
     - assets/svg/aliment_dietetique_icon.svg  # Dietetic Food Icon
+    - assets/svg/meat_icon.svg                # Meat Icon
+    - assets/svg/fish_icon.svg             # Seafood Icon
 
     - assets/svg/min.svg
   fonts:

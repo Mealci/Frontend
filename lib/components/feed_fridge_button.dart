@@ -30,14 +30,14 @@ class FeedFridgeButton extends StatelessWidget {
             style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Colors.black, // Couleur du texte
+              color: Colors.white, // Couleur du texte
             ),
           ),
           SizedBox(width: 16), // Espacement entre le texte et l'icône
           Icon(
             size: 30, // Taille de l'icône
             Icons.add, // Icône carotte
-            color: Colors.black, // Couleur de l'icône
+            color: Colors.white, // Couleur de l'icône
           ),
         ],
       ),

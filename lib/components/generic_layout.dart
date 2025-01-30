@@ -3,6 +3,7 @@ import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'navbar.dart';
 import '../pages/toilet_map_page.dart';
 import '../pages/frigo_page.dart';
+import '../components/button_profile.dart';
 
 class GenericLayout extends StatefulWidget {
   const GenericLayout({super.key, this.title});
@@ -37,18 +38,22 @@ class _GenericLayoutState extends State<GenericLayout>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: TabBarView(
-        physics: const NeverScrollableScrollPhysics(),
-        controller: _motionTabBarController,
-        children: <Widget>[
-          MainPageContentComponent(
-              title: "Recipes Page", controller: _motionTabBarController!),
-          const ToiletMapPage(),
-          const FrigoPage(),
-          MainPageContentComponent(
-              title: "Calendar Page", controller: _motionTabBarController!),
-          MainPageContentComponent(
-              title: "Chart Page", controller: _motionTabBarController!)
+      body: Stack(
+        children: [
+          TabBarView(
+            physics: const NeverScrollableScrollPhysics(),
+            controller: _motionTabBarController,
+            children: <Widget>[
+              MainPageContentComponent(
+                  title: "Recipes Page", controller: _motionTabBarController!),
+              const ToiletMapPage(),
+              const FrigoPage(),
+              MainPageContentComponent(
+                  title: "Calendar Page", controller: _motionTabBarController!),
+              MainPageContentComponent(
+                  title: "Chart Page", controller: _motionTabBarController!)
+            ],
+          ),
         ],
       ),
       bottomNavigationBar: NavBar(

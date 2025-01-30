@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:vector_graphics/vector_graphics.dart';
+import '../utils/styles/style.dart';
 
 class ButtonTextIcon extends StatelessWidget {
   final String text;
@@ -22,7 +22,7 @@ class ButtonTextIcon extends StatelessWidget {
         width: 100, // Ajustez la largeur si nécessaire
         height: 100, // Ajustez la hauteur si nécessaire
         decoration: BoxDecoration(
-          color: const Color(0xFFDCC6F5), // Couleur de fond violet
+          color: Style.styles[AppStyle.thirdColor], // Couleur de fond
           borderRadius: BorderRadius.circular(20), // Coins arrondis
         ),
         child: Column(
@@ -34,8 +34,8 @@ class ButtonTextIcon extends StatelessWidget {
                 children: [
                   SvgPicture.asset(
                     svgPath,
-                    height: 40, // Taille minimale de l'image
-                    width: 40, // Taille minimale de l'image
+                    height: 50, // Taille minimale de l'image
+                    width: 50, // Taille minimale de l'image
                   ),
                   Text(
                     maxLines: 2,
