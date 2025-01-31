@@ -1,4 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mealci/utils/styles/style.dart';
 
 class FridgeRaitingChart extends StatelessWidget {
   final double progressA;
@@ -12,12 +16,24 @@ class FridgeRaitingChart extends StatelessWidget {
     super.key,
   });
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
         children: [
+          // Logo à gauche
+          Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: SvgPicture.asset(
+                CustomMealciAsset.fridgeIcon,
+              )),
+          const SizedBox(width: 16),
+
           // Barres de progression à droite
           Expanded(
             child: Column(

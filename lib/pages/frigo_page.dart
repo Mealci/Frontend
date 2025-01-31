@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/components/button_text_icon.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
+import 'package:mealci/components/fridge_raiting_chart.dart';
 import 'package:mealci/utils/styles/style.dart';
-import 'package:mealci/components/checking_fridge_sanity_card.dart';
 
 class FrigoPage extends StatefulWidget {
   const FrigoPage({super.key});
@@ -26,6 +26,23 @@ class _FrigoPageState extends State<FrigoPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const Text(
+                    'Mon Frigo',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 27,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Voltaire',
+                    ),
+                  ),
+
+                  // Graphique
+                  const FridgeRaitingChart(
+                    progressA: 0.4,
+                    progressB: 0.7,
+                    progressC: 0.5,
+                  ),
+
                   FeedFridgeButton(
                     onPressed: () {
                       showDialog(
@@ -47,8 +64,6 @@ class _FrigoPageState extends State<FrigoPage> {
                       );
                     },
                   ),
-                  SizedBox(height: spacing),
-                  CheckingFridgeSanityCard(isFridgeSane: isFridgeSane),
                   SizedBox(height: spacing),
                   Expanded(
                     child: SingleChildScrollView(
