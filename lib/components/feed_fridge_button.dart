@@ -11,35 +11,51 @@ class FeedFridgeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        minimumSize: const Size(1000, 35), // Taille minimale du bouton
-        backgroundColor: Style.styles[AppStyle.primaryColor], // Couleur de fond
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30), // Bordures arrondies
+    // Obtenir la largeur de l'écran
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    bool isSmallScreen = screenWidth <= 420; // iPhone SE (1ère génération)
+
+    return Align(
+      alignment: isSmallScreen ? Alignment.centerRight : Alignment.center,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(isSmallScreen ? 40 : 1000, 35),
+          backgroundColor: Style.styles[AppStyle.primaryColor],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: isSmallScreen ? 8 : 24,
+            vertical: 16,
+          ),
         ),
-        padding: const EdgeInsets.symmetric(
-            horizontal: 24, vertical: 16), // Padding du bouton
-      ),
-      child: const Row(
-        mainAxisSize: MainAxisSize.min, // Taille adaptée au contenu
-        children: [
-          Text(
-            'Nourrissez le frigo',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white, // Couleur du texte
-            ),
-          ),
-          SizedBox(width: 16), // Espacement entre le texte et l'icône
-          Icon(
-            size: 30, // Taille de l'icône
-            Icons.add, // Icône carotte
-            color: Colors.white, // Couleur de l'icône
-          ),
-        ],
+        child: isSmallScreen
+            ? const Icon(
+                Icons.add,
+                size: 20,
+                color: Colors.white,
+              )
+            : const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Nourrissez le frigo',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(width: 16),
+                  Icon(
+                    Icons.add,
+                    size: 30,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
       ),
     );
   }

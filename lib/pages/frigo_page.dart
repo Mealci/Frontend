@@ -26,8 +26,6 @@ class _FrigoPageState extends State<FrigoPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CheckingFridgeSanityCard(isFridgeSane: isFridgeSane),
-                  SizedBox(height: spacing),
                   FeedFridgeButton(
                     onPressed: () {
                       showDialog(
@@ -49,7 +47,9 @@ class _FrigoPageState extends State<FrigoPage> {
                       );
                     },
                   ),
-                  SizedBox(height: spacing * 2),
+                  SizedBox(height: spacing),
+                  CheckingFridgeSanityCard(isFridgeSane: isFridgeSane),
+                  SizedBox(height: spacing),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
@@ -68,27 +68,6 @@ class _FrigoPageState extends State<FrigoPage> {
                                 onPressed: () {},
                               ),
                               ButtonTextIcon(
-                                text: "Viandes",
-                                svgPath: CustomMealciAsset.meatIcon,
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: spacing),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ButtonTextIcon(
-                                text: "Poissons",
-                                svgPath: CustomMealciAsset.fishIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Produits laitiers",
-                                svgPath: CustomMealciAsset.milkIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
                                 text: "Céréales",
                                 svgPath: CustomMealciAsset.feculentIcon,
                                 onPressed: () {},
@@ -100,18 +79,18 @@ class _FrigoPageState extends State<FrigoPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ButtonTextIcon(
+                                text: "Viandes, Poissons & Œufs",
+                                svgPath: CustomMealciAsset.meatIcon,
+                                onPressed: () {},
+                              ),
+                              ButtonTextIcon(
+                                text: "Produits laitiers",
+                                svgPath: CustomMealciAsset.milkIcon,
+                                onPressed: () {},
+                              ),
+                              ButtonTextIcon(
                                 text: "Légumineuses",
                                 svgPath: CustomMealciAsset.legumineuseIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Œufs",
-                                svgPath: CustomMealciAsset.fishIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Huiles",
-                                svgPath: CustomMealciAsset.oilIcon,
                                 onPressed: () {},
                               ),
                             ],
@@ -120,6 +99,11 @@ class _FrigoPageState extends State<FrigoPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              ButtonTextIcon(
+                                text: "Huiles",
+                                svgPath: CustomMealciAsset.oilIcon,
+                                onPressed: () {},
+                              ),
                               ButtonTextIcon(
                                 text: "Produits sucrés",
                                 svgPath: CustomMealciAsset.sugarIcon,
@@ -130,17 +114,17 @@ class _FrigoPageState extends State<FrigoPage> {
                                 svgPath: CustomMealciAsset.drinkIcon,
                                 onPressed: () {},
                               ),
+                            ],
+                          ),
+                          SizedBox(height: spacing),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
                               ButtonTextIcon(
                                 text: "Condiments",
                                 svgPath: CustomMealciAsset.spicyIcon,
                                 onPressed: () {},
                               ),
-                            ],
-                          ),
-                          SizedBox(height: spacing),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
                               ButtonTextIcon(
                                 text: "Plats préparés",
                                 svgPath: CustomMealciAsset.junkFoodIcon,
