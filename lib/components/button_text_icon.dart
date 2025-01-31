@@ -28,26 +28,30 @@ class ButtonTextIcon extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SizedBox(
-              child: Column(
-                // clipBehavior: Clip.none, // Permet de faire sortir l'image
-                children: [
-                  SvgPicture.asset(
-                    svgPath,
-                    height: 50, // Taille minimale de l'image
-                    width: 50, // Taille minimale de l'image
-                  ),
-                  Text(
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    text,
-                    style: TextStyle(
-                      color: Colors.black, // Couleur du texte
-                      fontSize: text.length > 10 ? 11 : 14, // Taille du texte
-                      fontWeight: FontWeight.bold, // Gras
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: SizedBox(
+                child: Column(
+                  // clipBehavior: Clip.none, // Permet de faire sortir l'image
+                  children: [
+                    SvgPicture.asset(
+                      svgPath,
+                      height: 50, // Taille minimale de l'image
+                      width: 50, // Taille minimale de l'image
                     ),
-                  )
-                ],
+                    SizedBox(height: 5),
+                    Text(
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      text,
+                      style: TextStyle(
+                        color: Colors.black, // Couleur du texte
+                        fontSize: 12, // Taille du texte
+                        fontWeight: FontWeight.bold, // Gras
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ],

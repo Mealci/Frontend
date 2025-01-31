@@ -94,7 +94,7 @@ class _FrigoPageState extends State<FrigoPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               ButtonTextIcon(
-                                text: "Viandes, Poissons & Œufs",
+                                text: "Protéines",
                                 svgPath: CustomMealciAsset.meatIcon,
                                 onPressed: () {},
                               ),
@@ -104,7 +104,7 @@ class _FrigoPageState extends State<FrigoPage> {
                                 onPressed: () {},
                               ),
                               ButtonTextIcon(
-                                text: "Légumineuses",
+                                text: "Féculents",
                                 svgPath: CustomMealciAsset.legumineuseIcon,
                                 onPressed: () {},
                               ),
@@ -133,7 +133,7 @@ class _FrigoPageState extends State<FrigoPage> {
                           ),
                           SizedBox(height: spacing),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               ButtonTextIcon(
                                 text: "Condiments",
@@ -143,11 +143,6 @@ class _FrigoPageState extends State<FrigoPage> {
                               ButtonTextIcon(
                                 text: "Plats préparés",
                                 svgPath: CustomMealciAsset.junkFoodIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Fruits secs",
-                                svgPath: CustomMealciAsset.legumineuseIcon,
                                 onPressed: () {},
                               ),
                             ],
