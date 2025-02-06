@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/components/button_text_icon.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
-import 'package:mealci/components/fridge_raiting_chart.dart';
+import 'package:mealci/components/fridge_rating_chart.dart';
 import 'package:mealci/utils/styles/style.dart';
 
 class FrigoPage extends StatefulWidget {
@@ -37,7 +37,7 @@ class _FrigoPageState extends State<FrigoPage> {
                   ),
 
                   // Graphique
-                  const FridgeRaitingChart(
+                  const FridgeRatingChart(
                     progressA: 0.4,
                     progressB: 0.7,
                     progressC: 0.5,

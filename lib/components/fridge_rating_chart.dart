@@ -1,15 +1,13 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mealci/utils/styles/style.dart';
 
-class FridgeRaitingChart extends StatelessWidget {
+class FridgeRatingChart extends StatelessWidget {
   final double progressA;
   final double progressB;
   final double progressC;
 
-  const FridgeRaitingChart({
+  const FridgeRatingChart({
     required this.progressA,
     required this.progressB,
     required this.progressC,
