@@ -49,4 +49,5 @@ class CustomMealciAsset {
   static const String dietIcon = 'assets/svg/aliment_dietetique_icon.svg';
   static const String meatIcon = 'assets/svg/meat_icon.svg';
   static const String fishIcon = 'assets/svg/fish_icon.svg';
+  static const String toiletIcon = 'assets/svg/toilet_icon.svg';
 }

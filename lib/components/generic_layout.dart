@@ -3,6 +3,7 @@ import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'navbar.dart';
 import '../pages/toilet_map_page.dart';
 import '../pages/frigo_page.dart';
+import '../pages/calendar_page.dart';
 import '../components/button_profile.dart';
 
 class GenericLayout extends StatefulWidget {
@@ -48,8 +49,7 @@ class _GenericLayoutState extends State<GenericLayout>
                   title: "Recipes Page", controller: _motionTabBarController!),
               const ToiletMapPage(),
               const FrigoPage(),
-              MainPageContentComponent(
-                  title: "Calendar Page", controller: _motionTabBarController!),
+              const CalendarPage(),
               MainPageContentComponent(
                   title: "Chart Page", controller: _motionTabBarController!)
             ],
