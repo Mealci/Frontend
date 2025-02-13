@@ -72,7 +72,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     width: screenWidth * 0.3,
                     height: screenHeight * 0.2,
                   ),
-                  SizedBox(height: screenHeight * 0.15),
+                  SizedBox(height: screenHeight * 0.03),
                   SavePoopButton(
                     onPressed: () {
                       showDialog(
