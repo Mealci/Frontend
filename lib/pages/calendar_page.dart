@@ -15,6 +15,10 @@ class CalendarPage extends StatefulWidget {
 class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
+    // Récupérer les dimensions de l'écran
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -61,17 +65,14 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  CounterPoopCalendar(
-                    counter: 3,
-                    date: DateTime.now(),
-                  ),
-                  const SizedBox(height: 80),
+                  CounterPoopCalendar(),
+                  const SizedBox(height: 40),
                   SvgPicture.asset(
                     CustomMealciAsset.toiletIcon,
-                    width: 200,
-                    height: 200,
+                    width: screenWidth * 0.2,
+                    height: screenHeight * 0.1,
                   ),
-                  const SizedBox(height: 70),
+                  const SizedBox(height: 50),
                   SavePoopButton(
                     onPressed: () {
                       showDialog(

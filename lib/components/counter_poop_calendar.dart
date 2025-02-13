@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 
 class CounterPoopCalendar extends StatelessWidget {
-  final int counter;
-  final DateTime date;
-
-  const CounterPoopCalendar(
-      {super.key, required this.counter, required this.date});
+  const CounterPoopCalendar({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Color(0xFFC1ADFF),
+        color: Color(0xFFFFE3FF),
         borderRadius: BorderRadius.circular(30),
       ),
       child: SizedBox(
@@ -25,7 +21,7 @@ class CounterPoopCalendar extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Colors.black,
               ),
             ),
           ],

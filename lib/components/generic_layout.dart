@@ -4,7 +4,6 @@ import 'navbar.dart';
 import '../pages/toilet_map_page.dart';
 import '../pages/frigo_page.dart';
 import '../pages/calendar_page.dart';
-import '../components/button_profile.dart';
 
 class GenericLayout extends StatefulWidget {
   const GenericLayout({super.key, this.title});
