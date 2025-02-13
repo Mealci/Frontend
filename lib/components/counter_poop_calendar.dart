@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mealci/utils/styles/style.dart';
 
 class CounterPoopCalendar extends StatelessWidget {
   final int counter;
@@ -22,27 +21,11 @@ class CounterPoopCalendar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'Caca',
+              '💩  Aujourd’hui : Aucune selle  💩',
               style: TextStyle(
-                color: Style.styles[AppStyle.textColor],
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              '$counter',
-              style: TextStyle(
-                color: Style.styles[AppStyle.textColor],
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(
-              '${date.day}/${date.month}/${date.year}',
-              style: TextStyle(
-                color: Style.styles[AppStyle.textColor],
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
             ),
           ],
