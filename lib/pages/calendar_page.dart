@@ -64,15 +64,15 @@ class _CalendarPageState extends State<CalendarPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 30),
+                  SizedBox(height: screenHeight * 0.05),
                   CounterPoopCalendar(),
-                  const SizedBox(height: 40),
+                  SizedBox(height: screenHeight * 0.05),
                   SvgPicture.asset(
                     CustomMealciAsset.toiletIcon,
-                    width: screenWidth * 0.2,
-                    height: screenHeight * 0.1,
+                    width: screenWidth * 0.3,
+                    height: screenHeight * 0.2,
                   ),
-                  const SizedBox(height: 50),
+                  SizedBox(height: screenHeight * 0.15),
                   SavePoopButton(
                     onPressed: () {
                       showDialog(
