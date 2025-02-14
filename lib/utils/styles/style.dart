@@ -8,7 +8,8 @@ enum AppStyle {
   backgroundColorGL,
   textColor,
   buttonTextStyle,
-  boxShadowColor
+  boxShadowColor,
+  activeBackgroundDayColor,
 }
 
 class Style {
@@ -20,7 +21,7 @@ class Style {
     AppStyle.backgroundColor: Color(0xFFFFF3FF),
     AppStyle.textColor: Colors.white,
     AppStyle.boxShadowColor: Color.fromRGBO(0, 0, 0, 0.5),
-
+    AppStyle.activeBackgroundDayColor: Color(0xFFE3BDFF),
     //text styles
     AppStyle.buttonTextStyle: TextStyle(
       color: Colors.white,
@@ -49,4 +50,5 @@ class CustomMealciAsset {
   static const String dietIcon = 'assets/svg/aliment_dietetique_icon.svg';
   static const String meatIcon = 'assets/svg/meat_icon.svg';
   static const String fishIcon = 'assets/svg/fish_icon.svg';
+  static const String toiletIcon = 'assets/svg/toilet_icon.svg';
 }
