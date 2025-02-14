@@ -39,7 +39,7 @@ class _CalendarPageState extends State<CalendarPage> {
                   ),
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xFFC1ADFF),
+                      color: Style.styles[AppStyle.primaryColor],
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: SizedBox(
@@ -57,7 +57,8 @@ class _CalendarPageState extends State<CalendarPage> {
                         dayColor: Colors.black,
                         dayNameColor: Colors.black,
                         activeDayColor: Colors.black,
-                        activeBackgroundDayColor: Color(0xFFE3BDFF),
+                        activeBackgroundDayColor:
+                            Style.styles[AppStyle.activeBackgroundDayColor],
                         selectableDayPredicate: (date) => date.day != 23,
                         locale: 'fr',
                         fontSize: 35,
