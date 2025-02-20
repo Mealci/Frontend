@@ -1,5 +1,6 @@
 enum LoginPageTranslation {
-  title,
+  title1,
+  title2,
   email,
   password,
   login,
@@ -10,7 +11,8 @@ enum LoginPageTranslation {
 
 class LoginPageI18n {
   static const Map<LoginPageTranslation, String> loginPageTranslations = {
-    LoginPageTranslation.title: 'Veuillez vous connecter 💜',
+    LoginPageTranslation.title1: 'Veuillez vous ',
+    LoginPageTranslation.title2: 'connecter 💜',
     LoginPageTranslation.email: 'Email',
     LoginPageTranslation.password: 'Mot de passe',
     LoginPageTranslation.login: 'Connexion',
@@ -30,7 +32,8 @@ enum LoginThirdPageTranslation {
   apple,
   google,
   facebook,
-  welcomeToMealci,
+  welcomeTo,
+  mealSCI,
   or,
 }
 
@@ -43,7 +46,8 @@ class LoginThirdPageI18n {
     LoginThirdPageTranslation.apple: 'Apple',
     LoginThirdPageTranslation.google: 'Google',
     LoginThirdPageTranslation.facebook: 'Facebook',
-    LoginThirdPageTranslation.welcomeToMealci: 'Bienvenue sur MealSCI !',
+    LoginThirdPageTranslation.welcomeTo: 'Bienvenue sur ',
+    LoginThirdPageTranslation.mealSCI: 'MealSCI',
     LoginThirdPageTranslation.or: 'ou',
   };
 

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import '../utils/styles/style.dart';
-import '../utils/I18N/register_i18n_translation.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import '../utils/i18N/register_i18n_translation.dart';
 import '../components/input_field_login_register.dart';
 import '../components/button_login_register.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../utils/env/environnementvariable.dart';
 import '../utils/logger/logger.dart';
-import '../utils/I18N/i18n.dart';
+import '../utils/i18N/i18n.dart';
+import '../utils/secure_storage/secure_storage_management.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -27,7 +28,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   // Fonction d'inscription
   Future<void> registerUser(Map<String, String> userData) async {
-    const String registerPath = '/register';
+    const String registerPath = '/auth/register';
     final Uri registerUri =
         Uri.parse('${EnvironnementVariable.apiUrl}$registerPath');
 
@@ -39,10 +40,17 @@ class _RegisterPageState extends State<RegisterPage> {
       );
 
       if (response.statusCode == 200) {
+        final String responseBody = response.body;
+        final SecureStorageManagement secureStorageManagement =
+            SecureStorageManagement();
+        await secureStorageManagement.writeData('token_jwt', responseBody);
+
         _logger.info('Utilisateur enregistré avec succès');
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Utilisateur enregistré avec succès')),
         );
+
+        Navigator.pushNamed(context, '/home');
       } else {
         _logger.severe('Erreur: ${response.body}');
         ScaffoldMessenger.of(context).showSnackBar(
@@ -67,67 +75,107 @@ class _RegisterPageState extends State<RegisterPage> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 40.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                I18n.getTranslation(RegisterPageI18n.registerPageTranslations,
-                    RegisterPageTranslation.title) as String,
-                style: TextStyle(
-                  color: Color(Style.styles[AppStyle.primaryColor].value ??
-                      Colors.black),
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Voltaire',
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: I18n.getTranslation(
+                            RegisterPageI18n.registerPageTranslations,
+                            RegisterPageTranslation.title1) as String,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 23,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'Raleway',
+                        ),
+                      ),
+                      WidgetSpan(
+                        alignment: PlaceholderAlignment.baseline,
+                        baseline: TextBaseline.alphabetic,
+                        child: AnimatedTextKit(
+                          animatedTexts: [
+                            ColorizeAnimatedText(
+                              I18n.getTranslation(
+                                  RegisterPageI18n.registerPageTranslations,
+                                  RegisterPageTranslation.title2) as String,
+                              textStyle: const TextStyle(
+                                fontSize: 23,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Voltaire',
+                              ),
+                              colors: [
+                                const Color.fromARGB(255, 163, 134, 250),
+                                const Color(0xFF5A23B1),
+                                Colors.purple,
+                              ],
+                              speed: const Duration(milliseconds: 800),
+                            ),
+                          ],
+                          isRepeatingAnimation: true,
+                          totalRepeatCount: 10,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 50),
+                const SizedBox(height: 50),
 
-              // Champs de saisie
-              CustomTextField(
+                // Champs de saisie
+                CustomTextField(
                   label: RegisterPageTranslation.email,
                   map: RegisterPageI18n.registerPageTranslations,
-                  controller: _emailController),
-              const SizedBox(height: 20),
-              CustomTextField(
+                  controller: _emailController,
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
                   label: RegisterPageTranslation.password,
                   map: RegisterPageI18n.registerPageTranslations,
-                  controller: _passwordController),
-              const SizedBox(height: 20),
-              CustomTextField(
+                  controller: _passwordController,
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
                   label: RegisterPageTranslation.firstName,
                   map: RegisterPageI18n.registerPageTranslations,
-                  controller: _firstNameController),
-              const SizedBox(height: 20),
-              CustomTextField(
+                  controller: _firstNameController,
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
                   label: RegisterPageTranslation.lastName,
                   map: RegisterPageI18n.registerPageTranslations,
-                  controller: _lastNameController),
-              const SizedBox(height: 20),
-              CustomTextField(
+                  controller: _lastNameController,
+                ),
+                const SizedBox(height: 20),
+                CustomTextField(
                   label: RegisterPageTranslation.age,
                   map: RegisterPageI18n.registerPageTranslations,
-                  controller: _ageController),
-              const SizedBox(height: 20),
+                  controller: _ageController,
+                ),
+                const SizedBox(height: 20),
 
-              Buttonloginregister(
-                label: RegisterPageTranslation.register,
-                map: RegisterPageI18n.registerPageTranslations,
-                onPressed: () {
-                  // Récupérer les données des champs
-                  final Map<String, String> userData = {
-                    'email': _emailController.text,
-                    'password': _passwordController.text,
-                    'firstName': _firstNameController.text,
-                    'lastName': _lastNameController.text,
-                    'age': _ageController.text,
-                  };
+                Buttonloginregister(
+                  label: RegisterPageTranslation.register,
+                  map: RegisterPageI18n.registerPageTranslations,
+                  onPressed: () {
+                    // Récupérer les données des champs
+                    final Map<String, String> userData = {
+                      'email': _emailController.text,
+                      'password': _passwordController.text,
+                      'firstName': _firstNameController.text,
+                      'lastName': _lastNameController.text,
+                      'age': _ageController.text,
+                    };
 
-                  // Appeler la méthode registerUser
-                  registerUser(userData);
-                },
-              ),
-            ],
+                    // Appeler la méthode registerUser
+                    registerUser(userData);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

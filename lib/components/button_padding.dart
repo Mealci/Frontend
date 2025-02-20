@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mealci/utils/I18N/i18n.dart';
+import 'package:mealci/utils/i18N/i18n.dart';
 import 'package:mealci/utils/styles/style.dart';
 
 class ButtonPadding extends StatelessWidget {
@@ -23,13 +23,13 @@ class ButtonPadding extends StatelessWidget {
       width: double.infinity,
       height: 60,
       decoration: BoxDecoration(
-        color: Color(Style.styles[AppStyle.buttonColor].value ?? Colors.black),
+        color: Color(Style.styles[AppStyle.primaryColor].value ?? Colors.black),
         borderRadius: BorderRadius.circular(40), // Coins arrondis
       ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           backgroundColor:
-              Color(Style.styles[AppStyle.buttonColor].value ?? Colors.black),
+              Color(Style.styles[AppStyle.primaryColor].value ?? Colors.black),
         ),
         onPressed: onPressed ??
             () {}, // Si `onPressed` est nul, une fonction vide est utilisée

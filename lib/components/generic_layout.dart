@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'navbar.dart';
+import '../pages/toilet_map_page.dart';
+import '../pages/frigo_page.dart';
+import '../pages/calendar_page.dart';
 
 class GenericLayout extends StatefulWidget {
   const GenericLayout({super.key, this.title});
@@ -20,7 +23,7 @@ class _GenericLayoutState extends State<GenericLayout>
     super.initState();
 
     _motionTabBarController = MotionTabBarController(
-      initialIndex: 1,
+      initialIndex: 2,
       length: 5,
       vsync: this,
     );
@@ -35,9 +38,6 @@ class _GenericLayoutState extends State<GenericLayout>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title!),
-      ),
       body: Stack(
         children: [
           TabBarView(
@@ -46,25 +46,22 @@ class _GenericLayoutState extends State<GenericLayout>
             children: <Widget>[
               MainPageContentComponent(
                   title: "Recipes Page", controller: _motionTabBarController!),
-              MainPageContentComponent(
-                  title: "Map Page", controller: _motionTabBarController!),
-              MainPageContentComponent(
-                  title: "Mealci Page", controller: _motionTabBarController!),
-              MainPageContentComponent(
-                  title: "Calendar Page", controller: _motionTabBarController!),
+              const ToiletMapPage(),
+              const FrigoPage(),
+              const CalendarPage(),
               MainPageContentComponent(
                   title: "Chart Page", controller: _motionTabBarController!)
             ],
           ),
-          NavBar(
-            controller: _motionTabBarController!,
-            onTabSelected: (int value) {
-              setState(() {
-                _motionTabBarController!.index = value;
-              });
-            },
-          ),
         ],
+      ),
+      bottomNavigationBar: NavBar(
+        controller: _motionTabBarController!,
+        onTabSelected: (int value) {
+          setState(() {
+            _motionTabBarController!.index = value;
+          });
+        },
       ),
     );
   }

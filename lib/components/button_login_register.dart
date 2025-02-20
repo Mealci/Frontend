@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mealci/utils/I18N/i18n.dart';
+import 'package:mealci/utils/i18N/i18n.dart';
 import 'package:mealci/utils/styles/style.dart';
 
 class Buttonloginregister extends StatelessWidget {
@@ -19,7 +19,7 @@ class Buttonloginregister extends StatelessWidget {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Style.styles[AppStyle.validationColor],
+        backgroundColor: Style.styles[AppStyle.secondaryColor],
         padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 10),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30.0),
