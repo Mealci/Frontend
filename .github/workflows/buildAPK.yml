@@ -1,41 +1,54 @@
-name: Construction manuelle de l'APK
+name: Build Flutter APK Manual Release
 
 on:
   workflow_dispatch:
     inputs:
-      build_type:
-        description: 'Type de build (debug/release)'
+      version_name:
+        description: 'Version name (e.g. 1.0.0)'
         required: true
-        default: 'debug'
-
+      version_code:
+        description: 'Version code (e.g. 10)'
+        required: true
+        
 jobs:
-  build-apk:
-    name: Construire l'APK
+  build:
     runs-on: ubuntu-latest
-    
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Configuration de Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.24.2'
-        channel: 'stable'
-    
-    - name: Désactiver les animations CLI
-      run: flutter config --no-cli-animations
-    
-    - name: Obtenir les dépendances
-      run: flutter pub get
-    
-    - name: Construire l'APK
-      run: |
-        echo -e "\e[1;34m🏗️ Construction de l'APK ${{ github.event.inputs.build_type }}...\e[0m"
-        flutter build apk --${{ github.event.inputs.build_type }}
-        echo -e "\e[1;32m✅ APK ${{ github.event.inputs.build_type }} construit avec succès !\e[0m"
-    
-    - name: Télécharger l'APK
-      uses: actions/upload-artifact@v3
-      with:
-        name: apk-${{ github.event.inputs.build_type }}
-        path: build/app/outputs/flutter-apk/app-${{ github.event.inputs.build_type }}.apk
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.x'
+          channel: 'stable'
+          
+      - name: Get dependencies
+        run: flutter pub get
+        
+      - name: Build APK
+        run: flutter build apk --release
+        
+      - name: Build App Bundle
+        run: flutter build appbundle
+      
+      - name: Create GitHub Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.event.inputs.version_name }}
+          name: Release v${{ github.event.inputs.version_name }}
+          draft: false
+          prerelease: false
+          files: |
+            build/app/outputs/flutter-apk/app-release.apk
+            build/app/outputs/bundle/release/app-release.aab
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
