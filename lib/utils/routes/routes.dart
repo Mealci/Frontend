@@ -8,6 +8,7 @@ class Routes {
   static const String healthReport = '/healthReport';
   static const String toiletMap = '/toiletMap';
   static const String calendarPage = '/calendarPage';
+  static const String registerPoopPage = '/registerPoopPage';
   static const String frigoPage = '/frigoPage';
   static const String frigoDetailPage = '/frigoDetailPage';
   static const String scanBarCode = '/scanBarCodePage';

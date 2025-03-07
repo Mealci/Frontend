@@ -64,6 +64,18 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.05),
+                  CounterPoopCalendar(),
+                  SizedBox(height: screenHeight * 0.05),
+                  SvgPicture.asset(
+                    CustomMealciAsset.toiletIcon,
+                    width: screenWidth * 0.3,
+                    height: screenHeight * 0.2,
+                  ),
+                  SizedBox(height: screenHeight * 0.03),
+                  SavePoopButton(
+                    onPressed: () =>
+                        Navigator.pushNamed(context, '/registerPoopPage'),
+                  ),
                 ],
               ),
             ),
