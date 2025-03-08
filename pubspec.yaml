@@ -44,14 +44,14 @@ flutter:
     - assets/svg/drink_icon.svg # Drink Icon
     - assets/svg/milk_icon.svg # Food Icon
     - assets/svg/fruit_icon.svg # Fruit Icon
-    - assets/svg/legumineuse_icon.svg # Legumineuse Icon
-    - assets/svg/legume_icon.svg # Legume Icon
-    - assets/svg/feculent_icon.svg # Feculent Icon
+    - assets/svg/cereal_icon.svg # Cereal Icon
+    - assets/svg/vegetable_icon.svg # Vegetable Icon
+    - assets/svg/starch_icon.svg # Feculent Icon
     - assets/svg/sugar_icon.svg # Sugar Icon
     - assets/svg/spicy_icon.svg # Spicy Icon
     - assets/svg/oil_icon.svg # Oil Icon
     - assets/svg/junk_food_icon.svg # Junk Food Icon
-    - assets/svg/aliment_dietetique_icon.svg # Dietetic Food Icon
+    - assets/svg/diet_icon.svg # Dietetic Food Icon
     - assets/svg/meat_icon.svg # Meat Icon
     - assets/svg/fish_icon.svg # Seafood Icon
     - assets/svg/toilet_icon.svg # Toilet Icon
