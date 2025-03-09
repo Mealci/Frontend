@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mealci/components/button_text_icon.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
 import 'package:mealci/components/fridge_rating_chart.dart';
+import 'package:mealci/components/generic_layout.dart';
+import 'package:mealci/models/enums.dart';
+import 'package:mealci/models/food_model.dart';
+import 'package:mealci/pages/frigo_detail_page.dart';
+import 'package:mealci/services/frigo_service.dart';
 import 'package:mealci/utils/styles/style.dart';
 
 class FrigoPage extends StatefulWidget {
@@ -14,6 +19,27 @@ class FrigoPage extends StatefulWidget {
 class _FrigoPageState extends State<FrigoPage> {
   final double spacing = 14.0;
   bool isFridgeSane = true;
+
+  late Map<String, List<Food>> frigoCategories;
+
+  @override
+  void initState() {
+    super.initState();
+    frigoCategories = {};
+    getFoodData();
+  }
+
+  Future getFoodData() async {
+    List<CategoryFood> categories = CategoryFood.values;
+
+    for (var category in categories) {
+      List<Food> foodItems = await FrigoService().fetchFoodByCategory(category);
+
+      frigoCategories[category.toString().split('.').last] = foodItems;
+    }
+
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,89 +90,130 @@ class _FrigoPageState extends State<FrigoPage> {
                       );
                     },
                   ),
-                  SizedBox(height: spacing),
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ButtonTextIcon(
-                                text: "Fruits",
-                                svgPath: CustomMealciAsset.fruitIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Légumes",
-                                svgPath: CustomMealciAsset.legumeIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Céréales",
-                                svgPath: CustomMealciAsset.feculentIcon,
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
                           SizedBox(height: spacing),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ButtonTextIcon(
-                                text: "Protéines",
-                                svgPath: CustomMealciAsset.meatIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Produits laitiers",
-                                svgPath: CustomMealciAsset.milkIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Féculents",
-                                svgPath: CustomMealciAsset.legumineuseIcon,
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: spacing),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              ButtonTextIcon(
-                                text: "Huiles",
-                                svgPath: CustomMealciAsset.oilIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Produits sucrés",
-                                svgPath: CustomMealciAsset.sugarIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Boissons",
-                                svgPath: CustomMealciAsset.drinkIcon,
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: spacing),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ButtonTextIcon(
-                                text: "Condiments",
-                                svgPath: CustomMealciAsset.spicyIcon,
-                                onPressed: () {},
-                              ),
-                              ButtonTextIcon(
-                                text: "Plats préparés",
-                                svgPath: CustomMealciAsset.junkFoodIcon,
-                                onPressed: () {},
-                              ),
-                            ],
-                          ),
+                          for (int i = 0;
+                              i < CategoryFood.values.length;
+                              i += 3)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ButtonTextIcon(
+                                  text: CategoryFood.values[i]
+                                      .toString()
+                                      .split('.')
+                                      .last,
+                                  svgPath: getIconForCategory(
+                                      CategoryFood.values[i]),
+                                  onPressed: () {
+                                    setState(() {
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => GenericLayout(
+                                            title:
+                                                "Détails des ${CategoryFood.values[i].toString().split('.').last}",
+                                            child: FrigoDetailPage(
+                                              category: CategoryFood.values[i]
+                                                  .toString()
+                                                  .split('.')
+                                                  .last,
+                                              items: frigoCategories[
+                                                      CategoryFood.values[i]
+                                                          .toString()
+                                                          .split('.')
+                                                          .last] ??
+                                                  [],
+                                              image: getIconForCategory(
+                                                  CategoryFood.values[i]),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    });
+                                  },
+                                ),
+                                if (i + 1 < CategoryFood.values.length)
+                                  ButtonTextIcon(
+                                    text: CategoryFood.values[i + 1]
+                                        .toString()
+                                        .split('.')
+                                        .last,
+                                    svgPath: getIconForCategory(
+                                        CategoryFood.values[i + 1]),
+                                    onPressed: () {
+                                      setState(() {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => GenericLayout(
+                                              title:
+                                                  "Détails des ${CategoryFood.values[i + 1].toString().split('.').last}",
+                                              child: FrigoDetailPage(
+                                                category: CategoryFood
+                                                    .values[i + 1]
+                                                    .toString()
+                                                    .split('.')
+                                                    .last,
+                                                items: frigoCategories[
+                                                        CategoryFood
+                                                            .values[i + 1]
+                                                            .toString()
+                                                            .split('.')
+                                                            .last] ??
+                                                    [],
+                                                image: getIconForCategory(
+                                                    CategoryFood.values[i + 1]),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    },
+                                  ),
+                                if (i + 2 < CategoryFood.values.length)
+                                  ButtonTextIcon(
+                                    text: CategoryFood.values[i + 2]
+                                        .toString()
+                                        .split('.')
+                                        .last,
+                                    svgPath: getIconForCategory(
+                                        CategoryFood.values[i + 2]),
+                                    onPressed: () {
+                                      setState(() {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => GenericLayout(
+                                              title:
+                                                  "Détails des ${CategoryFood.values[i + 2].toString().split('.').last}",
+                                              child: FrigoDetailPage(
+                                                category: CategoryFood
+                                                    .values[i + 2]
+                                                    .toString()
+                                                    .split('.')
+                                                    .last,
+                                                items: frigoCategories[
+                                                        CategoryFood
+                                                            .values[i + 2]
+                                                            .toString()
+                                                            .split('.')
+                                                            .last] ??
+                                                    [],
+                                                image: getIconForCategory(
+                                                    CategoryFood.values[i + 2]),
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      });
+                                    },
+                                  ),
+                              ],
+                            ),
                         ],
                       ),
                     ),
@@ -158,5 +225,34 @@ class _FrigoPageState extends State<FrigoPage> {
         ],
       ),
     );
+  }
+
+  String getIconForCategory(CategoryFood category) {
+    switch (category) {
+      case CategoryFood.FRUITS:
+        return CustomMealciAsset.fruitIcon;
+      case CategoryFood.VEGETABLES:
+        return CustomMealciAsset.vegetableIcon;
+      case CategoryFood.CEREALS:
+        return CustomMealciAsset.cerealIcon;
+      case CategoryFood.PROTEINS:
+        return CustomMealciAsset.meatIcon;
+      case CategoryFood.DAIRY_PRODUCTS:
+        return CustomMealciAsset.milkIcon;
+      case CategoryFood.BEVERAGE:
+        return CustomMealciAsset.drinkIcon;
+      case CategoryFood.OILS:
+        return CustomMealciAsset.oilIcon;
+      case CategoryFood.SPICES:
+        return CustomMealciAsset.spicyIcon;
+      case CategoryFood.SUGAR_PRODUCTS:
+        return CustomMealciAsset.sugarIcon;
+      case CategoryFood.PREPARED_MEALS:
+        return CustomMealciAsset.junkFoodIcon;
+      case CategoryFood.STARCHY:
+        return CustomMealciAsset.starchIcon;
+      default:
+        return CustomMealciAsset.fridgeIcon;
+    }
   }
 }
