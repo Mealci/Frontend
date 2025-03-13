@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealci/pages/health_report.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'navbar.dart';
 import '../pages/toilet_map_page.dart';
@@ -51,7 +52,7 @@ class _GenericLayoutState extends State<GenericLayout>
               const ToiletMapPage(),
               const FrigoPage(),
               const CalendarPage(),
-              MainPageContentComponent(title: "Chart Page"),
+              const HealthReport(),
             ],
           ),
       bottomNavigationBar: NavBar(
