@@ -33,196 +33,105 @@ class _FrigoPageState extends State<FrigoPage> {
     List<CategoryFood> categories = CategoryFood.values;
 
     for (var category in categories) {
-      List<Food> foodItems = await FrigoService().fetchFoodByCategory(category);
+      List<Food> foodItems =
+          await FrigoService().fetchFoodByCategory(context, category);
 
       frigoCategories[category.toString().split('.').last] = foodItems;
     }
-
-    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
-      body: Stack(
-        children: [
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const Text(
-                    'Mon Frigo',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 27,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Voltaire',
-                    ),
-                  ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Text(
+                'Mon Frigo',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 27,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Voltaire',
+                ),
+              ),
+              const SizedBox(height: 20),
 
-                  // Graphique
-                  const FridgeRatingChart(
-                    progressA: 0.4,
-                    progressB: 0.7,
-                    progressC: 0.5,
-                  ),
+              // Graphique
+              const FridgeRatingChart(
+                progressA: 0.4,
+                progressB: 0.7,
+                progressC: 0.5,
+              ),
+              const SizedBox(height: 20),
 
-                  FeedFridgeButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Feed Fridge'),
-                            content: const Text('Feed Fridge page'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Close'),
-                              ),
-                            ],
-                          );
-                        },
+              FeedFridgeButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Feed Fridge'),
+                        content: const Text('Feed Fridge page'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Close'),
+                          ),
+                        ],
                       );
                     },
-                  ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SizedBox(height: spacing),
-                          for (int i = 0;
-                              i < CategoryFood.values.length;
-                              i += 3)
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                ButtonTextIcon(
-                                  text: CategoryFood.values[i]
-                                      .toString()
-                                      .split('.')
-                                      .last,
-                                  svgPath: getIconForCategory(
-                                      CategoryFood.values[i]),
-                                  onPressed: () {
-                                    setState(() {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => GenericLayout(
-                                            title:
-                                                "Détails des ${CategoryFood.values[i].toString().split('.').last}",
-                                            child: FrigoDetailPage(
-                                              category: CategoryFood.values[i]
-                                                  .toString()
-                                                  .split('.')
-                                                  .last,
-                                              items: frigoCategories[
-                                                      CategoryFood.values[i]
-                                                          .toString()
-                                                          .split('.')
-                                                          .last] ??
-                                                  [],
-                                              image: getIconForCategory(
-                                                  CategoryFood.values[i]),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    });
-                                  },
-                                ),
-                                if (i + 1 < CategoryFood.values.length)
-                                  ButtonTextIcon(
-                                    text: CategoryFood.values[i + 1]
-                                        .toString()
-                                        .split('.')
-                                        .last,
-                                    svgPath: getIconForCategory(
-                                        CategoryFood.values[i + 1]),
-                                    onPressed: () {
-                                      setState(() {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => GenericLayout(
-                                              title:
-                                                  "Détails des ${CategoryFood.values[i + 1].toString().split('.').last}",
-                                              child: FrigoDetailPage(
-                                                category: CategoryFood
-                                                    .values[i + 1]
-                                                    .toString()
-                                                    .split('.')
-                                                    .last,
-                                                items: frigoCategories[
-                                                        CategoryFood
-                                                            .values[i + 1]
-                                                            .toString()
-                                                            .split('.')
-                                                            .last] ??
-                                                    [],
-                                                image: getIconForCategory(
-                                                    CategoryFood.values[i + 1]),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      });
-                                    },
-                                  ),
-                                if (i + 2 < CategoryFood.values.length)
-                                  ButtonTextIcon(
-                                    text: CategoryFood.values[i + 2]
-                                        .toString()
-                                        .split('.')
-                                        .last,
-                                    svgPath: getIconForCategory(
-                                        CategoryFood.values[i + 2]),
-                                    onPressed: () {
-                                      setState(() {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => GenericLayout(
-                                              title:
-                                                  "Détails des ${CategoryFood.values[i + 2].toString().split('.').last}",
-                                              child: FrigoDetailPage(
-                                                category: CategoryFood
-                                                    .values[i + 2]
-                                                    .toString()
-                                                    .split('.')
-                                                    .last,
-                                                items: frigoCategories[
-                                                        CategoryFood
-                                                            .values[i + 2]
-                                                            .toString()
-                                                            .split('.')
-                                                            .last] ??
-                                                    [],
-                                                image: getIconForCategory(
-                                                    CategoryFood.values[i + 2]),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      });
-                                    },
-                                  ),
-                              ],
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
-            ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: screenWidth / 3, // Nombre de colonnes
+                    crossAxisSpacing: 15, // Espacement horizontal
+                    mainAxisSpacing: 15, // Espacement vertical
+                    childAspectRatio: 1.3, // Ratio largeur/hauteur des boutons
+                  ),
+                  itemCount: CategoryFood.values.length,
+                  itemBuilder: (context, index) {
+                    final category = CategoryFood.values[index];
+                    return ButtonTextIcon(
+                      text: category.toString().split('.').last,
+                      svgPath: getIconForCategory(category),
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GenericLayout(
+                              title:
+                                  "Détails des ${category.toString().split('.').last}",
+                              child: FrigoDetailPage(
+                                category: category.toString().split('.').last,
+                                items: frigoCategories[
+                                        category.toString().split('.').last] ??
+                                    [],
+                                image: getIconForCategory(category),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

@@ -41,12 +41,12 @@ class ButtonTextIcon extends StatelessWidget {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      maxLines: 2,
+                      maxLines: 1,
                       textAlign: TextAlign.center,
                       text,
                       style: TextStyle(
                         color: Colors.black, // Couleur du texte
-                        fontSize: 12, // Taille du texte
+                        fontSize: 10, // Taille du texte
                         fontWeight: FontWeight.bold, // Gras
                       ),
                     )

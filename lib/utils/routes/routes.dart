@@ -7,4 +7,6 @@ class Routes {
   static const String textRecognitionScreen = '/textRecognitionScreen';
   static const String toiletMap = '/toiletMap';
   static const String calendarPage = '/calendarPage';
+  static const String frigoPage = '/frigoPage';
+  static const String frigoDetailPage = '/frigoDetailPage';
 }

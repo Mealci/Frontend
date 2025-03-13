@@ -32,12 +32,21 @@ class Food {
 
   factory Food.fromJson(Map<String, dynamic> json) {
     return Food(
-      name: json['name'],
-      quantity: json['quantity'],
-      measure: MeasureFood.values[json['measure']],
-      brand: json['brand'],
-      category: CategoryFood.values[json['category']],
-      state: StateFood.values[json['state']],
+      name: json['food']['name'],
+      quantity: json['food']['quantity'],
+      measure: MeasureFood.values.firstWhere(
+        (e) => e.toString().split('.').last == json['food']['measure'],
+        orElse: () => MeasureFood.PIECE,
+      ),
+      brand: json['food']['brand'],
+      category: CategoryFood.values.firstWhere(
+        (e) => e.toString().split('.').last == json['food']['category'],
+        orElse: () => CategoryFood.FRUITS,
+      ),
+      state: StateFood.values.firstWhere(
+        (e) => e.toString().split('.').last == json['food']['state'],
+        orElse: () => StateFood.PRESENT,
+      ),
     );
   }
 }

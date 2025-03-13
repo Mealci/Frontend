@@ -1,23 +1,28 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mealci/models/enums.dart';
 import 'package:mealci/models/food_model.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
 
 class FrigoService {
-  Future<List<Food>> fetchFoodByCategory(CategoryFood category) async {
-    const String foodByCategoryPath = '/food/getFoodsByCategory';
-    final Uri foodbyCategoryUri =
+  Future<List<Food>> fetchFoodByCategory(
+      BuildContext context, CategoryFood category) async {
+    final String foodByCategoryPath =
+        '/food/getFoodsByCategory?category=${category.toString().split('.').last}';
+    final Uri foodByCategoryUri =
         Uri.parse('${EnvironnementVariable.apiUrl}$foodByCategoryPath');
+
     final response =
-        await http.get(foodbyCategoryUri, headers: <String, String>{
+        await http.get(foodByCategoryUri, headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     });
 
     if (response.statusCode == 200) {
       return parseFoodByCategory(response.body);
     } else {
-      throw Exception('Echec du chargement des données de l\'url');
+      throw Exception(
+          'Échec du chargement des données des catégories d\'aliments');
     }
   }
 }

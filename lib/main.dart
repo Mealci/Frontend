@@ -15,6 +15,7 @@ import 'package:mealci/pages/loginthird_page.dart';
 import 'package:mealci/pages/login_page.dart';
 import 'package:mealci/pages/home.dart';
 import 'package:mealci/pages/toilet_map_page.dart';
+import 'package:mealci/pages/frigo_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,6 +62,7 @@ class MyApp extends StatelessWidget {
         Routes.registerpage: (context) => const RegisterPage(),
         Routes.textRecognitionScreen: (context) => const OcrLogic(),
         Routes.toiletMap: (context) => const ToiletMapPage(),
+        Routes.frigoPage: (context) => const FrigoPage(),
       },
     );
   }
