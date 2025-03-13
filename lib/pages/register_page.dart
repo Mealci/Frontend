@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:mealci/services/auth_service.dart';
 import '../utils/i18N/register_i18n_translation.dart';
 import '../components/input_field_login_register.dart';
 import '../components/button_login_register.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../utils/env/environnementvariable.dart';
-import '../utils/logger/logger.dart';
 import '../utils/i18N/i18n.dart';
-import '../utils/secure_storage/secure_storage_management.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,52 +14,11 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  static final MealciLogger _logger = MealciLogger('RegisterPage');
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
-
-  // Fonction d'inscription
-  Future<void> registerUser(Map<String, String> userData) async {
-    const String registerPath = '/auth/register';
-    final Uri registerUri =
-        Uri.parse('${EnvironnementVariable.apiUrl}$registerPath');
-
-    try {
-      final response = await http.post(
-        registerUri,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(userData),
-      );
-
-      if (response.statusCode == 200) {
-        final String responseBody = response.body;
-        final SecureStorageManagement secureStorageManagement =
-            SecureStorageManagement();
-        await secureStorageManagement.writeData('token_jwt', responseBody);
-
-        _logger.info('Utilisateur enregistré avec succès');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Utilisateur enregistré avec succès')),
-        );
-
-        Navigator.pushNamed(context, '/home');
-      } else {
-        _logger.severe('Erreur: ${response.body}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: ${response.body}')),
-        );
-      }
-    } catch (error) {
-      _logger.severe('Erreur lors de l\'enregistrement : $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur lors de l\'enregistrement : $error')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,17 +116,20 @@ class _RegisterPageState extends State<RegisterPage> {
                   label: RegisterPageTranslation.register,
                   map: RegisterPageI18n.registerPageTranslations,
                   onPressed: () {
-                    // Récupérer les données des champs
-                    final Map<String, String> userData = {
-                      'email': _emailController.text,
-                      'password': _passwordController.text,
-                      'firstName': _firstNameController.text,
-                      'lastName': _lastNameController.text,
-                      'age': _ageController.text,
-                    };
+                    final email = _emailController.text;
+                    final password = _passwordController.text;
+                    final firstName = _firstNameController.text;
+                    final lastName = _lastNameController.text;
+                    final age = _ageController.text;
 
-                    // Appeler la méthode registerUser
-                    registerUser(userData);
+                    AuthService().register(
+                      context,
+                      firstName,
+                      lastName,
+                      password,
+                      email,
+                      age,
+                    );
                   },
                 ),
               ],
