@@ -1,7 +1,7 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
-import 'package:mealci/pages/test_health_screen.dart';
+import 'package:mealci/pages/health_report.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
 import 'package:flutter/scheduler.dart';
 import 'dart:io';
@@ -88,6 +88,8 @@ class MyApp extends StatelessWidget {
         Routes.textRecognitionScreen: (context) => const OcrLogic(),
         Routes.toiletMap: (context) => const ToiletMapPage(),
         Routes.frigoPage: (context) => const FrigoPage(),
+        Routes.textRecognitionScreen: (context) => const OcrLogic(),
+        Routes.healthReport: (context) => const HealthReport()
       },
     );
   }
