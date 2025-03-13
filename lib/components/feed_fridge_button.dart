@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import '../utils/styles/style.dart';
 
 class FeedFridgeButton extends StatelessWidget {
+  final String text;
   final VoidCallback onPressed;
 
   const FeedFridgeButton({
+    required this.text,
     required this.onPressed,
     super.key,
   });
@@ -25,11 +27,11 @@ class FeedFridgeButton extends StatelessWidget {
             vertical: 16,
           ),
         ),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Nourrissez le frigo',
+              text,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
