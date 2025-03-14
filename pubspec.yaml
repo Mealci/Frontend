@@ -30,7 +30,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^5.0.0
   flutter_secure_storage: ^9.2.4
-  flutter_intl:	^1.19.3
+  intl_utils:	^2.8.5
 
 flutter:
   uses-material-design: true
