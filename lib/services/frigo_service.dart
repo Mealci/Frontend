@@ -47,7 +47,7 @@ class FrigoService {
     }
 
     if (response.statusCode == 200) {
-      return parseFoodByCategory(response.body);
+      return parseFoodByCategory(utf8.decode(response.bodyBytes));
     } else {
       throw Exception(
           'Échec du chargement des données des catégories d\'aliments');
