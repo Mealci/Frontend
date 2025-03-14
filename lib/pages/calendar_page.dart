@@ -1,8 +1,5 @@
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mealci/components/counter_poop_calendar.dart';
-import 'package:mealci/components/save_poop_button.dart';
 import 'package:mealci/utils/styles/style.dart';
 
 class CalendarPage extends StatefulWidget {
@@ -66,35 +63,6 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                   ),
                   SizedBox(height: screenHeight * 0.05),
-                  CounterPoopCalendar(),
-                  SizedBox(height: screenHeight * 0.05),
-                  SvgPicture.asset(
-                    CustomMealciAsset.toiletIcon,
-                    width: screenWidth * 0.3,
-                    height: screenHeight * 0.2,
-                  ),
-                  SizedBox(height: screenHeight * 0.03),
-                  SavePoopButton(
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Save Poop'),
-                            content: const Text('Save Poop page'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: const Text('Close'),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
                 ],
               ),
             ),

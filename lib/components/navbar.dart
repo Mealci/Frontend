@@ -40,10 +40,10 @@ class NavBar extends StatelessWidget {
           controller: controller,
           initialSelectedTab: "Mealci",
           useSafeArea: false,
-          labels: const ["Recipes", "Map", "Mealci", "Calendar", "Chart"],
+          labels: const ["Map" ,"Tracker", "Mealci", "Calendar", "Chart"],
           icons: const [
-            Icons.menu_book_rounded,
             Icons.map,
+            Icons.menu_book_rounded,
             Icons.food_bank,
             Icons.calendar_month_rounded,
             Icons.bar_chart_rounded,
