@@ -46,13 +46,11 @@ class _CalendarPageState extends State<CalendarPage> {
                       width: double.infinity,
                       height: 140,
                       child: CalendarTimeline(
-                        initialDate: DateTime.now().subtract(
-                          const Duration(days: 1),
-                        ),
+                        initialDate: DateTime.now(),
                         firstDate: DateTime(DateTime.now().year - 1,
                             DateTime.now().month, DateTime.now().day),
                         lastDate: DateTime(DateTime.now().year,
-                            DateTime.now().month, DateTime.now().day),
+                            DateTime.now().month, DateTime.now().day + 1),
                         onDateSelected: (date) => print(date),
                         leftMargin: 20,
                         monthColor: Colors.black,
