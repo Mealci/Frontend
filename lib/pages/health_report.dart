@@ -69,13 +69,18 @@ class _HealthReportState extends State<HealthReport> {
       endTime: endTime,
       types: const [HealthDataType.STEPS],
     );
+
     int totalSteps = 0;
     for (var data in stepsData) {
+      // print("Data: ${data.value}");
       if (data.value != null) {
+        // print type of data.value
         if (data.value is int) {
           totalSteps += data.value as int;
         } else if (data.value is double) {
           totalSteps += (data.value as double).toInt();
+        } else if (data.value is NumericHealthValue) {
+          totalSteps += (data.value as NumericHealthValue).numericValue.toInt();
         }
       }
     }
@@ -91,6 +96,9 @@ class _HealthReportState extends State<HealthReport> {
     for (var data in heartRateData) {
       if (data.value is num) {
         totalHeartRate += (data.value as num).toDouble();
+        heartRateCount++;
+      } else if (data.value is NumericHealthValue) {
+        totalHeartRate += (data.value as NumericHealthValue).numericValue;
         heartRateCount++;
       }
     }
