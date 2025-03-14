@@ -9,7 +9,7 @@ class AuthService {
   static final MealciLogger _logger = MealciLogger('LoginPage');
 
   Future<void> login(
-      BuildContext context, String username, String password) async {
+      BuildContext context, String email, String password) async {
     const String loginPath = '/auth/login';
     final Uri loginUri = Uri.parse('${EnvironnementVariable.apiUrl}$loginPath');
 
@@ -17,7 +17,7 @@ class AuthService {
       final response = await http.post(
         loginUri,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'username': username, 'password': password}),
+        body: jsonEncode({'email': email, 'password': password}),
       );
 
       if (response.statusCode == 200) {
