@@ -3,14 +3,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mealci/components/save_poop_button.dart';
 import 'package:mealci/utils/styles/style.dart';
 
-class PoopTackerPage extends StatefulWidget {
-  const PoopTackerPage({super.key});
+class PoopTrackerPage extends StatefulWidget {
+  const PoopTrackerPage({super.key});
 
   @override
-  State<PoopTackerPage> createState() => _PoopTackerPageState();
+  State<PoopTrackerPage> createState() => _PoopTrackerPageState();
 }
 
-class _PoopTackerPageState extends State<PoopTackerPage> {
+class _PoopTrackerPageState extends State<PoopTrackerPage> {
   @override
   Widget build(BuildContext context) {
     final screenH = MediaQuery.of(context).size.height;
