@@ -37,7 +37,10 @@ jobs:
           
       - name: Get dependencies
         run: flutter pub get
-        
+
+      - name: Generate intl files
+        run: flutter pub run intl_utils:generate
+
       - name: Build APK
         run: flutter build apk --release
         
