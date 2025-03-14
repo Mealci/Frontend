@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/pages/health_report.dart';
+import 'package:mealci/pages/poop_tracker_page.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'navbar.dart';
 import '../pages/toilet_map_page.dart';
@@ -48,8 +49,9 @@ class _GenericLayoutState extends State<GenericLayout>
             physics: const NeverScrollableScrollPhysics(),
             controller: _motionTabBarController,
             children: <Widget>[
-              MainPageContentComponent(title: "Recipes Page"),
+              // MainPageContentComponent(title: "Recipes Page"),
               const ToiletMapPage(),
+              const PoopTrackerPage(),
               const FrigoPage(),
               const CalendarPage(),
               const HealthReport(),
