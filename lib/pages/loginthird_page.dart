@@ -130,7 +130,7 @@ class LoginThirdPage extends StatelessWidget {
                 label: LoginThirdPageTranslation.facebook,
                 map: LoginThirdPageI18n.loginThirdPageTranslation,
                 onPressed: () =>
-                    Navigator.pushNamed(context, '/textRecognitionScreen'),
+                    Navigator.pushNamed(context, '/healthReport'),
               ),
             ],
           ),

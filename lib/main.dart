@@ -1,5 +1,7 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:health/health.dart';
+import 'package:mealci/pages/health_report.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
 import 'package:flutter/scheduler.dart';
 import 'dart:io';
@@ -15,11 +17,35 @@ import 'package:mealci/pages/loginthird_page.dart';
 import 'package:mealci/pages/login_page.dart';
 import 'package:mealci/pages/home.dart';
 import 'package:mealci/pages/toilet_map_page.dart';
+import 'package:mealci/pages/frigo_page.dart';
 
-Future<void> main() async {
+// Global Health Instance
+final health = Health();
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await requestHealthPermissions();
   await dotenv.load(fileName: ".env");
   runApp(const MyApp());
+}
+
+Future<void> requestHealthPermissions() async {
+  List<HealthDataType> types = HealthDataType.values;
+  
+  bool? hasPermissions = await health.hasPermissions(types);
+
+  if (!(hasPermissions ?? false)) {
+    List<HealthDataAccess> permissions = [];
+    for (var e in types) {
+      permissions.add(HealthDataAccess.READ);
+    }
+    bool authorized = await health.requestAuthorization(types, permissions: permissions);
+    if (!authorized) {
+      debugPrint("HealthKit permissions not granted");
+    } else {
+      debugPrint("HealthKit permissions granted");
+    }
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -61,6 +87,9 @@ class MyApp extends StatelessWidget {
         Routes.registerpage: (context) => const RegisterPage(),
         Routes.textRecognitionScreen: (context) => const OcrLogic(),
         Routes.toiletMap: (context) => const ToiletMapPage(),
+        Routes.frigoPage: (context) => const FrigoPage(),
+        Routes.textRecognitionScreen: (context) => const OcrLogic(),
+        Routes.healthReport: (context) => const HealthReport()
       },
     );
   }

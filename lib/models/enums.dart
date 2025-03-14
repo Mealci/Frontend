@@ -1,0 +1,17 @@
+enum StateFood { PRESENT, EAT, DISCARD }
+
+enum MeasureFood { PIECE, LITER, KILOGRAM }
+
+enum CategoryFood {
+  FRUITS,
+  VEGETABLES,
+  CEREALS,
+  PROTEINS,
+  DAIRY_PRODUCTS,
+  STARCHY,
+  OILS,
+  SUGAR_PRODUCTS,
+  BEVERAGE,
+  SPICES,
+  PREPARED_MEALS,
+}

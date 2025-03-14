@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:mealci/services/auth_service.dart';
 import '../utils/i18N/login_i18n_translation.dart';
 import '../components/input_field_login_register.dart';
 import '../components/button_login_register.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../utils/env/environnementvariable.dart';
-import '../utils/logger/logger.dart';
 import '../utils/i18N/i18n.dart';
-import '../utils/secure_storage/secure_storage_management.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -18,60 +14,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  static final MealciLogger _logger = MealciLogger('LoginPage');
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-// Fonction de connexion
-  Future<void> loginUser(Map<String, String> loginData) async {
-    const String loginPath = '/auth/login';
-    final Uri loginUri = Uri.parse('${EnvironnementVariable.apiUrl}$loginPath');
-
-    try {
-      // Envoyer la requête POST
-      final response = await http.post(
-        loginUri,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode(loginData),
-      );
-
-      // Vérifier le code de statut de la réponse
-      if (response.statusCode == 200) {
-        _logger.info('Connexion réussie');
-
-        // Décoder la réponse
-        final String responseBody = response.body;
-
-        final SecureStorageManagement secureStorageManagement =
-            SecureStorageManagement();
-        await secureStorageManagement.writeData('token_jwt', responseBody);
-
-        // Afficher un message de succès
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Connexion réussie')),
-        );
-
-        // Naviguer vers la page suivante
-        Navigator.pushNamed(context, '/home');
-      } else {
-        // Gérer les erreurs du serveur
-        _logger.severe('Erreur du serveur: ${response.statusCode}');
-        final errorMessage =
-            json.decode(response.body)['message'] ?? 'Erreur inconnue';
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $errorMessage')),
-        );
-      }
-    } catch (error, stackTrace) {
-      // Gérer les exceptions (erreurs réseau, JSON, etc.)
-      _logger.severe('Erreur lors de la connexion: $error , $stackTrace');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Erreur lors de la connexion : ${error.toString()}')),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -151,14 +95,9 @@ class _LoginPageState extends State<LoginPage> {
                   label: LoginPageTranslation.login,
                   map: LoginPageI18n.loginPageTranslations,
                   onPressed: () {
-                    // Récupérer les données des champs
-                    final Map<String, String> loginData = {
-                      'email': _emailController.text,
-                      'password': _passwordController.text,
-                    };
-
-                    // Appeler la méthode loginUser
-                    loginUser(loginData);
+                    final username = _emailController.text;
+                    final password = _passwordController.text;
+                    AuthService().login(context, username, password);
                   },
                 ),
               ],

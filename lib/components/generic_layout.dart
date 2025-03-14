@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealci/pages/health_report.dart';
 import 'package:motion_tab_bar/MotionTabBarController.dart';
 import 'navbar.dart';
 import '../pages/toilet_map_page.dart';
@@ -6,9 +7,10 @@ import '../pages/frigo_page.dart';
 import '../pages/calendar_page.dart';
 
 class GenericLayout extends StatefulWidget {
-  const GenericLayout({super.key, this.title});
-
   final String? title;
+  final Widget? child;
+
+  const GenericLayout({super.key, this.title, this.child});
 
   @override
   State<GenericLayout> createState() => _GenericLayoutState();
@@ -17,6 +19,7 @@ class GenericLayout extends StatefulWidget {
 class _GenericLayoutState extends State<GenericLayout>
     with TickerProviderStateMixin {
   MotionTabBarController? _motionTabBarController;
+  Widget? _currentChild;
 
   @override
   void initState() {
@@ -27,38 +30,36 @@ class _GenericLayoutState extends State<GenericLayout>
       length: 5,
       vsync: this,
     );
+
+    _currentChild = widget.child;
   }
 
   @override
   void dispose() {
+    _motionTabBarController?.dispose();
     super.dispose();
-    _motionTabBarController!.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
+      body: _currentChild ??
           TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             controller: _motionTabBarController,
             children: <Widget>[
-              MainPageContentComponent(
-                  title: "Recipes Page", controller: _motionTabBarController!),
+              MainPageContentComponent(title: "Recipes Page"),
               const ToiletMapPage(),
               const FrigoPage(),
               const CalendarPage(),
-              MainPageContentComponent(
-                  title: "Chart Page", controller: _motionTabBarController!)
+              const HealthReport(),
             ],
           ),
-        ],
-      ),
       bottomNavigationBar: NavBar(
         controller: _motionTabBarController!,
         onTabSelected: (int value) {
           setState(() {
+            _currentChild = null;
             _motionTabBarController!.index = value;
           });
         },
@@ -68,25 +69,16 @@ class _GenericLayoutState extends State<GenericLayout>
 }
 
 class MainPageContentComponent extends StatelessWidget {
-  const MainPageContentComponent({
-    required this.title,
-    required this.controller,
-    super.key,
-  });
-
   final String title;
-  final MotionTabBarController controller;
+
+  const MainPageContentComponent({super.key, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(title,
-              style:
-                  const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        ],
+      child: Text(
+        title,
+        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       ),
     );
   }
