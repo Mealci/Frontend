@@ -90,8 +90,6 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(jsonEncode(recognizedJson));
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
