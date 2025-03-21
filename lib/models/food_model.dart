@@ -1,6 +1,7 @@
 import 'enums.dart';
 
 class Food {
+  int id;
   String name;
   double quantity;
   MeasureFood measure;
@@ -9,13 +10,15 @@ class Food {
   StateFood state = StateFood.PRESENT;
 
   Food(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.quantity,
       required this.measure,
       required this.brand,
       required this.category,
       this.state = StateFood.PRESENT});
 
+  int get getId => id;
   String get getName => name;
   double get getQuantity => quantity;
   MeasureFood get getMeasure => measure;
@@ -23,6 +26,7 @@ class Food {
   CategoryFood get getCategory => category;
   StateFood get getState => state;
 
+  set setId(int id) => this.id = id;
   set setName(String name) => this.name = name;
   set setQuantity(double quantity) => this.quantity = quantity;
   set setMeasure(MeasureFood measure) => this.measure = measure;
@@ -32,6 +36,7 @@ class Food {
 
   factory Food.fromJson(Map<String, dynamic> json) {
     return Food(
+      id: json['id'],
       name: json['food']['name'],
       quantity: json['food']['quantity'],
       measure: MeasureFood.values.firstWhere(
