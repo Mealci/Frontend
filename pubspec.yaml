@@ -25,6 +25,8 @@ dependencies:
   health: ^12.0.1
   qr_code_scanner: ^0.6.1
   flutter_secure_storage: ^9.2.4
+  another_xlider: ^3.0.2
+  flutter_xlider: ^3.5.0
 
 dev_dependencies:
   flutter_test:

@@ -31,7 +31,8 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         enableAudio: false,
       );
 
-      await _cameraController!.initialize();
+      await _cameraController!
+          .initialize(); // create bug is permission denied, take off !
       if (!mounted) return;
 
       setState(() {
