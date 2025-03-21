@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mealci/components/button_text_icon.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
 import 'package:mealci/components/fridge_rating_chart.dart';
+import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/components/generic_layout.dart';
 import 'package:mealci/models/enums.dart';
 import 'package:mealci/models/food_model.dart';
@@ -18,7 +19,7 @@ class FrigoPage extends StatefulWidget {
 
 class _FrigoPageState extends State<FrigoPage> {
   final double spacing = 14.0;
-  bool isFridgeSane = true;
+  bool _showContent = true;
 
   late Map<String, List<Food>> frigoCategories;
 
@@ -71,24 +72,9 @@ class _FrigoPageState extends State<FrigoPage> {
               const SizedBox(height: 20),
 
               FeedFridgeButton(
+                text: "Feed Fridge",
                 onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Feed Fridge'),
-                        content: const Text('Feed Fridge page'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Close'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  Navigator.pushNamed(context, Routes.scanBarCode);
                 },
               ),
               const SizedBox(height: 10),

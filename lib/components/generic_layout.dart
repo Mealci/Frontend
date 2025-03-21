@@ -49,7 +49,6 @@ class _GenericLayoutState extends State<GenericLayout>
             physics: const NeverScrollableScrollPhysics(),
             controller: _motionTabBarController,
             children: <Widget>[
-              // MainPageContentComponent(title: "Recipes Page"),
               const ToiletMapPage(),
               const PoopTrackerPage(),
               const FrigoPage(),

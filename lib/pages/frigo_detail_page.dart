@@ -36,6 +36,7 @@ class FrigoDetailPage extends StatelessWidget {
                 ),
                 SizedBox(height: 20),
                 FeedFridgeButton(
+                  text: "Feed Fridge",
                   onPressed: () {
                     showDialog(
                       context: context,
