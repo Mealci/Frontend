@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mealci/components/big_button_text_icon.dart';
 import 'package:mealci/components/button_text_icon.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
 import 'package:mealci/components/fridge_rating_chart.dart';
@@ -10,7 +9,6 @@ import 'package:mealci/models/food_model.dart';
 import 'package:mealci/pages/frigo_detail_page.dart';
 import 'package:mealci/services/frigo_service.dart';
 import 'package:mealci/utils/styles/style.dart';
-import 'package:mealci/utils/i18N/frigo_i18n_translation.dart';
 
 class FrigoPage extends StatefulWidget {
   const FrigoPage({super.key});
@@ -74,24 +72,9 @@ class _FrigoPageState extends State<FrigoPage> {
               const SizedBox(height: 20),
 
               FeedFridgeButton(
+                text: "Feed Fridge",
                 onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Feed Fridge'),
-                        content: const Text('Feed Fridge page'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Close'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  Navigator.pushNamed(context, Routes.scanBarCode);
                 },
               ),
               const SizedBox(height: 10),

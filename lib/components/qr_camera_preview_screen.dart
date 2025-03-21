@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealci/components/openfoodfact_details_product.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -15,20 +16,27 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
   String barcode = '';
   bool isFlashOn = false;
 
-  // Méthode pour gérer le résultat du scan
   void onScan(QRViewController controller) {
+    // Listen for scan data
     controller.scannedDataStream.listen((scanData) async {
-      setState(() {
-        barcode = scanData.code!;
-      });
+      // Check if a barcode is detected
+      if (scanData.code != null) {
+        // Pause the camera to stop further scanning
+        controller.pauseCamera();
 
-      // Appel API Open Food Facts après avoir scanné le code-barres
-      await fetchProductDetails(barcode);
+        setState(() {
+          barcode = scanData.code!;
+        });
+
+        // Fetch product details
+        await fetchProductDetails(barcode, controller);
+      }
     });
   }
 
   // Méthode pour obtenir les détails du produit depuis Open Food Facts
-  Future<void> fetchProductDetails(String barcode) async {
+  Future<void> fetchProductDetails(
+      String barcode, QRViewController controller) async {
     final url = 'https://world.openfoodfacts.org/api/v0/product/$barcode.json';
     final response = await http.get(Uri.parse(url));
 
@@ -36,31 +44,25 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
       final data = json.decode(response.body);
       if (data['status'] == 1) {
         final product = data['product'];
-        final productName = product['product_name'] ?? 'Produit inconnu';
-        final productCategory =
-            product['categories_tags']?.join(', ') ?? 'Aucune catégorie';
-        final productImageUrl = product['image_url'] ?? '';
 
-        // Afficher les détails du produit dans une boîte de dialogue
+        // Navigate to the product details screen
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                ProductDetailsScreen(barcode: barcode, controller: controller),
+          ),
+        );
+      } else {
         showDialog(
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text(productName),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (productImageUrl.isNotEmpty)
-                    Image.network(productImageUrl, height: 100),
-                  const SizedBox(height: 10),
-                  Text('Catégorie: $productCategory'),
-                ],
-              ),
+              title: const Text('Erreur'),
+              content: const Text('Produit non trouvé'),
               actions: [
                 TextButton(
-                  onPressed: () =>
-                      Navigator.pushNamed(context, '/scanBarCodePage'),
+                  onPressed: () => Navigator.pop(context),
                   child: const Text('Fermer'),
                 ),
               ],

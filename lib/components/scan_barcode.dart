@@ -36,7 +36,7 @@ class _QrScannerState extends State<QrScanner> {
         context,
         MaterialPageRoute(
           builder: (context) => ResultScreen(
-            imagePath: "", // Plus besoin d'image
+            imagePath: "",
             recognizedQrCodes: _recognizedQrCodes,
           ),
         ),
