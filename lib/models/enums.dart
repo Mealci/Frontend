@@ -1,31 +1,31 @@
-enum StateFood { PRESENT, EAT, DISCARD }
+enum StateFood { present, eat, discard }
 
-enum MeasureFood { PIECE, LITER, KILOGRAM }
+enum MeasureFood { piece, liter, kilogram }
 
 enum CategoryFood {
-  FRUITS,
-  VEGETABLES,
-  CEREALS,
-  PROTEINS,
-  DAIRY_PRODUCTS,
-  STARCHY,
-  OILS,
-  SUGAR_PRODUCTS,
-  BEVERAGE,
-  SPICES,
-  PREPARED_MEALS,
+  fruits,
+  vegetables,
+  cereals,
+  proteins,
+  dairy_Products,
+  starchy,
+  oils,
+  sugar_Products,
+  beverage,
+  spices,
+  prepared_Meals,
 }
 
 Map<CategoryFood, List<String>> categoryKeywords = {
-  CategoryFood.FRUITS: ["pomme", "banane", "orange", "raisin", "ananas"],
-  CategoryFood.VEGETABLES: ["carotte", "courgette", "poivron", "salade"],
-  CategoryFood.CEREALS: ["riz", "blé", "avoine", "céréale", "quinoa"],
-  CategoryFood.PROTEINS: ["poulet", "bœuf", "poisson", "œuf", "tofu"],
-  CategoryFood.DAIRY_PRODUCTS: ["lait", "fromage", "yaourt", "beurre"],
-  CategoryFood.STARCHY: ["pomme de terre", "pâtes", "pain", "maïs"],
-  CategoryFood.OILS: ["huile", "olive", "colza", "tournesol"],
-  CategoryFood.SUGAR_PRODUCTS: ["bonbon", "chocolat", "sucre", "confiserie"],
-  CategoryFood.BEVERAGE: ["eau", "jus", "soda", "café", "thé"],
-  CategoryFood.SPICES: ["sel", "poivre", "curry", "paprika"],
-  CategoryFood.PREPARED_MEALS: ["pizza", "lasagne", "soupe", "plat préparé"],
+  CategoryFood.fruits: ["pomme", "banane", "orange", "raisin", "ananas"],
+  CategoryFood.vegetables: ["carotte", "courgette", "poivron", "salade"],
+  CategoryFood.cereals: ["riz", "blé", "avoine", "céréale", "quinoa"],
+  CategoryFood.proteins: ["poulet", "bœuf", "poisson", "œuf", "tofu"],
+  CategoryFood.dairy_Products: ["lait", "fromage", "yaourt", "beurre"],
+  CategoryFood.starchy: ["pomme de terre", "pâtes", "pain", "maïs"],
+  CategoryFood.oils: ["huile", "olive", "colza", "tournesol"],
+  CategoryFood.sugar_Products: ["bonbon", "chocolat", "sucre", "confiserie"],
+  CategoryFood.beverage: ["eau", "jus", "soda", "café", "thé"],
+  CategoryFood.spices: ["sel", "poivre", "curry", "paprika"],
+  CategoryFood.prepared_Meals: ["pizza", "lasagne", "soupe", "plat préparé"],
 };

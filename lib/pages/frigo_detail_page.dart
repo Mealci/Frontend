@@ -70,7 +70,7 @@ class FrigoDetailPage extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withAlpha(10),
                                 blurRadius: 5,
                                 spreadRadius: 1,
                                 offset: Offset(0, 2),

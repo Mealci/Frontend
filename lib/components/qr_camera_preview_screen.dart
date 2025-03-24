@@ -43,8 +43,6 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['status'] == 1) {
-        final product = data['product'];
-
         // Navigate to the product details screen
         Navigator.push(
           context,
@@ -128,7 +126,7 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withAlpha(128),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -149,7 +147,7 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withAlpha(50),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(

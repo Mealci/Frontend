@@ -9,7 +9,6 @@ class QrScanner extends StatefulWidget {
 }
 
 class _QrScannerState extends State<QrScanner> {
-  String? _capturedImagePath;
   List<Map<String, dynamic>> _recognizedQrCodes = [];
 
   @override
