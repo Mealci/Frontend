@@ -16,7 +16,7 @@ class NavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     // Récupérer les dimensions de l'écran
     final screenHeight = MediaQuery.of(context).size.height;
-    final textScale = MediaQuery.of(context).textScaleFactor;
+    final textScale = MediaQuery.textScaleFactorOf(context);
 
     return Container(
       height: screenHeight * 0.1,
