@@ -20,6 +20,7 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
   );
   final List<Marker> _markers = [];
   late String apiKey;
+  bool _isRequestingPermission = false;
 
   @override
   void initState() {
@@ -37,27 +38,32 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
     }
   }
 
-  // Get current location and set the camera position
   Future<void> _initializeLocation() async {
     try {
       final position = await _getCurrentLocation();
       _setCameraPosition(position);
+      _fetchNearbyToilets(position);
     } catch (e) {
       debugPrint("Error getting current location: $e");
     }
   }
 
   Future<void> _checkPermissions() async {
-    final permission = await Geolocator.checkPermission();
+    if (_isRequestingPermission) return; // Prevent multiple permission requests
+    _isRequestingPermission = true;
 
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      final requestedPermission = await Geolocator.requestPermission();
-
-      if (requestedPermission == LocationPermission.denied ||
-          requestedPermission == LocationPermission.deniedForever) {
-        throw Exception("Location permission denied");
+    try {
+      final permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        final requestedPermission = await Geolocator.requestPermission();
+        if (requestedPermission == LocationPermission.denied ||
+            requestedPermission == LocationPermission.deniedForever) {
+          throw Exception("Location permission denied");
+        }
       }
+    } finally {
+      _isRequestingPermission = false;
     }
   }
 
@@ -133,10 +139,7 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
         return AlertDialog(
           title: Text(
             toilet['name'],
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -152,8 +155,7 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).primaryColor,
-              ),
+                  foregroundColor: Theme.of(context).primaryColor),
               child: const Text('Close'),
             ),
           ],
@@ -166,15 +168,9 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          '$label ',
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+        Text('$label ', style: const TextStyle(fontWeight: FontWeight.bold)),
         Expanded(
-          child: Text(
-            value,
-            style: const TextStyle(color: Colors.black54),
-          ),
+          child: Text(value, style: const TextStyle(color: Colors.black54)),
         ),
       ],
     );
@@ -190,11 +186,7 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
         markers: Set<Marker>.of(_markers),
         onMapCreated: (controller) {
           _mapController = controller;
-          _initializeLocation().then((_) {
-            _getCurrentLocation().then((position) {
-              _fetchNearbyToilets(position);
-            });
-          });
+          _initializeLocation(); // Call only once
         },
       ),
     );
