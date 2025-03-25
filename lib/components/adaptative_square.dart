@@ -18,7 +18,7 @@ class AdaptativeSquare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextScaleFactor = MediaQuery.of(context).textScaleFactor;
+    final textScaleFactor = MediaQuery.of(context).textScaleFactor;
 
     final gradient = LinearGradient(
       colors: gradientColors,
@@ -49,7 +49,7 @@ class AdaptativeSquare extends StatelessWidget {
             label,
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20 * TextScaleFactor,
+              fontSize: 20 * textScaleFactor,
               fontWeight: FontWeight.bold,
             ),
           ),

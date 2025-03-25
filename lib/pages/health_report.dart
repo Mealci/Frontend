@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:health/health.dart';
 import 'package:mealci/components/adaptative_square.dart';
 import 'package:mealci/models/health_stats.dart';
-import 'package:mealci/utils/styles/style.dart';
 
 class HealthReport extends StatefulWidget {
   const HealthReport({super.key});
 
   @override
-  _HealthReportState createState() => _HealthReportState();
+  State<HealthReport> createState() => _HealthReportState();
 }
 
 enum StressEnum {
