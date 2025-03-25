@@ -27,7 +27,7 @@ class FrigoService {
     }
 
     final String foodByCategoryPath =
-        '/food/getFoodsByCategory?category=${category.toString().split('.').last}';
+        '/food/getFoodsByCategory?category=${category.toString().toUpperCase().split('.').last}';
     final Uri foodByCategoryUri =
         Uri.parse('${EnvironnementVariable.apiUrl}$foodByCategoryPath');
 
@@ -80,10 +80,10 @@ class FrigoService {
       body: jsonEncode(<String, dynamic>{
         'name': food.name,
         'quantity': food.quantity,
-        'measure': food.measure.toString().split('.').last,
+        'measure': food.measure.toString().toUpperCase().split('.').last,
         'brand': food.brand,
-        'state': food.state.toString().split('.').last,
-        'category': category.toString().split('.').last,
+        'state': food.state.toString().toUpperCase().split('.').last,
+        'category': category.toString().toUpperCase().split('.').last,
       }),
     );
     if (response.statusCode == 401) {

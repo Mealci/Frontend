@@ -32,15 +32,16 @@ void main() async {
 
 Future<void> requestHealthPermissions() async {
   List<HealthDataType> types = HealthDataType.values;
-  
+
   bool? hasPermissions = await health.hasPermissions(types);
 
   if (!(hasPermissions ?? false)) {
     List<HealthDataAccess> permissions = [];
-    for (var e in types) {
+    for (var _ in types) {
       permissions.add(HealthDataAccess.READ);
     }
-    bool authorized = await health.requestAuthorization(types, permissions: permissions);
+    bool authorized =
+        await health.requestAuthorization(types, permissions: permissions);
     if (!authorized) {
       debugPrint("HealthKit permissions not granted");
     } else {
@@ -90,7 +91,6 @@ class MyApp extends StatelessWidget {
         Routes.toiletMap: (context) => const ToiletMapPage(),
         Routes.scanBarCode: (context) => const QrCameraPreviewScreen(),
         Routes.frigoPage: (context) => const FrigoPage(),
-        Routes.textRecognitionScreen: (context) => const OcrLogic(),
         Routes.healthReport: (context) => const HealthReport()
       },
     );

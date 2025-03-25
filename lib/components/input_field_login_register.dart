@@ -51,7 +51,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
         borderRadius: BorderRadius.circular(40), // Coins arrondis
         boxShadow: focusNode.hasFocus
             ? [
-                BoxShadow(color: Colors.green.withOpacity(0.3), blurRadius: 10)
+                BoxShadow(color: Colors.green.withAlpha(30), blurRadius: 10)
               ] // Ombre visible au focus
             : [],
         border: Border.all(
@@ -59,7 +59,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ? Color(
                   Style.styles[AppStyle.secondaryColor].value ?? Colors.green)
               : Color(Style.styles[AppStyle.primaryColor].value ?? Colors.black)
-                  .withOpacity(0.3),
+                  .withAlpha(30), // Couleur de la bordure
           width: 2.5, // Bordure plus épaisse au focus
         ),
       ),

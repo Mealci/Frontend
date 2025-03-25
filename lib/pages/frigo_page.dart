@@ -19,7 +19,6 @@ class FrigoPage extends StatefulWidget {
 
 class _FrigoPageState extends State<FrigoPage> {
   final double spacing = 14.0;
-  bool _showContent = true;
 
   late Map<String, List<Food>> frigoCategories;
 
@@ -37,7 +36,8 @@ class _FrigoPageState extends State<FrigoPage> {
       List<Food> foodItems =
           await FrigoService().fetchFoodByCategory(context, category);
 
-      frigoCategories[category.toString().split('.').last] = foodItems;
+      frigoCategories[category.toString().toUpperCase().split('.').last] =
+          foodItems;
     }
   }
 
@@ -91,7 +91,7 @@ class _FrigoPageState extends State<FrigoPage> {
                   itemBuilder: (context, index) {
                     final category = CategoryFood.values[index];
                     return ButtonTextIcon(
-                      text: category.toString().split('.').last,
+                      text: category.toString().toUpperCase().split('.').last,
                       svgPath: getIconForCategory(category),
                       onPressed: () {
                         Navigator.pushReplacement(
@@ -99,11 +99,18 @@ class _FrigoPageState extends State<FrigoPage> {
                           MaterialPageRoute(
                             builder: (context) => GenericLayout(
                               title:
-                                  "Détails des ${category.toString().split('.').last}",
+                                  "Détails des ${category.toString().toUpperCase().split('.').last}",
                               child: FrigoDetailPage(
-                                category: category.toString().split('.').last,
-                                items: frigoCategories[
-                                        category.toString().split('.').last] ??
+                                category: category
+                                    .toString()
+                                    .toUpperCase()
+                                    .split('.')
+                                    .last,
+                                items: frigoCategories[category
+                                        .toString()
+                                        .toUpperCase()
+                                        .split('.')
+                                        .last] ??
                                     [],
                                 image: getIconForCategory(category),
                               ),
@@ -124,30 +131,28 @@ class _FrigoPageState extends State<FrigoPage> {
 
   String getIconForCategory(CategoryFood category) {
     switch (category) {
-      case CategoryFood.FRUITS:
+      case CategoryFood.fruits:
         return CustomMealciAsset.fruitIcon;
-      case CategoryFood.VEGETABLES:
+      case CategoryFood.vegetables:
         return CustomMealciAsset.vegetableIcon;
-      case CategoryFood.CEREALS:
+      case CategoryFood.cereals:
         return CustomMealciAsset.cerealIcon;
-      case CategoryFood.PROTEINS:
+      case CategoryFood.proteins:
         return CustomMealciAsset.meatIcon;
-      case CategoryFood.DAIRY_PRODUCTS:
+      case CategoryFood.dairy_Products:
         return CustomMealciAsset.milkIcon;
-      case CategoryFood.BEVERAGE:
+      case CategoryFood.beverage:
         return CustomMealciAsset.drinkIcon;
-      case CategoryFood.OILS:
+      case CategoryFood.oils:
         return CustomMealciAsset.oilIcon;
-      case CategoryFood.SPICES:
+      case CategoryFood.spices:
         return CustomMealciAsset.spicyIcon;
-      case CategoryFood.SUGAR_PRODUCTS:
+      case CategoryFood.sugar_Products:
         return CustomMealciAsset.sugarIcon;
-      case CategoryFood.PREPARED_MEALS:
+      case CategoryFood.prepared_Meals:
         return CustomMealciAsset.junkFoodIcon;
-      case CategoryFood.STARCHY:
+      case CategoryFood.starchy:
         return CustomMealciAsset.starchIcon;
-      default:
-        return CustomMealciAsset.fridgeIcon;
     }
   }
 }

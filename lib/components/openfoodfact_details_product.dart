@@ -17,7 +17,7 @@ class ProductDetailsScreen extends StatefulWidget {
   });
 
   @override
-  _ProductDetailsScreenState createState() => _ProductDetailsScreenState();
+  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
 }
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
@@ -40,7 +40,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     });
 
     if (product != null) {
-      final food = await _createFood();
+      await _createFood();
     }
   }
 
@@ -52,35 +52,35 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         return entry.key;
       }
     }
-    return CategoryFood.PREPARED_MEALS;
+    return CategoryFood.prepared_Meals;
   }
 
   MeasureFood _getMeasureFood(String measure) {
     switch (measure) {
       case 'g':
-        return MeasureFood.KILOGRAM;
+        return MeasureFood.kilogram;
       case 'ml':
-        return MeasureFood.LITER;
+        return MeasureFood.liter;
       case 'cl':
-        return MeasureFood.LITER;
+        return MeasureFood.liter;
       case 'dl':
-        return MeasureFood.LITER;
+        return MeasureFood.liter;
       case 'l':
-        return MeasureFood.LITER;
+        return MeasureFood.liter;
       case 'kg':
-        return MeasureFood.KILOGRAM;
+        return MeasureFood.kilogram;
       case 'piece':
-        return MeasureFood.PIECE;
+        return MeasureFood.piece;
       case 'slices':
-        return MeasureFood.PIECE;
+        return MeasureFood.piece;
       case 'units':
-        return MeasureFood.PIECE;
+        return MeasureFood.piece;
       case 'pieces':
-        return MeasureFood.PIECE;
+        return MeasureFood.piece;
       case 'portion':
-        return MeasureFood.PIECE;
+        return MeasureFood.piece;
       default:
-        return MeasureFood.PIECE;
+        return MeasureFood.piece;
     }
   }
 
@@ -91,7 +91,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       measure: _getMeasureFood(
           product?['product_quantity_unit']?.toString() ?? 'piece'),
       brand: product?['brands'] ?? '',
-      state: StateFood.PRESENT,
+      state: StateFood.present,
       category: getCategory(product?['_keywords']?.toString() ?? 'autre'),
     );
 

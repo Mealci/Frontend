@@ -5,12 +5,11 @@ import 'package:health/health.dart';
 import 'package:mealci/components/adaptative_square.dart';
 import 'package:mealci/utils/styles/style.dart';
 
-
 class HealthReport extends StatefulWidget {
   const HealthReport({super.key});
 
   @override
-  _HealthReportState createState() => _HealthReportState();
+  State<HealthReport> createState() => _HealthReportState();
 }
 
 enum StressEnum {
@@ -23,14 +22,14 @@ enum StressEnum {
 
 class _HealthReportState extends State<HealthReport> {
   final Health health = Health();
- 
-  Duration _totalSleep = Duration.zero;       
-  int _totalSteps = 0;                        
-  StressEnum _stressLevel = StressEnum.none;  
-  double _averageHeartRate = 0;               
-  int _totalPoop = 0;                         
-  int _qualityPoop = 0;                       
-  int _totalCigarettes = 0;                   
+
+  Duration _totalSleep = Duration.zero;
+  int _totalSteps = 0;
+  StressEnum _stressLevel = StressEnum.none;
+  double _averageHeartRate = 0;
+  int _totalPoop = 0;
+  int _qualityPoop = 0;
+  int _totalCigarettes = 0;
 
   bool _isLoading = true;
 
@@ -72,16 +71,12 @@ class _HealthReportState extends State<HealthReport> {
 
     int totalSteps = 0;
     for (var data in stepsData) {
-      // print("Data: ${data.value}");
-      if (data.value != null) {
-        // print type of data.value
-        if (data.value is int) {
-          totalSteps += data.value as int;
-        } else if (data.value is double) {
-          totalSteps += (data.value as double).toInt();
-        } else if (data.value is NumericHealthValue) {
-          totalSteps += (data.value as NumericHealthValue).numericValue.toInt();
-        }
+      if (data.value is int) {
+        totalSteps += data.value as int;
+      } else if (data.value is double) {
+        totalSteps += (data.value as double).toInt();
+      } else if (data.value is NumericHealthValue) {
+        totalSteps += (data.value as NumericHealthValue).numericValue.toInt();
       }
     }
 
@@ -102,7 +97,8 @@ class _HealthReportState extends State<HealthReport> {
         heartRateCount++;
       }
     }
-    double? averageHeartRate = heartRateCount > 0 ? totalHeartRate / heartRateCount : null;
+    double? averageHeartRate =
+        heartRateCount > 0 ? totalHeartRate / heartRateCount : null;
 
     setState(() {
       _totalSleep = totalSleep;
@@ -124,7 +120,6 @@ class _HealthReportState extends State<HealthReport> {
     // Actually, we set with a random value
     // Generate a random number between 0 and 100
     int totalPoop = Random().nextInt(101);
-
 
     // 6. Get poop quality
     // TODO: implement API call to get poop quality
@@ -175,8 +170,6 @@ class _HealthReportState extends State<HealthReport> {
       Style.styles[AppStyle.primaryColor].value ?? Colors.black,
       Style.styles[AppStyle.secondaryColor].value ?? Colors.black,
       Style.styles[AppStyle.thirdColor].value ?? Colors.black,
-      Colors.pinkAccent.value,
-      Colors.blueAccent.value,
     ];
 
     return Color(colors[Random().nextInt(colors.length)]);
@@ -185,76 +178,69 @@ class _HealthReportState extends State<HealthReport> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Health Report 24 last hours'),
-      // ),
-      body: _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : SafeArea(child:  
-        SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          child: Column(
-            children: [
-              // 1 rectangle for total sleep
-              AdaptativeSquare(
-                data: 'Sommeil\n${formatDuration(_totalSleep)}', 
-                backgroundColor: getRandomColor(),
-                isSquare: false
-              ),
-              // 2 square for stress level and total steps
-              Row(
-                children: [
-                  Expanded(
-                    child: AdaptativeSquare(
-                      data: 'Stress\n${getStressEmoji(_stressLevel)}', 
-                      backgroundColor: getRandomColor(),
-                      isSquare: true
-                    ),
+        // appBar: AppBar(
+        //   title: const Text('Health Report 24 last hours'),
+        // ),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : SafeArea(
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      // 1 rectangle for total sleep
+                      AdaptativeSquare(
+                          data: 'Sommeil\n${formatDuration(_totalSleep)}',
+                          backgroundColor: getRandomColor(),
+                          isSquare: false),
+                      // 2 square for stress level and total steps
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AdaptativeSquare(
+                                data: 'Stress\n${getStressEmoji(_stressLevel)}',
+                                backgroundColor: getRandomColor(),
+                                isSquare: true),
+                          ),
+                          Expanded(
+                            child: AdaptativeSquare(
+                                data: 'Nombres de pas\n$_totalSteps',
+                                backgroundColor: getRandomColor(),
+                                isSquare: true),
+                          ),
+                        ],
+                      ),
+                      // 1 rectangle for average heart rate
+                      AdaptativeSquare(
+                          data:
+                              'Pulsation\n${_averageHeartRate.toInt().toString()} bpm en moyenne',
+                          backgroundColor: getRandomColor(),
+                          isSquare: false),
+                      // 2 square for total poop and quality poop
+                      Row(
+                        children: [
+                          Expanded(
+                            child: AdaptativeSquare(
+                                data: 'Nombre de\nscelles\n$_totalPoop',
+                                backgroundColor: getRandomColor(),
+                                isSquare: true),
+                          ),
+                          Expanded(
+                            child: AdaptativeSquare(
+                                data: 'Qualité des\nscelles\n$_qualityPoop',
+                                backgroundColor: getRandomColor(),
+                                isSquare: true),
+                          ),
+                        ],
+                      ),
+                      // 1 rectangle for total cigarettes
+                      AdaptativeSquare(
+                          data: 'Nombre de cigarettes\n$_totalCigarettes',
+                          backgroundColor: getRandomColor(),
+                          isSquare: false),
+                    ],
                   ),
-                  Expanded(
-                    child: AdaptativeSquare(
-                      data: 'Nombres de pas\n$_totalSteps', 
-                      backgroundColor: getRandomColor(),
-                      isSquare: true
-                    ),
-                  ),
-                ],
-              ),
-              // 1 rectangle for average heart rate
-              AdaptativeSquare(
-                data: 'Pulsation\n${_averageHeartRate.toInt().toString()} bpm en moyenne', 
-                backgroundColor: getRandomColor(),
-                isSquare: false
-              ),
-              // 2 square for total poop and quality poop
-              Row(
-                children: [
-                  Expanded(
-                    child: AdaptativeSquare(
-                      data: 'Nombre de\nscelles\n$_totalPoop', 
-                      backgroundColor: getRandomColor(),
-                      isSquare: true
-                    ),
-                  ),
-                  Expanded(
-                    child: AdaptativeSquare(
-                      data: 'Qualité des\nscelles\n$_qualityPoop', 
-                      backgroundColor: getRandomColor(),
-                      isSquare: true
-                    ),
-                  ),
-                ],
-              ),
-              // 1 rectangle for total cigarettes
-              AdaptativeSquare(
-                data: 'Nombre de cigarettes\n$_totalCigarettes', 
-                backgroundColor: getRandomColor(),
-                isSquare: false
-              ),
-            ],
-          ),
-        ),
-        )
-    );
+                ),
+              ));
   }
 }
