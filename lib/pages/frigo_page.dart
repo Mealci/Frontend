@@ -26,19 +26,14 @@ class _FrigoPageState extends State<FrigoPage> {
   void initState() {
     super.initState();
     frigoCategories = {};
-    getFoodData();
   }
 
-  Future getFoodData() async {
-    List<CategoryFood> categories = CategoryFood.values;
+  Future getFoodData(category) async {
+    List<Food> foodItems =
+        await FrigoService().fetchFoodByCategory(context, category);
 
-    for (var category in categories) {
-      List<Food> foodItems =
-          await FrigoService().fetchFoodByCategory(context, category);
-
-      frigoCategories[category.toString().toUpperCase().split('.').last] =
-          foodItems;
-    }
+    frigoCategories[category.toString().toUpperCase().split('.').last] =
+        foodItems;
   }
 
   @override
@@ -93,7 +88,10 @@ class _FrigoPageState extends State<FrigoPage> {
                     return ButtonTextIcon(
                       text: category.toString().toUpperCase().split('.').last,
                       svgPath: getIconForCategory(category),
-                      onPressed: () {
+                      onPressed: () async {
+                        // Récupérer les données de la catégorie
+                        await getFoodData(category);
+                        // Naviguer vers la page de détails du frigo
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
