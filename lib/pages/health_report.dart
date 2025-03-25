@@ -1,15 +1,15 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:health/health.dart';
 import 'package:mealci/components/adaptative_square.dart';
+import 'package:mealci/models/health_stats.dart';
 import 'package:mealci/utils/styles/style.dart';
 
 class HealthReport extends StatefulWidget {
   const HealthReport({super.key});
 
   @override
-  State<HealthReport> createState() => _HealthReportState();
+  _HealthReportState createState() => _HealthReportState();
 }
 
 enum StressEnum {
@@ -46,11 +46,9 @@ class _HealthReportState extends State<HealthReport> {
   }
 
   Future<void> fetchDailyHealthData() async {
-    // Define the interval of time to get the data (24 hours)
     DateTime endTime = DateTime.now();
     DateTime startTime = endTime.subtract(const Duration(days: 1));
 
-    // 1. Get and calculate total sleep
     List<HealthDataPoint> sleepData = await health.getHealthDataFromTypes(
       startTime: startTime,
       endTime: endTime,
@@ -58,11 +56,9 @@ class _HealthReportState extends State<HealthReport> {
     );
     Duration totalSleep = Duration.zero;
     for (var data in sleepData) {
-      // The difference between dateTo and dateFrom is the duration of the sleep
       totalSleep += data.dateTo.difference(data.dateFrom);
     }
 
-    // 2. Get number of steps
     List<HealthDataPoint> stepsData = await health.getHealthDataFromTypes(
       startTime: startTime,
       endTime: endTime,
@@ -80,12 +76,12 @@ class _HealthReportState extends State<HealthReport> {
       }
     }
 
-    // 3. Get Average Heart Rate
     List<HealthDataPoint> heartRateData = await health.getHealthDataFromTypes(
       startTime: startTime,
       endTime: endTime,
       types: const [HealthDataType.HEART_RATE],
     );
+
     double totalHeartRate = 0;
     int heartRateCount = 0;
     for (var data in heartRateData) {
@@ -108,29 +104,11 @@ class _HealthReportState extends State<HealthReport> {
   }
 
   Future<void> fetchDailyAPIData() async {
-    // 4. Get Stress Level
-    // TODO: implement API call to get stress level
-    // Actually, we set with a random value
-    // Generate a random number between 0 and 4
     int randomStressLevel = Random().nextInt(5);
     StressEnum stressLevel = StressEnum.values[randomStressLevel];
 
-    // 5. Get Poop Data
-    // TODO: implement API call to get poop data
-    // Actually, we set with a random value
-    // Generate a random number between 0 and 100
     int totalPoop = Random().nextInt(101);
-
-    // 6. Get poop quality
-    // TODO: implement API call to get poop quality
-    // Actually, we set with a random value
-    // Generate a random number between 1 and 7
     int qualityPoop = Random().nextInt(7) + 1;
-
-    // 7. Get number of cigarettes
-    // TODO: implement API call to get number of cigarettes
-    // Actually, we set with a random value
-    // Generate a random number between 0 and 300
     int totalCigarettes = Random().nextInt(301);
 
     setState(() {
@@ -141,14 +119,12 @@ class _HealthReportState extends State<HealthReport> {
     });
   }
 
-  // Function to format the duration to a string
   String formatDuration(Duration d) {
     int hours = d.inHours;
     int minutes = d.inMinutes.remainder(60);
     return '${hours}h ${minutes}m';
   }
 
-  // Function to get the emoji corresponding to the stress level
   String getStressEmoji(StressEnum stressLevel) {
     switch (stressLevel) {
       case StressEnum.none:
@@ -164,83 +140,145 @@ class _HealthReportState extends State<HealthReport> {
     }
   }
 
-  // Return a random color
-  Color getRandomColor() {
-    var colors = [
-      Style.styles[AppStyle.primaryColor].value ?? Colors.black,
-      Style.styles[AppStyle.secondaryColor].value ?? Colors.black,
-      Style.styles[AppStyle.thirdColor].value ?? Colors.black,
+  List<HealthStat> getHealthStats() {
+    List<Color> gradientSequence = [
+      Color(0xFFFFA6C1), // Rose clair
+      Color(0xFFFF69B4), // Rose vif
+      Color(0xFFC71585), // Rose framboise
+      Color(0xFF8A2BE2), // Violet profond
+      Color(0xFF6A0DAD), // Violet foncé
     ];
 
-    return Color(colors[Random().nextInt(colors.length)]);
+    List<HealthStat> stats = [
+      HealthStat(
+        label: 'Sommeil',
+        value: formatDuration(_totalSleep),
+        isSquare: false,
+        icon: Icons.bedtime,
+      ),
+      HealthStat(
+        label: 'Nombres de pas',
+        value: _totalSteps.toString(),
+        isSquare: false,
+        icon: Icons.directions_walk,
+      ),
+      HealthStat(
+        label: 'Pulsation',
+        value: '${_averageHeartRate.toInt()} bpm',
+        isSquare: true,
+        icon: Icons.favorite,
+      ),
+      HealthStat(
+        label: 'Stress',
+        value: getStressEmoji(_stressLevel),
+        isSquare: true,
+        icon: Icons.sentiment_very_dissatisfied,
+      ),
+      HealthStat(
+        label: 'Nombre de selles',
+        value: _totalPoop.toString(),
+        isSquare: false,
+        icon: Icons.pets,
+      ),
+      HealthStat(
+        label: 'Qualité des selles',
+        value: _qualityPoop.toString(),
+        isSquare: false,
+        icon: Icons.pets,
+      ),
+      HealthStat(
+        label: 'Nombre de cigarettes',
+        value: _totalCigarettes.toString(),
+        isSquare: false,
+        icon: Icons.smoking_rooms,
+      ),
+    ];
+
+    // Attribution du dégradé vertical et synchronisation des paires
+    for (int i = 0; i < stats.length; i++) {
+      if (i < gradientSequence.length - 1) {
+        stats[i].gradientColors = [
+          gradientSequence[i],
+          gradientSequence[i + 1],
+        ];
+      } else {
+        stats[i].gradientColors = [
+          gradientSequence[i % gradientSequence.length],
+          gradientSequence[(i + 1) % gradientSequence.length],
+        ];
+      }
+
+      // Si c'est une tuile carrée, lui et la tuile suivante ont le même dégradé
+      if (stats[i].isSquare && i + 1 < stats.length && stats[i + 1].isSquare) {
+        stats[i + 1].gradientColors = stats[i].gradientColors;
+        i++; // On saute une itération pour éviter de changer la couleur du pair
+      }
+    }
+
+    return stats;
   }
 
   @override
   Widget build(BuildContext context) {
+    List<HealthStat> stats = getHealthStats();
+    List<Widget> widgets = [];
+
+    List<Widget> rowBuffer = [];
+
+    for (var stat in stats) {
+      Widget square = AdaptativeSquare(
+        value: stat.value,
+        label: stat.label,
+        icon: stat.icon,
+        gradientColors: stat.gradientColors,
+        isSquare: stat.isSquare,
+      );
+
+      if (stat.isSquare) {
+        rowBuffer.add(square);
+        if (rowBuffer.length == 2) {
+          widgets.add(Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: rowBuffer,
+          ));
+          rowBuffer = [];
+        }
+      } else {
+        if (rowBuffer.isNotEmpty) {
+          widgets.add(rowBuffer.removeAt(0));
+        }
+        widgets.add(square);
+      }
+    }
+
+    if (rowBuffer.isNotEmpty) {
+      widgets.add(rowBuffer.removeAt(0));
+    }
+
     return Scaffold(
-        // appBar: AppBar(
-        //   title: const Text('Health Report 24 last hours'),
-        // ),
-        body: _isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : SafeArea(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      // 1 rectangle for total sleep
-                      AdaptativeSquare(
-                          data: 'Sommeil\n${formatDuration(_totalSleep)}',
-                          backgroundColor: getRandomColor(),
-                          isSquare: false),
-                      // 2 square for stress level and total steps
-                      Row(
-                        children: [
-                          Expanded(
-                            child: AdaptativeSquare(
-                                data: 'Stress\n${getStressEmoji(_stressLevel)}',
-                                backgroundColor: getRandomColor(),
-                                isSquare: true),
-                          ),
-                          Expanded(
-                            child: AdaptativeSquare(
-                                data: 'Nombres de pas\n$_totalSteps',
-                                backgroundColor: getRandomColor(),
-                                isSquare: true),
-                          ),
-                        ],
+      // Appliquer le dégradé sur le fond du Scaffold
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    const Text(
+                      'Rapport Santé',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 27,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Voltaire',
                       ),
-                      // 1 rectangle for average heart rate
-                      AdaptativeSquare(
-                          data:
-                              'Pulsation\n${_averageHeartRate.toInt().toString()} bpm en moyenne',
-                          backgroundColor: getRandomColor(),
-                          isSquare: false),
-                      // 2 square for total poop and quality poop
-                      Row(
-                        children: [
-                          Expanded(
-                            child: AdaptativeSquare(
-                                data: 'Nombre de\nscelles\n$_totalPoop',
-                                backgroundColor: getRandomColor(),
-                                isSquare: true),
-                          ),
-                          Expanded(
-                            child: AdaptativeSquare(
-                                data: 'Qualité des\nscelles\n$_qualityPoop',
-                                backgroundColor: getRandomColor(),
-                                isSquare: true),
-                          ),
-                        ],
-                      ),
-                      // 1 rectangle for total cigarettes
-                      AdaptativeSquare(
-                          data: 'Nombre de cigarettes\n$_totalCigarettes',
-                          backgroundColor: getRandomColor(),
-                          isSquare: false),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 20),
+                    Column(children: widgets),
+                  ],
                 ),
-              ));
+              ),
+            ),
+    );
   }
 }
