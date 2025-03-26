@@ -92,7 +92,7 @@ class MyApp extends StatelessWidget {
         Routes.toiletMap: (context) => const ToiletMapPage(),
         Routes.scanBarCode: (context) => const QrCameraPreviewScreen(),
         Routes.frigoPage: (context) => const FrigoPage(),
-        Routes.healthReport: (context) => const HealthReport()
+        Routes.healthReport: (context) => const HealthReport(),
         Routes.registerPoopPage: (context) => const RegisterPoopPage()
       },
     );

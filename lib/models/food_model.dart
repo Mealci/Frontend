@@ -1,4 +1,4 @@
-import 'enums.dart';
+import 'food_enums.dart';
 
 class Food {
   String name;
