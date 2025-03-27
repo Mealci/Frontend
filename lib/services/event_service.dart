@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
 import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/secure_storage/secure_storage_management.dart';
@@ -38,25 +39,18 @@ class EventService {
           // Traitez les événements ici
           return eventsList;
         } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Aucun événement trouvé')),
-          );
+          CustomSnackBar.showInfo(context, 'Aucun événement trouvé');
           return {};
         }
       } else {
         _logger.severe('Erreur du serveur: ${response.statusCode}');
         final errorMessage = json.decode(response.body);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $errorMessage')),
-        );
+        CustomSnackBar.showError(context, errorMessage);
         return {};
       }
     } catch (error, stackTrace) {
       _logger.severe('Erreur lors de la connexion: $error , $stackTrace');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Erreur lors de la connexion : ${error.toString()}')),
-      );
+      CustomSnackBar.showError(context, 'Erreur lors de la connexion');
       return {};
     }
   }

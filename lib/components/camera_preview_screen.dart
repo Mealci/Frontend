@@ -1,6 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mealci/components/custom_snak_bar.dart';
 
 class CameraPreviewScreen extends StatefulWidget {
   const CameraPreviewScreen({super.key});
@@ -62,12 +63,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         final XFile photo = await _cameraController!.takePicture();
         Navigator.pop(context, photo.path); // Retourne le chemin
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erreur lors de la capture de la photo: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        CustomSnackBar.showError(context, 'Erreur lors de la capture de la photo: $e');
       }
     }
   }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/models/poop_model.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
 import 'package:mealci/utils/logger/logger.dart';
@@ -34,16 +35,11 @@ class PoopService {
 
         final errorMessage = json.decode(response.body);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $errorMessage')),
-        );
+        CustomSnackBar.showError(context, "Erreur: $errorMessage");
       }
     } catch (error, stackTrace) {
       _logger.severe('Erreur lors de la connexion: $error , $stackTrace');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Erreur lors de la connexion : ${error.toString()}')),
-      );
+      CustomSnackBar.showError(context, 'Erreur lors de la connexion: ${error.toString()}');
     }
   }
 }
