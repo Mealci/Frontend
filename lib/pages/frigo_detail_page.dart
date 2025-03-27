@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
 import 'package:mealci/models/enums.dart';
-import 'package:mealci/models/food_model.dart';
+import 'package:mealci/models/food_create_model.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/utils/styles/style.dart';
 import 'package:mealci/services/frigo_service.dart';
 
 class FrigoDetailPage extends StatefulWidget {
   final String category;
-  final List<Food> items;
+  final List<CreateFood> items;
   final String image;
 
   const FrigoDetailPage({
@@ -24,7 +24,7 @@ class FrigoDetailPage extends StatefulWidget {
 }
 
 class _FrigoDetailPageState extends State<FrigoDetailPage> {
-  late List<Food> items;
+  late List<CreateFood> items;
 
   @override
   void initState() {
@@ -34,17 +34,17 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
 
   void refreshFoodList() async {
     try {
-      CategoryFood categoryEnum = CategoryFood.values
-          .firstWhere((e) => e.toString().split('.').last == widget.category);
+      CategoryFood categoryEnum = CategoryFood.values.firstWhere(
+          (e) => e.toString().toUpperCase().split('.').last == widget.category);
 
-      List<Food> updatedItems =
+      List<CreateFood> updatedItems =
           await FrigoService().fetchFoodByCategory(context, categoryEnum);
 
       setState(() {
         items = updatedItems;
       });
     } catch (e) {
-      print("Erreur lors de la conversion de la catégorie : $e");
+      debugPrint("Erreur lors de la conversion de la catégorie : $e");
     }
   }
 
@@ -211,13 +211,9 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    print(items[index].measure ==
-                                        MeasureFood.liter);
-                                    print(items[index].measure ==
-                                        MeasureFood.piece);
                                     if (items[index].quantity > 1 &&
-                                        items[index].measure ==
-                                            MeasureFood.liter &&
+                                            items[index].measure ==
+                                                MeasureFood.liter ||
                                         items[index].measure ==
                                             MeasureFood.piece) {
                                       patchFoodQuantityById(

@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mealci/models/enums.dart';
+import 'package:mealci/models/food_create_model.dart';
 import 'package:mealci/models/food_model.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
 import 'package:mealci/utils/logger/logger.dart';
@@ -12,7 +13,7 @@ class FrigoService {
 
   final SecureStorageManagement _storage = SecureStorageManagement();
 
-  Future<List<Food>> fetchFoodByCategory(
+  Future<List<CreateFood>> fetchFoodByCategory(
       BuildContext context, CategoryFood category) async {
     String? token = await _storage.readData('token_jwt');
 
@@ -194,9 +195,9 @@ class FrigoService {
   }
 }
 
-List<Food> parseFoodByCategory(String responseBody) {
+List<CreateFood> parseFoodByCategory(String responseBody) {
   final parsed =
       (jsonDecode(responseBody) as List).cast<Map<String, dynamic>>();
 
-  return parsed.map<Food>((json) => Food.fromJson(json)).toList();
+  return parsed.map<CreateFood>((json) => CreateFood.fromJson(json)).toList();
 }

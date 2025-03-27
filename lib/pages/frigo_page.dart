@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mealci/components/button_text_icon.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
 import 'package:mealci/components/fridge_rating_chart.dart';
+import 'package:mealci/models/food_create_model.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/components/generic_layout.dart';
 import 'package:mealci/models/enums.dart';
-import 'package:mealci/models/food_model.dart';
 import 'package:mealci/pages/frigo_detail_page.dart';
 import 'package:mealci/services/frigo_service.dart';
 import 'package:mealci/utils/styles/style.dart';
@@ -20,7 +20,7 @@ class FrigoPage extends StatefulWidget {
 class _FrigoPageState extends State<FrigoPage> {
   final double spacing = 14.0;
 
-  late Map<String, List<Food>> frigoCategories;
+  late Map<String, List<CreateFood>> frigoCategories;
 
   @override
   void initState() {
@@ -29,7 +29,7 @@ class _FrigoPageState extends State<FrigoPage> {
   }
 
   Future getFoodData(category) async {
-    List<Food> foodItems =
+    List<CreateFood> foodItems =
         await FrigoService().fetchFoodByCategory(context, category);
 
     frigoCategories[category.toString().toUpperCase().split('.').last] =
