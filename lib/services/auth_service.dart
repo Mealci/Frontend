@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
 import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/secure_storage/secure_storage_management.dart';
@@ -29,9 +30,7 @@ class AuthService {
             SecureStorageManagement();
         await secureStorageManagement.writeData('token_jwt', responseBody);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Connexion réussie')),
-        );
+        CustomSnackBar.showSuccess(context, "Connexion réussie");
 
         Navigator.pushNamed(context, '/home');
       } else {
@@ -40,16 +39,11 @@ class AuthService {
         final errorMessage =
             json.decode(response.body)['message'] ?? 'Erreur inconnue';
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: $errorMessage')),
-        );
+        CustomSnackBar.showError(context, errorMessage);
       }
     } catch (error, stackTrace) {
       _logger.severe('Erreur lors de la connexion: $error , $stackTrace');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Erreur lors de la connexion : ${error.toString()}')),
-      );
+      CustomSnackBar.showError(context, 'Erreur lors de la connexion');
     }
   }
 
@@ -87,22 +81,16 @@ class AuthService {
         await secureStorageManagement.writeData('token_jwt', responseBody);
 
         _logger.info('Utilisateur enregistré avec succès');
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Utilisateur enregistré avec succès')),
-        );
+        CustomSnackBar.showSuccess(context, 'Utilisateur enregistré avec succès');
 
         Navigator.pushNamed(context, '/home');
       } else {
         _logger.severe('Erreur: ${response.body}');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Erreur: ${response.body}')),
-        );
+        CustomSnackBar.showError(context, 'Erreur: ${response.body}');
       }
     } catch (error) {
       _logger.severe('Erreur lors de l\'enregistrement : $error');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur lors de l\'enregistrement : $error')),
-      );
+      CustomSnackBar.showError(context, 'Erreur lors de l\'enregistrement');
     }
   }
 }
