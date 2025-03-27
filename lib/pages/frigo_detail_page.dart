@@ -48,17 +48,55 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
     }
   }
 
-  void deleteFoodById(int id) async {
-    FrigoService().deleteFoodById(context, id);
-    setState(() {
-      items.removeWhere((food) => food.id == id);
-    });
+  void changeStateFoodById(int id, StateFood food) async {
+    FrigoService().changeStateFoodById(
+      context,
+      id,
+      food,
+    );
+    refreshFoodList();
   }
 
   Future<void> patchFoodQuantityById(
       BuildContext context, int id, double quantity) async {
     await FrigoService().patchFoodQuantityById(context, id, quantity);
     refreshFoodList();
+  }
+
+  void _confirmUpdateFood(int id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirmer la suppression"),
+          content: Text("Le produit a-t-il été mangé ou jeté ?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                debugPrint("L'aliment a été mangé.");
+                changeStateFoodById(id, StateFood.eat);
+                Navigator.of(context).pop();
+              },
+              child: Text("Mangé"),
+            ),
+            TextButton(
+              onPressed: () {
+                debugPrint("L'aliment a été jeté.");
+                changeStateFoodById(id, StateFood.discard);
+                Navigator.of(context).pop();
+              },
+              child: Text("Jeté"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Annuler"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -211,17 +249,13 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    if (items[index].quantity > 1 &&
-                                            items[index].measure ==
-                                                MeasureFood.liter ||
-                                        items[index].measure ==
-                                            MeasureFood.piece) {
+                                    if (items[index].quantity > 1) {
                                       patchFoodQuantityById(
                                           context,
                                           items[index].id,
                                           items[index].quantity - 1);
                                     } else {
-                                      deleteFoodById(items[index].id);
+                                      _confirmUpdateFood(items[index].id);
                                     }
                                   },
                                   icon: Icon(

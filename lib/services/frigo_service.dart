@@ -193,6 +193,49 @@ class FrigoService {
       throw Exception('Échec de la modification de la quantité de l\'aliment');
     }
   }
+
+  Future changeStateFoodById(
+      BuildContext context, int id, StateFood state) async {
+    String? token = await _storage.readData('token_jwt');
+
+    if (token == null) {
+      _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('Utilisateur non authentifié. Veuillez vous connecter.')),
+      );
+      Navigator.pushNamed(context, '/loginThirdPage');
+    }
+
+    final String changeStateFoodPath = '/food/state/$id/${state.toString()}';
+    final Uri changeStateFoodUri =
+        Uri.parse('${EnvironnementVariable.apiUrl}$changeStateFoodPath');
+
+    final response =
+        await http.patch(changeStateFoodUri, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    });
+
+    if (response.statusCode == 401) {
+      _logger.info('Session expirée. Veuillez vous reconnecter.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Session expirée. Veuillez vous reconnecter.')),
+      );
+      Navigator.pushNamed(context, '/loginThirdPage');
+    }
+
+    if (response.statusCode == 200) {
+      _logger.info('État de l\'aliment modifié avec succès');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('État de l\'aliment modifié avec succès')),
+      );
+    } else {
+      throw Exception('Échec de la modification de l\'état de l\'aliment');
+    }
+  }
 }
 
 List<CreateFood> parseFoodByCategory(String responseBody) {
