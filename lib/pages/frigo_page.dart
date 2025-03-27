@@ -6,7 +6,6 @@ import 'package:mealci/models/food_create_model.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/components/generic_layout.dart';
 import 'package:mealci/models/food_enums.dart';
-import 'package:mealci/models/food_model.dart';
 import 'package:mealci/pages/frigo_detail_page.dart';
 import 'package:mealci/services/frigo_service.dart';
 import 'package:mealci/utils/styles/style.dart';
