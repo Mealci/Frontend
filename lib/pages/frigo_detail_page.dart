@@ -40,6 +40,11 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
       List<CreateFood> updatedItems =
           await FrigoService().fetchFoodByCategory(context, categoryEnum);
 
+      updatedItems = updatedItems
+          .where((item) =>
+              item.state != StateFood.eat && item.state != StateFood.discard)
+          .toList();
+
       setState(() {
         items = updatedItems;
       });
