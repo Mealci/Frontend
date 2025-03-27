@@ -23,7 +23,7 @@ class FrigoService {
             content:
                 Text('Utilisateur non authentifié. Veuillez vous connecter.')),
       );
-      Navigator.pushNamed(context, '/loginThirdPage');
+      // Navigator.pushNamed(context, '/loginThirdPage');
     }
 
     final String foodByCategoryPath =

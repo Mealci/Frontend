@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:mealci/utils/styles/style.dart';
@@ -41,7 +43,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     ),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 140,
+                      height: 150,
                       child: CalendarTimeline(
                         initialDate: DateTime.now(),
                         firstDate: DateTime(DateTime.now().year - 1,
@@ -59,6 +61,8 @@ class _CalendarPageState extends State<CalendarPage> {
                         selectableDayPredicate: (date) => date.day != 23,
                         locale: 'fr',
                         fontSize: 35,
+                        // Generate random number between 0 and 100000
+                        dotNumber: Random().nextInt(100001),
                       ),
                     ),
                   ),
