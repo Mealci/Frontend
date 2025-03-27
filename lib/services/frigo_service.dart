@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/models/food_create_model.dart';
 import 'package:mealci/models/food_enums.dart';
 import 'package:mealci/models/food_model.dart';
@@ -19,11 +20,7 @@ class FrigoService {
 
     if (token == null) {
       _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('Utilisateur non authentifié. Veuillez vous connecter.')),
-      );
+      CustomSnackBar.showInfo(context, 'Utilisateur non authentifié. Veuillez vous connecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -40,10 +37,7 @@ class FrigoService {
 
     if (response.statusCode == 401) {
       _logger.info('Session expirée. Veuillez vous reconnecter.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Session expirée. Veuillez vous reconnecter.')),
-      );
+      CustomSnackBar.showError(context, 'Session expirée. Veuillez vous reconnecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -61,11 +55,7 @@ class FrigoService {
 
     if (token == null) {
       _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('Utilisateur non authentifié. Veuillez vous connecter.')),
-      );
+      CustomSnackBar.showInfo(context, 'Utilisateur non authentifié. Veuillez vous connecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -89,18 +79,13 @@ class FrigoService {
     );
     if (response.statusCode == 401) {
       _logger.info('Session expirée. Veuillez vous reconnecter.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Session expirée. Veuillez vous reconnecter.')),
-      );
+      CustomSnackBar.showError(context, 'Session expirée. Veuillez vous reconnecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
     if (response.statusCode == 200) {
       _logger.info('Aliment créé avec succès');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Aliment créé avec succès')),
-      );
+      CustomSnackBar.showSuccess(context, 'Aliment créé avec succès');
     } else {
       _logger.severe(
           'Échec de la création de l\'aliment : ${response.statusCode}');
@@ -113,11 +98,7 @@ class FrigoService {
 
     if (token == null) {
       _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('Utilisateur non authentifié. Veuillez vous connecter.')),
-      );
+      CustomSnackBar.showInfo(context, 'Utilisateur non authentifié. Veuillez vous connecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -132,18 +113,13 @@ class FrigoService {
 
     if (response.statusCode == 401) {
       _logger.info('Session expirée. Veuillez vous reconnecter.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Session expirée. Veuillez vous reconnecter.')),
-      );
+      CustomSnackBar.showError(context, 'Session expirée. Veuillez vous reconnecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
     if (response.statusCode == 200) {
       _logger.info('Aliment supprimé avec succès');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Aliment supprimé avec succès')),
-      );
+      CustomSnackBar.showSuccess(context, 'Aliment supprimé avec succès');
     } else {
       throw Exception('Échec de la suppression de l\'aliment');
     }
@@ -155,11 +131,7 @@ class FrigoService {
 
     if (token == null) {
       _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content:
-                Text('Utilisateur non authentifié. Veuillez vous connecter.')),
-      );
+      CustomSnackBar.showError(context, 'Utilisateur non authentifié. Veuillez vous connecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -176,19 +148,13 @@ class FrigoService {
 
     if (response.statusCode == 401) {
       _logger.info('Session expirée. Veuillez vous reconnecter.');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Session expirée. Veuillez vous reconnecter.')),
-      );
+      CustomSnackBar.showError(context, 'Session expirée. Veuillez vous reconnecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
     if (response.statusCode == 200) {
       _logger.info('Quantité de l\'aliment modifiée avec succès');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Quantité de l\'aliment modifiée avec succès')),
-      );
+      CustomSnackBar.showSuccess(context, 'Quantité de l\'aliment modifiée avec succès');
     } else {
       throw Exception('Échec de la modification de la quantité de l\'aliment');
     }

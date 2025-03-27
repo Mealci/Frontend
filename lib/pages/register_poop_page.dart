@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/components/camera_preview_screen.dart';
+import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/components/save_poop_button.dart';
 import 'package:mealci/models/poop_enums.dart';
 import 'package:mealci/models/poop_model.dart';
@@ -86,13 +87,7 @@ class _RegisterPoopPageState extends State<RegisterPoopPage> {
   void _savePoopData() {
     if (_validateFeeling(_feeling) != null ||
         _validateQuantity(_lowerValue) != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content:
-              Text('Veuillez remplir les champs Quantité, Bristol et Ressenti'),
-          backgroundColor: Colors.red,
-        ),
-      );
+        CustomSnackBar.showError(context, "Veuillez remplir les champs Quantité, Bristol et Ressenti");
     } else {
       // Création de l'objet Poop
       Poop poop = Poop(
