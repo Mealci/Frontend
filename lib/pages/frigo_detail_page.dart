@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
-import 'package:mealci/models/food_model.dart';
+import 'package:mealci/models/enums.dart';
+import 'package:mealci/models/food_create_model.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/utils/styles/style.dart';
+import 'package:mealci/services/frigo_service.dart';
 
-class FrigoDetailPage extends StatelessWidget {
+class FrigoDetailPage extends StatefulWidget {
   final String category;
-  final List<Food> items;
+  final List<CreateFood> items;
   final String image;
 
   const FrigoDetailPage({
@@ -16,6 +18,48 @@ class FrigoDetailPage extends StatelessWidget {
     required this.items,
     required this.image,
   });
+
+  @override
+  State<FrigoDetailPage> createState() => _FrigoDetailPageState();
+}
+
+class _FrigoDetailPageState extends State<FrigoDetailPage> {
+  late List<CreateFood> items;
+
+  @override
+  void initState() {
+    super.initState();
+    items = List.from(widget.items);
+  }
+
+  void refreshFoodList() async {
+    try {
+      CategoryFood categoryEnum = CategoryFood.values.firstWhere(
+          (e) => e.toString().toUpperCase().split('.').last == widget.category);
+
+      List<CreateFood> updatedItems =
+          await FrigoService().fetchFoodByCategory(context, categoryEnum);
+
+      setState(() {
+        items = updatedItems;
+      });
+    } catch (e) {
+      debugPrint("Erreur lors de la conversion de la catégorie : $e");
+    }
+  }
+
+  void deleteFoodById(int id) async {
+    FrigoService().deleteFoodById(context, id);
+    setState(() {
+      items.removeWhere((food) => food.id == id);
+    });
+  }
+
+  Future<void> patchFoodQuantityById(
+      BuildContext context, int id, double quantity) async {
+    await FrigoService().patchFoodQuantityById(context, id, quantity);
+    refreshFoodList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +80,7 @@ class FrigoDetailPage extends StatelessWidget {
                     ),
                     Spacer(),
                     Text(
-                      category,
+                      widget.category,
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 27,
@@ -97,7 +141,7 @@ class FrigoDetailPage extends StatelessWidget {
                             leading: SvgPicture.asset(
                               width: 40,
                               height: 40,
-                              image,
+                              widget.image,
                             ),
                             subtitle: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +187,7 @@ class FrigoDetailPage extends StatelessWidget {
                               ],
                             ),
                             title: Text(
-                              items[index].name,
+                              '${items[index].name} - ${items[index].quantity} ${items[index].measure.toString().split('.').last}',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 15,
@@ -154,14 +198,32 @@ class FrigoDetailPage extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    patchFoodQuantityById(
+                                        context,
+                                        items[index].id,
+                                        items[index].quantity + 1);
+                                  },
                                   icon: Icon(
                                     Icons.add,
                                     color: Colors.black,
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    if (items[index].quantity > 1 &&
+                                            items[index].measure ==
+                                                MeasureFood.liter ||
+                                        items[index].measure ==
+                                            MeasureFood.piece) {
+                                      patchFoodQuantityById(
+                                          context,
+                                          items[index].id,
+                                          items[index].quantity - 1);
+                                    } else {
+                                      deleteFoodById(items[index].id);
+                                    }
+                                  },
                                   icon: Icon(
                                     Icons.remove,
                                     color: Colors.black,
