@@ -451,7 +451,7 @@ class PhotoCapture extends StatelessWidget {
                     ),
                   );
                   if (result != null) {
-                    print('Chemin de l\'image capturée : $result');
+                    debugPrint('Chemin de l\'image capturée : $result');
                   }
                 },
                 child: Icon(

@@ -54,7 +54,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     Navigator.pop(context, image?.path); // Retourne le chemin
     if (image != null) {
-      print('Image sélectionnée : ${image.path}');
+      debugPrint('Image sélectionnée : ${image.path}');
     }
   }
 
@@ -64,7 +64,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         final XFile photo = await _cameraController!.takePicture();
         Navigator.pop(context, photo.path); // Retourne le chemin
       } catch (e) {
-        print('Erreur lors de la capture : $e');
+        debugPrint('Erreur lors de la capture : $e');
       }
     }
   }
@@ -170,7 +170,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 3),
-                  color: Colors.black.withOpacity(0.7),
+                  color: Colors.black.withAlpha(50),
                 ),
                 child: Center(
                   child: Container(
