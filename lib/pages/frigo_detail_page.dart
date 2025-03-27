@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
-import 'package:mealci/models/enums.dart';
 import 'package:mealci/models/food_create_model.dart';
+import 'package:mealci/models/food_enums.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/utils/styles/style.dart';
 import 'package:mealci/services/frigo_service.dart';

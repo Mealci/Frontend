@@ -94,14 +94,6 @@ class _RegisterPoopPageState extends State<RegisterPoopPage> {
         ),
       );
     } else {
-      // Réinitialisation des valeurs
-      setState(() {
-        _lowerValue = 1;
-        _feeling = '';
-        _selectedBristolType = "Pas de caca";
-        _selectedSymptoms = [];
-      });
-
       // Création de l'objet Poop
       Poop poop = Poop(
         stoolComposition: _getStoolComposition(_selectedBristolType!),
@@ -122,6 +114,14 @@ class _RegisterPoopPageState extends State<RegisterPoopPage> {
 
       // Enregistrement des données
       _poopService.createPoop(context, poop);
+
+      // Réinitialisation des valeurs
+      setState(() {
+        _lowerValue = 1;
+        _feeling = '';
+        _selectedBristolType = "Pas de caca";
+        _selectedSymptoms = [];
+      });
     }
   }
 

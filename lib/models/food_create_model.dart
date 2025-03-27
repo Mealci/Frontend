@@ -1,6 +1,5 @@
+import 'package:mealci/models/food_enums.dart';
 import 'package:mealci/models/food_model.dart';
-
-import 'enums.dart';
 
 class CreateFood extends Food {
   int id;

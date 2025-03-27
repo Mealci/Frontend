@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mealci/models/food_create_model.dart';
 import 'package:mealci/models/food_enums.dart';
 import 'package:mealci/models/food_model.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';

@@ -28,12 +28,6 @@ class PoopService {
       );
 
       if (response.statusCode == 200) {
-        _logger.info('Connexion réussie');
-
-        final String responseBody = response.body;
-
-        await secureStorageManagement.writeData('token_jwt', responseBody);
-
         Navigator.pushNamed(context, '/home');
       } else {
         _logger.severe('Erreur du serveur: ${response.statusCode}');
