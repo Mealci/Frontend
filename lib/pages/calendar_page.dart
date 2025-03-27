@@ -17,6 +17,12 @@ class _CalendarPageState extends State<CalendarPage> {
   DateTime selectedDate = DateTime.now();
   Map<String, dynamic> events = {};
 
+  @override
+  void initState() {
+    super.initState();
+    fetchEvents(selectedDate);
+  }
+
   Future<void> fetchEvents(DateTime date) async {
     DateTime startDate = DateTime(date.year, date.month, date.day, 0, 0, 0);
     DateTime endDate = DateTime(date.year, date.month, date.day, 23, 59, 59);

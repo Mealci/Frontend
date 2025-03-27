@@ -34,10 +34,6 @@ class PoopService {
 
         await secureStorageManagement.writeData('token_jwt', responseBody);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Connexion réussie')),
-        );
-
         Navigator.pushNamed(context, '/home');
       } else {
         _logger.severe('Erreur du serveur: ${response.statusCode}');
