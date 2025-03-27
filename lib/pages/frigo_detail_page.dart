@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mealci/components/feed_fridge_button.dart';
 import 'package:mealci/models/enums.dart';
 import 'package:mealci/models/food_model.dart';
+import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/utils/styles/style.dart';
 import 'package:mealci/services/frigo_service.dart';
 
@@ -69,17 +70,30 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
             padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
             child: Column(
               children: [
-                Text(
-                  widget.category,
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 27,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: 'Voltaire',
-                  ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: () {
+                        Navigator.pushNamed(context, Routes.home);
+                      },
+                    ),
+                    Spacer(),
+                    Text(
+                      widget.category,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 27,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Voltaire',
+                      ),
+                    ),
+                    Spacer(flex: 2),
+                  ],
                 ),
                 SizedBox(height: 20),
                 FeedFridgeButton(
+                  text: "Feed Fridge",
                   onPressed: () {
                     showDialog(
                       context: context,
@@ -113,7 +127,7 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withAlpha(10),
                                 blurRadius: 5,
                                 spreadRadius: 1,
                                 offset: Offset(0, 2),
@@ -121,115 +135,107 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
                             ],
                           ),
                           child: ListTile(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              leading: SvgPicture.asset(
-                                width: 40,
-                                height: 40,
-                                widget.image,
-                              ),
-                              subtitle: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 20,
-                                    height: 20,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.greenAccent.shade700,
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        "A",
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            leading: SvgPicture.asset(
+                              width: 40,
+                              height: 40,
+                              widget.image,
+                            ),
+                            subtitle: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 20,
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.greenAccent.shade700,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      "A",
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 10),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "80/100",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        "Bon",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              title: Text(
-                                items[index].name +
-                                    ' - ' +
-                                    items[index].quantity.toString() +
-                                    ' ' +
-                                    items[index]
-                                        .measure
-                                        .toString()
-                                        .split('.')
-                                        .last,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
                                 ),
+                                SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "80/100",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Bon",
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            title: Text(
+                              '${items[index].name} - ${items[index].quantity} ${items[index].measure.toString().split('.').last}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
                               ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
+                            ),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    patchFoodQuantityById(
+                                        context,
+                                        items[index].id,
+                                        items[index].quantity + 1);
+                                  },
+                                  icon: Icon(
+                                    Icons.add,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                IconButton(
+                                  onPressed: () {
+                                    print(items[index].measure ==
+                                        MeasureFood.liter);
+                                    print(items[index].measure ==
+                                        MeasureFood.piece);
+                                    if (items[index].quantity > 1 &&
+                                        items[index].measure ==
+                                            MeasureFood.liter &&
+                                        items[index].measure ==
+                                            MeasureFood.piece) {
                                       patchFoodQuantityById(
                                           context,
                                           items[index].id,
-                                          items[index].quantity + 1);
-                                    },
-                                    icon: Icon(
-                                      Icons.add,
-                                      color: Colors.black,
-                                    ),
+                                          items[index].quantity - 1);
+                                    } else {
+                                      deleteFoodById(items[index].id);
+                                    }
+                                  },
+                                  icon: Icon(
+                                    Icons.remove,
+                                    color: Colors.black,
                                   ),
-                                  IconButton(
-                                    onPressed: () {
-                                      print(items[index].measure ==
-                                          MeasureFood.LITER);
-                                      print(items[index].measure ==
-                                          MeasureFood.PIECE);
-                                      if (items[index].quantity > 1 &&
-                                          items[index].measure ==
-                                              MeasureFood.LITER &&
-                                          items[index].measure ==
-                                              MeasureFood.PIECE) {
-                                        patchFoodQuantityById(
-                                            context,
-                                            items[index].id,
-                                            items[index].quantity - 1);
-                                      } else {
-                                        deleteFoodById(items[index].id);
-                                      }
-                                    },
-                                    icon: Icon(
-                                      Icons.remove,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              )),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       );
                     },

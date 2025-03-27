@@ -27,7 +27,7 @@ class FrigoService {
     }
 
     final String foodByCategoryPath =
-        '/food/getFoodsByCategory?category=${category.toString().split('.').last}';
+        '/food/getFoodsByCategory?category=${category.toString().toUpperCase().split('.').last}';
     final Uri foodByCategoryUri =
         Uri.parse('${EnvironnementVariable.apiUrl}$foodByCategoryPath');
 
@@ -51,6 +51,59 @@ class FrigoService {
     } else {
       throw Exception(
           'Échec du chargement des données des catégories d\'aliments');
+    }
+  }
+
+  Future<void> createFoodFromBarCode(
+      BuildContext context, Food food, CategoryFood category) async {
+    String? token = await _storage.readData('token_jwt');
+
+    if (token == null) {
+      _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content:
+                Text('Utilisateur non authentifié. Veuillez vous connecter.')),
+      );
+      Navigator.pushNamed(context, '/loginThirdPage');
+    }
+
+    final String createFoodPath = '/food/create';
+    final Uri createFoodUri =
+        Uri.parse('${EnvironnementVariable.apiUrl}$createFoodPath');
+    final response = await http.post(
+      createFoodUri,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'name': food.name,
+        'quantity': food.quantity,
+        'measure': food.measure.toString().toUpperCase().split('.').last,
+        'brand': food.brand,
+        'state': food.state.toString().toUpperCase().split('.').last,
+        'category': category.toString().toUpperCase().split('.').last,
+      }),
+    );
+    if (response.statusCode == 401) {
+      _logger.info('Session expirée. Veuillez vous reconnecter.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Session expirée. Veuillez vous reconnecter.')),
+      );
+      Navigator.pushNamed(context, '/loginThirdPage');
+    }
+
+    if (response.statusCode == 200) {
+      _logger.info('Aliment créé avec succès');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Aliment créé avec succès')),
+      );
+    } else {
+      _logger.severe(
+          'Échec de la création de l\'aliment : ${response.statusCode}');
+      throw Exception('Échec de la création de l\'aliment');
     }
   }
 

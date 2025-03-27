@@ -34,7 +34,6 @@ class Style {
 class CustomMealciAsset {
   static const String logo = 'assets/images/logo.png';
   static const String logoWhite = 'assets/svg/login_third_icon.svg';
-
   static const String profileIcon = 'assets/svg/profile_icon.svg';
   static const String fridgeIcon = 'assets/svg/fridge_icon.svg';
   static const String drinkIcon = 'assets/svg/drink_icon.svg';
@@ -51,4 +50,13 @@ class CustomMealciAsset {
   static const String meatIcon = 'assets/svg/meat_icon.svg';
   static const String fishIcon = 'assets/svg/fish_icon.svg';
   static const String toiletIcon = 'assets/svg/toilet_icon.svg';
+  static const String nutriScoreA = 'assets/svg/nutri-score-A.svg';
+  static const String nutriScoreB = 'assets/svg/nutri-score-B.svg';
+  static const String nutriScoreC = 'assets/svg/nutri-score-C.svg';
+  static const String nutriScoreD = 'assets/svg/nutri-score-D.svg';
+  static const String nutriScoreE = 'assets/svg/nutri-score-E.svg';
+  static const String novaGroup1 = 'assets/svg/nova-group-1.svg';
+  static const String novaGroup2 = 'assets/svg/nova-group-2.svg';
+  static const String novaGroup3 = 'assets/svg/nova-group-3.svg';
+  static const String novaGroup4 = 'assets/svg/nova-group-4.svg';
 }

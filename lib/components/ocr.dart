@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:mealci/components/snap_layout.dart';
+import 'package:mealci/components/camera_preview_screen.dart';
 
 class OcrLogic extends StatefulWidget {
   const OcrLogic({super.key});
@@ -14,7 +15,7 @@ class OcrLogic extends StatefulWidget {
 class _OcrLogicState extends State<OcrLogic> {
   String? _capturedImagePath;
   final TextRecognizer _textRecognizer = TextRecognizer();
-  String _recognizedText = '';
+  Map<String, dynamic> _recognizedJson = {};
 
   @override
   void initState() {
@@ -30,7 +31,6 @@ class _OcrLogicState extends State<OcrLogic> {
 
     if (result is String) {
       setState(() => _capturedImagePath = result);
-
       final imageFile = File(_capturedImagePath!);
       await _processImage(imageFile);
 
@@ -39,7 +39,7 @@ class _OcrLogicState extends State<OcrLogic> {
         MaterialPageRoute(
           builder: (context) => ResultScreen(
             imagePath: _capturedImagePath!,
-            recognizedText: _recognizedText,
+            recognizedJson: _recognizedJson,
           ),
         ),
       );
@@ -50,7 +50,18 @@ class _OcrLogicState extends State<OcrLogic> {
     try {
       final inputImage = InputImage.fromFile(imageFile);
       final recognizedText = await _textRecognizer.processImage(inputImage);
-      setState(() => _recognizedText = recognizedText.text);
+
+      List<Map<String, dynamic>> blocks = recognizedText.blocks.map((block) {
+        return {
+          "text": block.text,
+          "boundingBox": block.boundingBox.toString(),
+          "lines": block.lines.map((line) => line.text).toList(),
+        };
+      }).toList();
+
+      setState(() {
+        _recognizedJson = {"text": recognizedText.text, "blocks": blocks};
+      });
     } catch (e) {
       debugPrint('Error recognizing text: $e');
     }
@@ -69,18 +80,16 @@ class _OcrLogicState extends State<OcrLogic> {
 
 class ResultScreen extends StatelessWidget {
   final String imagePath;
-  final String recognizedText;
+  final Map<String, dynamic> recognizedJson;
 
   const ResultScreen({
     super.key,
     required this.imagePath,
-    required this.recognizedText,
+    required this.recognizedJson,
   });
 
   @override
   Widget build(BuildContext context) {
-    final filteredText = _filterAndFormatText(recognizedText);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -90,49 +99,13 @@ class ResultScreen extends StatelessWidget {
           children: [
             Image.file(File(imagePath)),
             const SizedBox(height: 16.0),
-            ...filteredText.map(
-              (line) => Text(
-                line.join(' '),
-                style: const TextStyle(fontSize: 14),
-              ),
+            Text(
+              jsonEncode(recognizedJson),
+              style: const TextStyle(fontSize: 16.0),
             ),
           ],
         ),
       ),
     );
-  }
-
-  List<List<String>> _filterAndFormatText(String text) {
-    // Divise le texte en lignes
-    final lines = text.split('\n');
-
-    return lines
-        .map((line) {
-          // Sépare les composants en utilisant une expression régulière
-          var components =
-              line.split(RegExp(r'\d+(?:G|KG|XMG|X|CL|x|\s?pièces?)'));
-
-          // Filtre les composants indésirables et nettoie les chaînes
-          components = components
-              .where((component) =>
-                  component.trim().isNotEmpty) // Supprime les chaînes vides
-              .where((component) =>
-                  component.length >
-                  3) // Garde les chaînes de plus de 3 caractères
-              .where((component) => !RegExp(r'^\d+([.,]\d*)')
-                  .hasMatch(component)) // Exclut les nombres
-              .map((component) =>
-                  component.trim()) // Supprime les espaces inutiles
-              .toList();
-
-          return components;
-        })
-        .where((line) => line.isNotEmpty) // Supprime les lignes vides
-        .where((line) => !line.any((word) =>
-            RegExp(r'\btotal\b', caseSensitive: false)
-                .hasMatch(word) || // Exclut les lignes contenant "total"
-            RegExp(r'\d+.*articles', caseSensitive: false)
-                .hasMatch(word))) // Exclut les lignes avec "articles"
-        .toList();
   }
 }

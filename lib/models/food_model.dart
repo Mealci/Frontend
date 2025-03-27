@@ -7,7 +7,7 @@ class Food {
   MeasureFood measure;
   String brand;
   CategoryFood category;
-  StateFood state = StateFood.PRESENT;
+  StateFood state = StateFood.present;
 
   Food(
       {required this.id,
@@ -16,7 +16,7 @@ class Food {
       required this.measure,
       required this.brand,
       required this.category,
-      this.state = StateFood.PRESENT});
+      this.state = StateFood.present});
 
   int get getId => id;
   String get getName => name;
@@ -40,17 +40,22 @@ class Food {
       name: json['food']['name'],
       quantity: json['food']['quantity'],
       measure: MeasureFood.values.firstWhere(
-        (e) => e.toString().split('.').last == json['food']['measure'],
-        orElse: () => MeasureFood.PIECE,
+        (e) =>
+            e.toString().toUpperCase().split('.').last ==
+            json['food']['measure'],
+        orElse: () => MeasureFood.piece,
       ),
       brand: json['food']['brand'],
       category: CategoryFood.values.firstWhere(
-        (e) => e.toString().split('.').last == json['food']['category'],
-        orElse: () => CategoryFood.FRUITS,
+        (e) =>
+            e.toString().toUpperCase().split('.').last ==
+            json['food']['category'],
+        orElse: () => CategoryFood.fruits,
       ),
       state: StateFood.values.firstWhere(
-        (e) => e.toString().split('.').last == json['food']['state'],
-        orElse: () => StateFood.PRESENT,
+        (e) =>
+            e.toString().toUpperCase().split('.').last == json['food']['state'],
+        orElse: () => StateFood.present,
       ),
     );
   }

@@ -8,8 +8,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/routes/routes.dart';
-import 'package:mealci/utils/ocr/ocr.dart';
+import 'package:mealci/components/ocr.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'components/qr_camera_preview_screen.dart';
 
 // pages
 import 'package:mealci/pages/register_page.dart';
@@ -31,15 +32,16 @@ void main() async {
 
 Future<void> requestHealthPermissions() async {
   List<HealthDataType> types = HealthDataType.values;
-  
+
   bool? hasPermissions = await health.hasPermissions(types);
 
   if (!(hasPermissions ?? false)) {
     List<HealthDataAccess> permissions = [];
-    for (var e in types) {
+    for (var _ in types) {
       permissions.add(HealthDataAccess.READ);
     }
-    bool authorized = await health.requestAuthorization(types, permissions: permissions);
+    bool authorized =
+        await health.requestAuthorization(types, permissions: permissions);
     if (!authorized) {
       debugPrint("HealthKit permissions not granted");
     } else {
@@ -87,8 +89,8 @@ class MyApp extends StatelessWidget {
         Routes.registerpage: (context) => const RegisterPage(),
         Routes.textRecognitionScreen: (context) => const OcrLogic(),
         Routes.toiletMap: (context) => const ToiletMapPage(),
+        Routes.scanBarCode: (context) => const QrCameraPreviewScreen(),
         Routes.frigoPage: (context) => const FrigoPage(),
-        Routes.textRecognitionScreen: (context) => const OcrLogic(),
         Routes.healthReport: (context) => const HealthReport()
       },
     );

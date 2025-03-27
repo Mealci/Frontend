@@ -13,7 +13,6 @@ class _CalendarPageState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     // Récupérer les dimensions de l'écran
-    final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -48,7 +47,9 @@ class _CalendarPageState extends State<CalendarPage> {
                             DateTime.now().month, DateTime.now().day),
                         lastDate: DateTime(DateTime.now().year,
                             DateTime.now().month, DateTime.now().day + 1),
-                        onDateSelected: (date) => print(date),
+                        onDateSelected: (date) {
+                          // Action à effectuer lors de la sélection d'une date
+                        },
                         leftMargin: 20,
                         monthColor: Colors.black,
                         dayColor: Colors.black,
