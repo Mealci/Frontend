@@ -49,38 +49,7 @@ class _PoopTrackerPageState extends State<PoopTrackerPage> {
                 ),
               ],
             ),
-            // const Spacer(),
-            ElevatedButton(
-              onPressed: () {
-                CustomSnackBar.show(
-                  context,
-                  "Nouvelle notification ! 🚀",
-                  icon: Icons.check_circle_outline, // Icône custom
-                  backgroundColor: Colors.green, // Couleur de fond
-                  textColor: Colors.white, // Couleur du texte
-                  duration: Duration(seconds: 4), // Durée d'affichage
-                );
-              },
-              child: Text("Afficher SnackBar"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                CustomSnackBar.showError(context, "Erreur ! 😱");
-              },
-              child: Text("Afficher SnackBar"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                CustomSnackBar.showInfo(context, "Information ! 📢");
-              },
-              child: Text("Afficher SnackBar"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                CustomSnackBar.showSuccess(context, "Succès ! 🎉");
-              },
-              child: Text("Afficher SnackBar"),
-            ),
+            const Spacer(),
           ],
         ),
       ),
