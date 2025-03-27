@@ -1,0 +1,13 @@
+enum Feeling { VERY_BAD, BAD, OK, GOOD, VERY_GOOD }
+
+enum StoolComposition {
+  TYPE_ONE,
+  TYPE_TWO,
+  TYPE_THREE,
+  TYPE_FOUR,
+  TYPE_FIVE,
+  TYPE_SIX,
+  TYPE_SEVEN,
+  TYPE_NONE,
+  TYPE_UNKNOWN
+}

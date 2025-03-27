@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mealci/components/save_poop_button.dart';
+import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/utils/styles/style.dart';
 
 class PoopTrackerPage extends StatefulWidget {
@@ -30,7 +31,7 @@ class _PoopTrackerPageState extends State<PoopTrackerPage> {
                 fontFamily: 'Voltaire',
               ),
             ),
-            const Spacer(), // Ajoute un espace entre le titre et les éléments centraux
+            const Spacer(),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -42,34 +43,12 @@ class _PoopTrackerPageState extends State<PoopTrackerPage> {
                 SizedBox(height: screenH * 0.03),
                 SavePoopButton(
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Ajouter un caca'),
-                          content: const Text('Voulez-vous ajouter un caca ?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Non'),
-                            ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Oui'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    Navigator.popAndPushNamed(context, Routes.registerPoopPage);
                   },
                 ),
               ],
             ),
-            const Spacer(), // Ajoute un espace en bas pour équilibrer la mise en page
+            const Spacer(),
           ],
         ),
       ),

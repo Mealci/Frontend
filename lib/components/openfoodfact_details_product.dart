@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mealci/models/enums.dart';
+import 'package:mealci/models/food_enums.dart';
 import 'package:mealci/models/food_model.dart';
 import 'package:mealci/services/openfoodfact_service.dart';
 import 'package:mealci/utils/styles/style.dart';

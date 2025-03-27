@@ -31,8 +31,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         enableAudio: false,
       );
 
-      await _cameraController!
-          .initialize(); // create bug is permission denied, take off !
+      await _cameraController!.initialize();
       if (!mounted) return;
 
       setState(() {
@@ -54,6 +53,9 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
     Navigator.pop(context, image?.path); // Retourne le chemin
+    if (image != null) {
+      debugPrint('Image sélectionnée : ${image.path}');
+    }
   }
 
   Future<void> capturePhoto() async {
@@ -62,12 +64,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
         final XFile photo = await _cameraController!.takePicture();
         Navigator.pop(context, photo.path); // Retourne le chemin
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erreur lors de la capture de la photo: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        debugPrint('Erreur lors de la capture : $e');
       }
     }
   }
@@ -106,7 +103,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.black.withAlpha(50),
+                  color: Colors.black.withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -127,7 +124,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.black.withAlpha(50),
+                  color: Colors.black.withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -148,7 +145,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.black.withAlpha(50),
+                  color: Colors.black.withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
