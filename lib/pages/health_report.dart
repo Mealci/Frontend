@@ -245,10 +245,10 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Style.styles[AppStyle.backgroundColor],
-      appBar: AppBar(
-        title: const Text("Health Report"),
-        backgroundColor: Style.styles[AppStyle.primaryColor],
-      ),
+      // appBar: AppBar(
+      //   title: const Text("Health Report"),
+      //   backgroundColor: Style.styles[AppStyle.primaryColor],
+      // ),
       body: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
@@ -289,9 +289,18 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
 
             return SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
+                    const Text(
+                      'Rapport Santé',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 27,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Voltaire',
+                      ),
+                    ),
                     Column(children: widgets),
                   ],
                 ),
