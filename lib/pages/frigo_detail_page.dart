@@ -24,15 +24,15 @@ class FrigoDetailPage extends StatefulWidget {
 }
 
 class _FrigoDetailPageState extends State<FrigoDetailPage> {
-  late List<CreateFood> items;
+  List<CreateFood> items = [];
 
   @override
   void initState() {
     super.initState();
-    items = List.from(widget.items);
+    refreshFoodList();
   }
 
-  void refreshFoodList() async {
+  Future refreshFoodList() async {
     try {
       CategoryFood categoryEnum = CategoryFood.values.firstWhere(
           (e) => e.toString().toUpperCase().split('.').last == widget.category);
@@ -53,19 +53,19 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
     }
   }
 
-  void changeStateFoodById(int id, StateFood food) async {
-    FrigoService().changeStateFoodById(
+  Future changeStateFoodById(int id, StateFood food) async {
+    await FrigoService().changeStateFoodById(
       context,
       id,
       food,
     );
-    refreshFoodList();
+    await refreshFoodList();
   }
 
   Future<void> patchFoodQuantityById(
       BuildContext context, int id, double quantity) async {
     await FrigoService().patchFoodQuantityById(context, id, quantity);
-    refreshFoodList();
+    await refreshFoodList();
   }
 
   void _confirmUpdateFood(int id) {
@@ -77,17 +77,17 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
           content: Text("Le produit a-t-il été mangé ou jeté ?"),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 debugPrint("L'aliment a été mangé.");
-                changeStateFoodById(id, StateFood.eat);
+                await changeStateFoodById(id, StateFood.eat);
                 Navigator.of(context).pop();
               },
               child: Text("Mangé"),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 debugPrint("L'aliment a été jeté.");
-                changeStateFoodById(id, StateFood.discard);
+                await changeStateFoodById(id, StateFood.discard);
                 Navigator.of(context).pop();
               },
               child: Text("Jeté"),
