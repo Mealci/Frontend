@@ -20,7 +20,8 @@ class FrigoService {
 
     if (token == null) {
       _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
-      CustomSnackBar.showInfo(context, 'Utilisateur non authentifié. Veuillez vous connecter.');
+      CustomSnackBar.showInfo(
+          context, 'Utilisateur non authentifié. Veuillez vous connecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -37,7 +38,8 @@ class FrigoService {
 
     if (response.statusCode == 401) {
       _logger.info('Session expirée. Veuillez vous reconnecter.');
-      CustomSnackBar.showError(context, 'Session expirée. Veuillez vous reconnecter.');
+      CustomSnackBar.showError(
+          context, 'Session expirée. Veuillez vous reconnecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -55,7 +57,8 @@ class FrigoService {
 
     if (token == null) {
       _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
-      CustomSnackBar.showInfo(context, 'Utilisateur non authentifié. Veuillez vous connecter.');
+      CustomSnackBar.showInfo(
+          context, 'Utilisateur non authentifié. Veuillez vous connecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -79,7 +82,8 @@ class FrigoService {
     );
     if (response.statusCode == 401) {
       _logger.info('Session expirée. Veuillez vous reconnecter.');
-      CustomSnackBar.showError(context, 'Session expirée. Veuillez vous reconnecter.');
+      CustomSnackBar.showError(
+          context, 'Session expirée. Veuillez vous reconnecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -98,7 +102,8 @@ class FrigoService {
 
     if (token == null) {
       _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
-      CustomSnackBar.showInfo(context, 'Utilisateur non authentifié. Veuillez vous connecter.');
+      CustomSnackBar.showInfo(
+          context, 'Utilisateur non authentifié. Veuillez vous connecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -113,7 +118,8 @@ class FrigoService {
 
     if (response.statusCode == 401) {
       _logger.info('Session expirée. Veuillez vous reconnecter.');
-      CustomSnackBar.showError(context, 'Session expirée. Veuillez vous reconnecter.');
+      CustomSnackBar.showError(
+          context, 'Session expirée. Veuillez vous reconnecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -131,7 +137,8 @@ class FrigoService {
 
     if (token == null) {
       _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
-      CustomSnackBar.showError(context, 'Utilisateur non authentifié. Veuillez vous connecter.');
+      CustomSnackBar.showError(
+          context, 'Utilisateur non authentifié. Veuillez vous connecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
@@ -148,15 +155,55 @@ class FrigoService {
 
     if (response.statusCode == 401) {
       _logger.info('Session expirée. Veuillez vous reconnecter.');
-      CustomSnackBar.showError(context, 'Session expirée. Veuillez vous reconnecter.');
+      CustomSnackBar.showError(
+          context, 'Session expirée. Veuillez vous reconnecter.');
       Navigator.pushNamed(context, '/loginThirdPage');
     }
 
     if (response.statusCode == 200) {
       _logger.info('Quantité de l\'aliment modifiée avec succès');
-      CustomSnackBar.showSuccess(context, 'Quantité de l\'aliment modifiée avec succès');
+      CustomSnackBar.showSuccess(
+          context, 'Quantité de l\'aliment modifiée avec succès');
     } else {
       throw Exception('Échec de la modification de la quantité de l\'aliment');
+    }
+  }
+
+  Future changeStateFoodById(
+      BuildContext context, int id, StateFood state) async {
+    String? token = await _storage.readData('token_jwt');
+
+    if (token == null) {
+      _logger.info('Utilisateur non authentifié. Veuillez vous connecter.');
+      CustomSnackBar.showError(
+          context, 'Utilisateur non authentifié. Veuillez vous connecter.');
+      Navigator.pushNamed(context, '/loginThirdPage');
+    }
+
+    final String changeStateFoodPath =
+        '/food/state/$id/${state.name.toUpperCase()}';
+    final Uri changeStateFoodUri =
+        Uri.parse('${EnvironnementVariable.apiUrl}$changeStateFoodPath');
+
+    final response =
+        await http.patch(changeStateFoodUri, headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    });
+
+    if (response.statusCode == 401) {
+      _logger.info('Session expirée. Veuillez vous reconnecter.');
+      CustomSnackBar.showError(
+          context, 'Session expirée. Veuillez vous reconnecter.');
+      Navigator.pushNamed(context, '/loginThirdPage');
+    }
+
+    if (response.statusCode == 200) {
+      _logger.info('État de l\'aliment modifié avec succès');
+      CustomSnackBar.showSuccess(
+          context, 'État de l\'aliment modifié avec succès');
+    } else {
+      throw Exception('Échec de la modification de l\'état de l\'aliment');
     }
   }
 }

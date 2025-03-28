@@ -24,21 +24,26 @@ class FrigoDetailPage extends StatefulWidget {
 }
 
 class _FrigoDetailPageState extends State<FrigoDetailPage> {
-  late List<CreateFood> items;
+  List<CreateFood> items = [];
 
   @override
   void initState() {
     super.initState();
-    items = List.from(widget.items);
+    refreshFoodList();
   }
 
-  void refreshFoodList() async {
+  Future refreshFoodList() async {
     try {
       CategoryFood categoryEnum = CategoryFood.values.firstWhere(
           (e) => e.toString().toUpperCase().split('.').last == widget.category);
 
       List<CreateFood> updatedItems =
           await FrigoService().fetchFoodByCategory(context, categoryEnum);
+
+      updatedItems = updatedItems
+          .where((item) =>
+              item.state != StateFood.eat && item.state != StateFood.discard)
+          .toList();
 
       setState(() {
         items = updatedItems;
@@ -48,17 +53,55 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
     }
   }
 
-  void deleteFoodById(int id) async {
-    FrigoService().deleteFoodById(context, id);
-    setState(() {
-      items.removeWhere((food) => food.id == id);
-    });
+  Future changeStateFoodById(int id, StateFood food) async {
+    await FrigoService().changeStateFoodById(
+      context,
+      id,
+      food,
+    );
+    await refreshFoodList();
   }
 
   Future<void> patchFoodQuantityById(
       BuildContext context, int id, double quantity) async {
     await FrigoService().patchFoodQuantityById(context, id, quantity);
-    refreshFoodList();
+    await refreshFoodList();
+  }
+
+  void _confirmUpdateFood(int id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Confirmer la suppression"),
+          content: Text("Le produit a-t-il été mangé ou jeté ?"),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                debugPrint("L'aliment a été mangé.");
+                await changeStateFoodById(id, StateFood.eat);
+                Navigator.of(context).pop();
+              },
+              child: Text("Mangé"),
+            ),
+            TextButton(
+              onPressed: () async {
+                debugPrint("L'aliment a été jeté.");
+                await changeStateFoodById(id, StateFood.discard);
+                Navigator.of(context).pop();
+              },
+              child: Text("Jeté"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Annuler"),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -211,17 +254,13 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    if (items[index].quantity > 1 &&
-                                            items[index].measure ==
-                                                MeasureFood.liter ||
-                                        items[index].measure ==
-                                            MeasureFood.piece) {
+                                    if (items[index].quantity > 1) {
                                       patchFoodQuantityById(
                                           context,
                                           items[index].id,
                                           items[index].quantity - 1);
                                     } else {
-                                      deleteFoodById(items[index].id);
+                                      _confirmUpdateFood(items[index].id);
                                     }
                                   },
                                   icon: Icon(
