@@ -201,13 +201,13 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
         label: 'Nombre de selles',
         value: _totalPoop.toString(),
         isSquare: false,
-        icon: Icons.pets,
+        icon: Icons.wc,
       ),
       HealthStat(
         label: 'Qualité des selles',
         value: _qualityPoop.toString(),
         isSquare: false,
-        icon: Icons.pets,
+        icon: Icons.high_quality,
       ),
       HealthStat(
         label: 'Nombre de cigarettes',
