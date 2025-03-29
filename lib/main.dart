@@ -27,6 +27,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await requestHealthPermissions();
   await dotenv.load(fileName: ".env");
+  EnvironnementVariable.apiUrl = kDebugMode
+      ? EnvironnementVariable.apiUrlDev
+      : EnvironnementVariable.apiUrlProd;
   runApp(const MyApp());
 }
 
@@ -63,19 +66,8 @@ class MyApp extends StatelessWidget {
     return Platform.localeName;
   }
 
-  void checkAppMode() {
-    if (kDebugMode) {
-      EnvironnementVariable.apiUrl = EnvironnementVariable.apiUrlDev;
-    } else {
-      EnvironnementVariable.apiUrl = EnvironnementVariable.apiUrlProd;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    // Check app mode to change API URL
-    checkAppMode();
-
     // Init logger
     MealciLogger.initialize();
 
