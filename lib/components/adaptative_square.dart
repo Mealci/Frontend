@@ -64,6 +64,6 @@ class AdaptativeSquare extends StatelessWidget {
 
     return isSquare
         ? Expanded(child: AspectRatio(aspectRatio: 1.0, child: cardContent))
-        : Container(width: double.infinity, child: cardContent);
+        : SizedBox(width: double.infinity, child: cardContent);
   }
 }

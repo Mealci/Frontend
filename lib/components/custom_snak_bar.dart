@@ -32,25 +32,31 @@ class CustomSnackBar {
   }
 
   static void showSuccess(BuildContext context, String message) {
-    show(context, message,
-      icon: Icons.check_circle, 
-      backgroundColor: Colors.green, 
+    show(
+      context,
+      message,
+      icon: Icons.check_circle,
+      backgroundColor: Colors.green,
       textColor: Colors.white,
     );
   }
-  
+
   static void showError(BuildContext context, String message) {
-    show(context, message,
-      icon: Icons.error_outline, 
-      backgroundColor: Colors.red, 
+    show(
+      context,
+      message,
+      icon: Icons.error_outline,
+      backgroundColor: Colors.red,
       textColor: Colors.white,
     );
   }
 
   static void showInfo(BuildContext context, String message) {
-    show(context, message,
-      icon: Icons.info_outline, 
-      backgroundColor: Colors.blue, 
+    show(
+      context,
+      message,
+      icon: Icons.info_outline,
+      backgroundColor: Colors.blue,
       textColor: Colors.white,
     );
   }
@@ -71,8 +77,8 @@ class SnackBarWidget extends StatefulWidget {
     required this.textColor,
     required this.duration,
     required this.onRemove,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _SnackBarWidgetState createState() => _SnackBarWidgetState();
@@ -124,7 +130,8 @@ class _SnackBarWidgetState extends State<SnackBarWidget>
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: MediaQuery.of(context).padding.top + 10, // Juste sous la barre de notif
+      top: MediaQuery.of(context).padding.top +
+          10, // Juste sous la barre de notif
       left: 20,
       right: 20,
       child: SlideTransition(
