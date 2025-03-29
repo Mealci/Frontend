@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/components/save_poop_button.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/utils/styles/style.dart';

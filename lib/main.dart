@@ -9,7 +9,6 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/routes/routes.dart';
-import 'package:mealci/components/ocr.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'components/qr_camera_preview_screen.dart';
 
@@ -88,7 +87,7 @@ class MyApp extends StatelessWidget {
         Routes.loginPage: (context) => const LoginPage(),
         Routes.loginthirdpage: (context) => const LoginThirdPage(),
         Routes.registerpage: (context) => const RegisterPage(),
-        Routes.textRecognitionScreen: (context) => const OcrLogic(),
+        Routes.textRecognitionScreen: (context) => const HomePage(),
         Routes.toiletMap: (context) => const ToiletMapPage(),
         Routes.scanBarCode: (context) => const QrCameraPreviewScreen(),
         Routes.frigoPage: (context) => const FrigoPage(),

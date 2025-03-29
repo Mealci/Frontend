@@ -162,7 +162,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                             ),
                                           ),
                                         );
-                                      }).toList(),
+                                      }),
                                     // Si pas de poops, afficher un message
                                     if (poops.isEmpty)
                                       Padding(
@@ -188,7 +188,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                             ),
                                           ),
                                         );
-                                      }).toList(),
+                                      }),
                                     // Si pas d'aliments, afficher un message
                                     if (foods.isEmpty)
                                       Padding(
