@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/utils/i18N/i18n.dart';
 import 'package:mealci/utils/i18N/login_i18n_translation.dart';
 import '../components/button_padding.dart';
@@ -115,22 +116,24 @@ class LoginThirdPage extends StatelessWidget {
                   icon: Icons.apple,
                   label: LoginThirdPageTranslation.apple,
                   map: LoginThirdPageI18n.loginThirdPageTranslation,
-                  onPressed: () => Navigator.pushNamed(context, '/home')),
+                  onPressed: () => CustomSnackBar.showInfo(context,
+                      "L'authentification Apple n'est pas encore disponible")),
               const SizedBox(height: 20),
 
-              const ButtonPadding(
-                icon: Icons.g_mobiledata,
-                label: LoginThirdPageTranslation.google,
-                map: LoginThirdPageI18n.loginThirdPageTranslation,
-              ),
+              ButtonPadding(
+                  icon: Icons.g_mobiledata,
+                  label: LoginThirdPageTranslation.google,
+                  map: LoginThirdPageI18n.loginThirdPageTranslation,
+                  onPressed: () => CustomSnackBar.showInfo(context,
+                      "L'authentification Google n'est pas encore disponible")),
               const SizedBox(height: 20),
 
               ButtonPadding(
                 icon: Icons.facebook,
                 label: LoginThirdPageTranslation.facebook,
                 map: LoginThirdPageI18n.loginThirdPageTranslation,
-                onPressed: () =>
-                    Navigator.pushNamed(context, '/healthReport'),
+                onPressed: () => CustomSnackBar.showInfo(context,
+                    "L'authentification Facebook n'est pas encore disponible"),
               ),
             ],
           ),

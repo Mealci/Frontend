@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/utils/i18N/i18n.dart';
 import 'package:mealci/utils/styles/style.dart';
+import 'package:mealci/models/field_type.dart';
 
 class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final Map<dynamic, String> map;
   final dynamic label;
+  final FieldType fieldType; // Utiliser un type de champ
 
   const CustomTextField({
     super.key,
     required this.controller,
     required this.map,
     required this.label,
+    this.fieldType = FieldType.text, // Type par défaut : text
   });
 
   @override
@@ -28,7 +31,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
     // Écoute les changements de focus et met à jour l'état
     focusNode.addListener(() {
-      setState(() {}); // Met à jour l'interface chaque fois que le focus change
+      setState(() {});
     });
   }
 
@@ -90,6 +93,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 fontSize: 16,
                 fontWeight: FontWeight.bold, // Couleur du texte
               ),
+              obscureText: widget.fieldType ==
+                  FieldType
+                      .password, // Masque le texte si c'est un mot de passe
+              keyboardType: widget.fieldType == FieldType.email
+                  ? TextInputType.emailAddress
+                  : TextInputType.text, // Utilisation du type de clavier adapté
               decoration: InputDecoration(
                 border: InputBorder.none, // Pas de bordure interne
                 hintText: I18n.getTranslation(widget.map, widget.label) ??
@@ -98,9 +107,18 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   color: Color(Style.styles[AppStyle.textColor].value ??
                       Colors.grey), // Couleur du texte d'indication
                 ),
-                // Suppression de prefixIcon pour éviter un conflit
               ),
               focusNode: focusNode, // Ajout du focusNode pour le focus visuel
+              onChanged: (text) {
+                if (widget.fieldType == FieldType.email) {
+                  // Vérification de la syntaxe de l'email
+                  final emailRegex = RegExp(
+                      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$');
+                  if (!emailRegex.hasMatch(text)) {
+                    // Ajouter une logique ici pour afficher un message d'erreur si nécessaire
+                  }
+                }
+              },
             ),
           ),
         ],

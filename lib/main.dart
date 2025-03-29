@@ -1,5 +1,6 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:health/health.dart';
 import 'package:mealci/pages/health_report.dart';
 import 'package:mealci/pages/register_poop_page.dart';
@@ -66,10 +67,32 @@ class MyApp extends StatelessWidget {
     return Platform.localeName;
   }
 
+  void checkAppMode() {
+    if (kDebugMode) {
+      EnvironnementVariable.apiUrl = EnvironnementVariable.apiUrlDev;
+    } else {
+      EnvironnementVariable.apiUrl = EnvironnementVariable.apiUrlProd;
+    }
+  }
+
+  void keepScreenPortraitOnly() {
+    if (kIsWeb) {
+      return;
+    }
+    if (Platform.isAndroid || Platform.isIOS) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // Init logger
     MealciLogger.initialize();
+    // Keep screen in portrait mode
+    keepScreenPortraitOnly();
 
     return MaterialApp(
       title: 'Flutter Demo',
