@@ -103,7 +103,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withAlpha(50),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -124,7 +124,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withAlpha(50),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -145,7 +145,7 @@ class _CameraPreviewScreenState extends State<CameraPreviewScreen> {
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withAlpha(50),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(

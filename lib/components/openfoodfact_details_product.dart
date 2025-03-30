@@ -86,14 +86,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   Future<Food> _createFood() async {
     final food = Food(
-      name: product?['product_name'] ?? '',
-      quantity: double.parse(product?['product_quantity']?.toString() ?? '0'),
-      measure: _getMeasureFood(
-          product?['product_quantity_unit']?.toString() ?? 'piece'),
-      brand: product?['brands'] ?? '',
-      state: StateFood.present,
-      category: getCategory(product?['_keywords']?.toString() ?? 'autre'),
-    );
+        name: product?['product_name'] ?? '',
+        quantity: double.parse(product?['product_quantity']?.toString() ?? '0'),
+        measure: _getMeasureFood(
+            product?['product_quantity_unit']?.toString() ?? 'piece'),
+        brand: product?['brands'] ?? '',
+        state: StateFood.present,
+        category: getCategory(product?['_keywords']?.toString() ??
+            CategoryFood.prepared_Meals
+                .toString()
+                .toUpperCase()
+                .split('.')
+                .last));
 
     await _frigoService.createFoodFromBarCode(context, food, food.category);
 

@@ -23,12 +23,12 @@ class _PoopTrackerPageState extends State<PoopTrackerPage> {
         child: Column(
           children: [
             const Text(
-              'Suivi des cacas',
+              'Journal Intestinal',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 27,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Voltaire',
+                fontFamily: 'Roboto',
               ),
             ),
             const Spacer(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:mealci/models/field_type.dart';
 import 'package:mealci/services/auth_service.dart';
 import '../utils/i18N/login_i18n_translation.dart';
 import '../components/input_field_login_register.dart';
@@ -82,12 +83,14 @@ class _LoginPageState extends State<LoginPage> {
                   label: LoginPageTranslation.email,
                   map: LoginPageI18n.loginPageTranslations,
                   controller: _emailController,
+                  fieldType: FieldType.email,
                 ),
                 const SizedBox(height: 20),
                 CustomTextField(
                   label: LoginPageTranslation.password,
                   map: LoginPageI18n.loginPageTranslations,
                   controller: _passwordController,
+                  fieldType: FieldType.password,
                 ),
                 const SizedBox(height: 20),
 

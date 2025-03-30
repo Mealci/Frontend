@@ -87,7 +87,8 @@ class _RegisterPoopPageState extends State<RegisterPoopPage> {
   void _savePoopData() {
     if (_validateFeeling(_feeling) != null ||
         _validateQuantity(_lowerValue) != null) {
-        CustomSnackBar.showError(context, "Veuillez remplir les champs Quantité, Bristol et Ressenti");
+      CustomSnackBar.showError(
+          context, "Veuillez remplir les champs Quantité, Bristol et Ressenti");
     } else {
       // Création de l'objet Poop
       Poop poop = Poop(
@@ -148,7 +149,7 @@ class _RegisterPoopPageState extends State<RegisterPoopPage> {
                             color: Colors.black,
                             fontSize: 27,
                             fontWeight: FontWeight.bold,
-                            fontFamily: 'Voltaire',
+                            fontFamily: 'Roboto',
                           ),
                         ),
                         Spacer(flex: 2),
@@ -231,7 +232,7 @@ class QuantitySlider extends StatelessWidget {
                 color: Colors.black,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                fontFamily: 'Voltaire',
+                fontFamily: 'Roboto',
               ),
             ),
             const SizedBox(height: 5),
@@ -254,7 +255,6 @@ class QuantitySlider extends StatelessWidget {
                 onChanged(lowerValue);
               },
             ),
-            const SizedBox(height: 2),
             Text(
               '${value.toInt()}',
               style: const TextStyle(
@@ -377,7 +377,7 @@ class FeelingSelector extends StatelessWidget {
               color: Colors.black,
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              fontFamily: 'Voltaire',
+              fontFamily: 'Roboto',
             ),
           ),
           SizedBox(height: 10),
@@ -433,7 +433,7 @@ class PhotoCapture extends StatelessWidget {
                   color: Colors.black,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Voltaire',
+                  fontFamily: 'Roboto',
                 ),
               ),
               const SizedBox(height: 10),

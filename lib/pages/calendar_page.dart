@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ class _CalendarPageState extends State<CalendarPage> {
   final EventService eventService = EventService();
   DateTime selectedDate = DateTime.now();
   Map<String, dynamic> events = {};
+  int eventsNumber = 0; // Variable pour stocker le nombre d'événements
 
   @override
   void initState() {
@@ -32,12 +32,27 @@ class _CalendarPageState extends State<CalendarPage> {
       final Map<String, dynamic> fetchedEvents =
           await eventService.getAllEventsByDays(context, startDate, endDate);
 
+      int totalEvents = 0;
+
+      fetchedEvents.forEach((key, value) {
+        var decodedEvent = jsonDecode(jsonEncode(value));
+        var firstKey = decodedEvent.keys.first;
+        var test = decodedEvent[firstKey];
+
+        List poops = test['poops'] ?? [];
+        List foods = test['foods'] ?? [];
+
+        totalEvents += poops.length + foods.length;
+      });
+
       setState(() {
         events = fetchedEvents;
+        eventsNumber = totalEvents; // Met à jour le nombre d'événements
       });
     } catch (e) {
       setState(() {
         events = {};
+        eventsNumber = 0; // Réinitialise à 0 en cas d'erreur
       });
     }
   }
@@ -59,7 +74,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       color: Colors.black,
                       fontSize: 27,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Voltaire',
+                      fontFamily: 'Roboto',
                     ),
                   ),
                   Container(
@@ -90,7 +105,7 @@ class _CalendarPageState extends State<CalendarPage> {
                         selectableDayPredicate: (date) => date.day != 23,
                         locale: 'fr',
                         fontSize: 35,
-                        dotNumber: Random().nextInt(100001),
+                        dotNumber: eventsNumber,
                       ),
                     ),
                   ),

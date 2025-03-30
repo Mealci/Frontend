@@ -53,7 +53,7 @@ class _FrigoPageState extends State<FrigoPage> {
                   color: Colors.black,
                   fontSize: 27,
                   fontWeight: FontWeight.bold,
-                  fontFamily: 'Voltaire',
+                  fontFamily: 'Roboto',
                 ),
               ),
               const SizedBox(height: 20),
