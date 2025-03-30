@@ -128,7 +128,7 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
                         color: Colors.black,
                         fontSize: 27,
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'Voltaire',
+                        fontFamily: 'Roboto',
                       ),
                     ),
                     Spacer(flex: 2),

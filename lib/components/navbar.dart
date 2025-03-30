@@ -46,7 +46,7 @@ class NavBar extends StatelessWidget {
         tabSize: screenHeight * 0.07,
         tabBarHeight: screenHeight * 0.08,
         textStyle: TextStyle(
-          fontSize: screenHeight * 0.016 * textScale,
+          fontSize: screenHeight * 0.015 * textScale,
           color: Colors.white,
           fontWeight: FontWeight.w500,
         ),

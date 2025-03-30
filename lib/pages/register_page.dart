@@ -62,7 +62,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               textStyle: const TextStyle(
                                 fontSize: 23,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'Voltaire',
+                                fontFamily: 'Roboto',
                               ),
                               colors: [
                                 const Color.fromARGB(255, 163, 134, 250),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:health/health.dart';
 import 'package:mealci/components/adaptative_square.dart';
 import 'package:mealci/models/health_stats.dart';
-import 'package:mealci/utils/styles/style.dart';
 
 class HealthReport extends StatefulWidget {
   const HealthReport({super.key});
@@ -20,7 +19,7 @@ enum StressEnum {
   veryHigh,
 }
 
-class _HealthReportState extends State<HealthReport> with SingleTickerProviderStateMixin {
+class _HealthReportState extends State<HealthReport> {
   final Health health = Health();
 
   Duration _totalSleep = Duration.zero;
@@ -32,19 +31,10 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
   int _totalCigarettes = 0;
 
   bool _isLoading = true;
-  late AnimationController _controller;
-  late Animation<Color?> _colorAnimation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 2))
-      ..repeat(reverse: true);
-    _colorAnimation = ColorTween(
-      begin: Style.styles[AppStyle.primaryColor],
-      end: Style.styles[AppStyle.thirdColor],
-    ).animate(_controller);
-    
     fetchDailyHealthData().then((_) {
       fetchDailyAPIData().then((_) {
         setState(() {
@@ -54,17 +44,10 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
     });
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   Future<void> fetchDailyHealthData() async {
     DateTime endTime = DateTime.now();
     DateTime startTime = endTime.subtract(const Duration(days: 1));
 
-    // Récupération du sommeil
     List<HealthDataPoint> sleepData = await health.getHealthDataFromTypes(
       startTime: startTime,
       endTime: endTime,
@@ -75,12 +58,12 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
       totalSleep += data.dateTo.difference(data.dateFrom);
     }
 
-    // Récupération des pas
     List<HealthDataPoint> stepsData = await health.getHealthDataFromTypes(
       startTime: startTime,
       endTime: endTime,
       types: const [HealthDataType.STEPS],
     );
+
     int totalSteps = 0;
     for (var data in stepsData) {
       if (data.value is int) {
@@ -92,12 +75,12 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
       }
     }
 
-    // Récupération de la pulsation (heart rate)
     List<HealthDataPoint> heartRateData = await health.getHealthDataFromTypes(
       startTime: startTime,
       endTime: endTime,
       types: const [HealthDataType.HEART_RATE],
     );
+
     double totalHeartRate = 0;
     int heartRateCount = 0;
     for (var data in heartRateData) {
@@ -109,7 +92,8 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
         heartRateCount++;
       }
     }
-    double? averageHeartRate = heartRateCount > 0 ? totalHeartRate / heartRateCount : null;
+    double? averageHeartRate =
+        heartRateCount > 0 ? totalHeartRate / heartRateCount : null;
 
     setState(() {
       _totalSleep = totalSleep;
@@ -155,22 +139,21 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
     }
   }
 
-  // Génère une séquence de couleurs animées basée sur _colorAnimation
-  List<Color> getAnimatedGradientSequence() {
-    Color base = _colorAnimation.value ?? Style.styles[AppStyle.primaryColor];
-    HSLColor hsl = HSLColor.fromColor(base);
-    return [
-      hsl.withHue((hsl.hue + 0) % 360).toColor(),
-      hsl.withHue((hsl.hue + 15) % 360).toColor(),
-      hsl.withHue((hsl.hue + 30) % 360).toColor(),
-      hsl.withHue((hsl.hue + 45) % 360).toColor(),
-      hsl.withHue((hsl.hue + 60) % 360).toColor(),
-    ];
-  }
-
   List<HealthStat> getHealthStats() {
-    // Utilise la séquence de couleurs animée
-    List<Color> gradientSequence = getAnimatedGradientSequence();
+    List<Color> gradientSequence = [
+      // violet ou rose pastel
+      const Color(0xFFB39DDB),
+      const Color(0xFFCE93D8),
+      // violet pastel
+      const Color(0xFFBA68C8),
+      const Color(0xFFAB47BC),
+      // rose pastel
+      const Color(0xFFF06292),
+      const Color(0xFFE91E63),
+      // orange pastel
+      const Color(0xFFFF7043),
+      const Color(0xFFFF5722),
+    ];
 
     List<HealthStat> stats = [
       HealthStat(
@@ -201,13 +184,13 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
         label: 'Nombre de selles',
         value: _totalPoop.toString(),
         isSquare: false,
-        icon: Icons.wc,
+        icon: Icons.pets,
       ),
       HealthStat(
         label: 'Qualité des selles',
         value: _qualityPoop.toString(),
         isSquare: false,
-        icon: Icons.high_quality,
+        icon: Icons.pets,
       ),
       HealthStat(
         label: 'Nombre de cigarettes',
@@ -231,10 +214,10 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
         ];
       }
 
-      // Si c'est une tuile carrée, lui et la tuile suivante partagent le même dégradé
+      // Si c'est une tuile carrée, lui et la tuile suivante ont le même dégradé
       if (stats[i].isSquare && i + 1 < stats.length && stats[i + 1].isSquare) {
         stats[i + 1].gradientColors = stats[i].gradientColors;
-        i++; // On saute une itération pour ne pas changer la couleur du pair
+        i++; // On saute une itération pour éviter de changer la couleur du pair
       }
     }
 
@@ -243,53 +226,48 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    List<HealthStat> stats = getHealthStats();
+    List<Widget> widgets = [];
+
+    List<Widget> rowBuffer = [];
+
+    for (var stat in stats) {
+      Widget square = AdaptativeSquare(
+        value: stat.value,
+        label: stat.label,
+        icon: stat.icon,
+        gradientColors: stat.gradientColors,
+        isSquare: stat.isSquare,
+      );
+
+      if (stat.isSquare) {
+        rowBuffer.add(square);
+        if (rowBuffer.length == 2) {
+          widgets.add(Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: rowBuffer,
+          ));
+          rowBuffer = [];
+        }
+      } else {
+        if (rowBuffer.isNotEmpty) {
+          widgets.add(rowBuffer.removeAt(0));
+        }
+        widgets.add(square);
+      }
+    }
+
+    if (rowBuffer.isNotEmpty) {
+      widgets.add(rowBuffer.removeAt(0));
+    }
+
     return Scaffold(
-      backgroundColor: Style.styles[AppStyle.backgroundColor],
-      // appBar: AppBar(
-      //   title: const Text("Health Report"),
-      //   backgroundColor: Style.styles[AppStyle.primaryColor],
-      // ),
-      body: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          if (_isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else {
-            List<HealthStat> stats = getHealthStats();
-            List<Widget> widgets = [];
-            List<Widget> rowBuffer = [];
-
-            for (var stat in stats) {
-              Widget square = AdaptativeSquare(
-                value: stat.value,
-                label: stat.label,
-                icon: stat.icon,
-                gradientColors: stat.gradientColors,
-                isSquare: stat.isSquare,
-              );
-              if (stat.isSquare) {
-                rowBuffer.add(square);
-                if (rowBuffer.length == 2) {
-                  widgets.add(Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: rowBuffer,
-                  ));
-                  rowBuffer = [];
-                }
-              } else {
-                if (rowBuffer.isNotEmpty) {
-                  widgets.add(rowBuffer.removeAt(0));
-                }
-                widgets.add(square);
-              }
-            }
-            if (rowBuffer.isNotEmpty) {
-              widgets.add(rowBuffer.removeAt(0));
-            }
-
-            return SafeArea(
+      // Appliquer le dégradé sur le fond du Scaffold
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
+                padding: EdgeInsets.all(16),
                 child: Column(
                   children: [
                     const Text(
@@ -301,14 +279,12 @@ class _HealthReportState extends State<HealthReport> with SingleTickerProviderSt
                         fontFamily: 'Voltaire',
                       ),
                     ),
+                    const SizedBox(height: 20),
                     Column(children: widgets),
                   ],
                 ),
               ),
-            );
-          }
-        },
-      ),
+            ),
     );
   }
 }

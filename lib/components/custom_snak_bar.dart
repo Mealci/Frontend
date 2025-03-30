@@ -11,7 +11,6 @@ class CustomSnackBar {
   }) {
     OverlayState overlayState = Overlay.of(context);
     late OverlayEntry overlayEntry;
-    AnimationController? animationController;
 
     overlayEntry = OverlayEntry(
       builder: (context) {
@@ -81,7 +80,7 @@ class SnackBarWidget extends StatefulWidget {
   });
 
   @override
-  _SnackBarWidgetState createState() => _SnackBarWidgetState();
+  State<SnackBarWidget> createState() => _SnackBarWidgetState();
 }
 
 class _SnackBarWidgetState extends State<SnackBarWidget>
