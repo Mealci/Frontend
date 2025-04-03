@@ -16,16 +16,31 @@ enum CategoryFood {
   prepared_Meals,
 }
 
-Map<CategoryFood, List<String>> categoryKeywords = {
-  CategoryFood.fruits: ["pomme", "banane", "orange", "raisin", "ananas"],
-  CategoryFood.vegetables: ["carotte", "courgette", "poivron", "salade"],
-  CategoryFood.cereals: ["riz", "blé", "avoine", "céréale", "quinoa"],
-  CategoryFood.proteins: ["poulet", "bœuf", "poisson", "œuf", "tofu"],
-  CategoryFood.dairy_Products: ["lait", "fromage", "yaourt", "beurre"],
-  CategoryFood.starchy: ["pomme de terre", "pâtes", "pain", "maïs"],
-  CategoryFood.oils: ["huile", "olive", "colza", "tournesol"],
-  CategoryFood.sugar_Products: ["bonbon", "chocolat", "sucre", "confiserie"],
-  CategoryFood.beverage: ["eau", "jus", "soda", "café", "thé"],
-  CategoryFood.spices: ["sel", "poivre", "curry", "paprika"],
-  CategoryFood.prepared_Meals: ["pizza", "lasagne", "soupe", "plat préparé"],
-};
+CategoryFood mapCategory(String category) {
+  switch (category.toLowerCase()) {
+    case "fruits":
+      return CategoryFood.fruits;
+    case "vegetables":
+      return CategoryFood.vegetables;
+    case "cereals":
+      return CategoryFood.cereals;
+    case "proteins":
+      return CategoryFood.proteins;
+    case "dairy products":
+      return CategoryFood.dairy_Products;
+    case "starchy":
+      return CategoryFood.starchy;
+    case "oils":
+      return CategoryFood.oils;
+    case "sugar products":
+      return CategoryFood.sugar_Products;
+    case "beverage":
+      return CategoryFood.beverage;
+    case "spices":
+      return CategoryFood.spices;
+    case "prepared meals":
+      return CategoryFood.prepared_Meals;
+    default:
+      return CategoryFood.prepared_Meals;
+  }
+}

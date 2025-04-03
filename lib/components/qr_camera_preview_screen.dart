@@ -15,20 +15,18 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
   final GlobalKey<_QrCameraPreviewScreenState> qrKey = GlobalKey();
   String barcode = '';
   bool isFlashOn = false;
+  bool isScanning = false;
 
   void onScan(QRViewController controller) {
-    // Listen for scan data
     controller.scannedDataStream.listen((scanData) async {
-      // Check if a barcode is detected
-      if (scanData.code != null) {
-        // Pause the camera to stop further scanning
-        controller.pauseCamera();
-
+      if (!isScanning && scanData.code != null) {
         setState(() {
+          isScanning = true; // Bloquer les scans suivants
           barcode = scanData.code!;
         });
 
-        // Fetch product details
+        controller.pauseCamera(); // Arrêter le scan
+
         await fetchProductDetails(barcode, controller);
       }
     });
@@ -43,14 +41,18 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['status'] == 1) {
-        // Navigate to the product details screen
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) =>
                 ProductDetailsScreen(barcode: barcode, controller: controller),
           ),
-        );
+        ).then((_) {
+          setState(() {
+            isScanning = false; // Réautoriser les scans après retour
+          });
+          controller.resumeCamera(); // Redémarrer la caméra si nécessaire
+        });
       } else {
         showDialog(
           context: context,
@@ -60,7 +62,13 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
               content: const Text('Produit non trouvé'),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      isScanning = false; // Réactiver le scan après fermeture
+                    });
+                    controller.resumeCamera();
+                  },
                   child: const Text('Fermer'),
                 ),
               ],
