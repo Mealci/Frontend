@@ -38,11 +38,9 @@ class AIService {
         var data = jsonDecode(response.body);
         return data["labels"][0]; // La meilleure catégorie trouvée
       } else {
-        print("Erreur API : ${response.body}");
         return "prepared_meals"; // Catégorie par défaut en cas d'erreur
       }
     } catch (e) {
-      print("Erreur de connexion : $e");
       return "prepared_meals";
     }
   }
