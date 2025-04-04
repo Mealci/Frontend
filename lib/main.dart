@@ -12,6 +12,7 @@ import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:mealci/utils/secure_storage/secure_storage_management.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'components/qr_camera_preview_screen.dart';
 
 // pages
@@ -27,32 +28,11 @@ final health = Health();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await requestHealthPermissions();
   await dotenv.load(fileName: ".env");
   EnvironnementVariable.apiUrl = kDebugMode
       ? EnvironnementVariable.apiUrlDev
       : EnvironnementVariable.apiUrlProd;
   runApp(MyApp());
-}
-
-Future<void> requestHealthPermissions() async {
-  List<HealthDataType> types = HealthDataType.values;
-
-  bool? hasPermissions = await health.hasPermissions(types);
-
-  if (!(hasPermissions ?? false)) {
-    List<HealthDataAccess> permissions = [];
-    for (var _ in types) {
-      permissions.add(HealthDataAccess.READ);
-    }
-    bool authorized =
-        await health.requestAuthorization(types, permissions: permissions);
-    if (!authorized) {
-      debugPrint("HealthKit permissions not granted");
-    } else {
-      debugPrint("HealthKit permissions granted");
-    }
-  }
 }
 
 class MyApp extends StatefulWidget {
@@ -104,8 +84,75 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  Future<void> requestHealthPermissions(BuildContext context) async {
+    List<HealthDataType> types = HealthDataType.values;
+
+    bool? hasPermissions = await health.hasPermissions(types);
+
+    if (!(hasPermissions ?? false)) {
+      List<HealthDataAccess> permissions = [];
+      for (var _ in types) {
+        permissions.add(HealthDataAccess.READ);
+      }
+      bool authorized =
+          await health.requestAuthorization(types, permissions: permissions);
+      if (!authorized) {
+        debugPrint("HealthKit permissions not granted");
+      } else {
+        debugPrint("HealthKit permissions granted");
+      }
+      if (Platform.isAndroid) {
+        bool isHealthConnectAvailable = await health.isHealthConnectAvailable();
+        if (!isHealthConnectAvailable) {
+          _promptToInstallHealthConnect(context);
+        }
+      }
+    }
+  }
+
+  void _promptToInstallHealthConnect(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Google Health Connect non disponible"),
+          content: Text(
+              "L'application Google Health Connect n'est pas installée sur cet appareil. Voulez-vous l'installer ?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                _launchHealthConnectInstallation();
+                Navigator.of(context).pop();
+              },
+              child: Text("Installer"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Annuler"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _launchHealthConnectInstallation() async {
+    const url =
+        'https://play.google.com/store/apps/details?id=com.google.android.apps.healthdata';
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      debugPrint("Impossible d'ouvrir le Play Store");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      requestHealthPermissions(context);
+    });
     MealciLogger.initialize();
     keepScreenPortraitOnly();
     checkAppMode();
