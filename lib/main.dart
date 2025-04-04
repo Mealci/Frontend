@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mealci/utils/secure_storage/secure_storage_management.dart';
 import 'components/qr_camera_preview_screen.dart';
 
 // pages
@@ -32,7 +33,7 @@ void main() async {
   EnvironnementVariable.apiUrl = kDebugMode
       ? EnvironnementVariable.apiUrlDev
       : EnvironnementVariable.apiUrlProd;
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 Future<void> requestHealthPermissions() async {
@@ -55,17 +56,21 @@ Future<void> requestHealthPermissions() async {
   }
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
-  bool get isDarkMode {
-    var brightness =
-        SchedulerBinding.instance.platformDispatcher.platformBrightness;
-    return brightness == Brightness.dark;
-  }
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
 
-  String get locale {
-    return Platform.localeName;
+class _MyAppState extends State<MyApp> {
+  bool isAlreadyLoggedIn = false;
+  bool isLoading = true; // Permet d'afficher un loader
+
+  @override
+  void initState() {
+    super.initState();
+    _checkToken();
   }
 
   void checkAppMode() {
@@ -88,16 +93,31 @@ class MyApp extends StatelessWidget {
     }
   }
 
+  Future<void> _checkToken() async {
+    String? token = await SecureStorageManagement().readData("token_jwt");
+    if (token != null && token.isNotEmpty) {
+      setState(() {
+        isAlreadyLoggedIn = true;
+      });
+    }
+    setState(() {
+      isLoading = false; // Indique que la vérification est terminée
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Init logger
     MealciLogger.initialize();
-    // Keep screen in portrait mode
     keepScreenPortraitOnly();
+    checkAppMode();
+
+    if (isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return MaterialApp(
       title: 'Flutter Demo',
-      initialRoute: Routes.loginthirdpage,
+      initialRoute: isAlreadyLoggedIn ? Routes.home : Routes.loginthirdpage,
       routes: {
         Routes.home: (context) => const HomePage(),
         Routes.loginPage: (context) => const LoginPage(),
