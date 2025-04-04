@@ -65,21 +65,26 @@ class FrigoService {
     final String createFoodPath = '/food/create';
     final Uri createFoodUri =
         Uri.parse('${EnvironnementVariable.apiUrl}$createFoodPath');
+
     final response = await http.post(
       createFoodUri,
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode(<String, dynamic>{
-        'name': food.name,
-        'quantity': food.quantity,
-        'measure': food.measure.toString().toUpperCase().split('.').last,
-        'brand': food.brand,
-        'state': food.state.toString().toUpperCase().split('.').last,
-        'category': category.toString().toUpperCase().split('.').last,
-      }),
+      body: jsonEncode(
+        {
+          'name': food.name,
+          'quantity': food.quantity,
+          'measure': food.measure.toString().toUpperCase().split('.').last,
+          'brand': food.brand,
+          'category': category.toString().toUpperCase().split('.').last,
+          'state': food.state.toString().toUpperCase().split('.').last,
+          'barcode': food.barcode,
+        },
+      ),
     );
+
     if (response.statusCode == 401) {
       _logger.info('Session expirée. Veuillez vous reconnecter.');
       CustomSnackBar.showError(
