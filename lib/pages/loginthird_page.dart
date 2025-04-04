@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'; // Import nécessaire pour kDebugMode
 import 'package:mealci/components/custom_snak_bar.dart';
+import 'package:mealci/services/auth_service.dart';
 import 'package:mealci/utils/i18N/i18n.dart';
 import 'package:mealci/utils/i18N/login_i18n_translation.dart';
 import '../components/button_padding.dart';
@@ -118,7 +119,19 @@ class LoginThirdPage extends StatelessWidget {
                   icon: Icons.bug_report,
                   label: LoginThirdPageTranslation.dev,
                   map: LoginThirdPageI18n.loginThirdPageTranslation,
-                  onPressed: () => Navigator.popAndPushNamed(context, "/home"),
+                  onPressed: () async => {
+                    if (await AuthService().register(context, 'firstName', 'lastName', 'Password123!', 'email@email.com', '20') == true) {
+                      CustomSnackBar.showSuccess(context, "Inscription réussie"),
+                      Navigator.popAndPushNamed(context, "/home"),
+                    } else {
+                      if (await AuthService().login(context, 'email@email.com', 'Password123!') == true) {
+                        CustomSnackBar.showSuccess(context, "Connexion réussie"),
+                        Navigator.popAndPushNamed(context, "/home"),
+                      } else {
+                        CustomSnackBar.showError(context, "Erreur lors de la connexion"),
+                      }
+                    }
+                  },
                 ),
                 const SizedBox(height: 20),
               ],

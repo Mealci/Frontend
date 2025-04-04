@@ -9,7 +9,7 @@ import 'package:mealci/utils/secure_storage/secure_storage_management.dart';
 class AuthService {
   static final MealciLogger _logger = MealciLogger('LoginPage');
 
-  Future<void> login(
+  Future<bool> login(
       BuildContext context, String email, String password) async {
     const String loginPath = '/auth/login';
     final Uri loginUri = Uri.parse('${EnvironnementVariable.apiUrl}$loginPath');
@@ -30,24 +30,21 @@ class AuthService {
             SecureStorageManagement();
         await secureStorageManagement.writeData('token_jwt', responseBody);
 
-        CustomSnackBar.showSuccess(context, "Connexion réussie");
-
-        Navigator.popAndPushNamed(context, '/home');
+        return true;
       } else {
         _logger.severe('Erreur du serveur: ${response.statusCode}');
-
         final errorMessage =
             json.decode(response.body)['message'] ?? 'Erreur inconnue';
-
-        CustomSnackBar.showError(context, errorMessage);
+        _logger.severe('Erreur: $errorMessage');
+        return false;
       }
     } catch (error, stackTrace) {
       _logger.severe('Erreur lors de la connexion: $error , $stackTrace');
-      CustomSnackBar.showError(context, 'Erreur lors de la connexion');
+      return false;
     }
   }
 
-  Future<void> register(
+  Future<bool> register(
     BuildContext context,
     String firstName,
     String lastName,
@@ -81,16 +78,14 @@ class AuthService {
         await secureStorageManagement.writeData('token_jwt', responseBody);
 
         _logger.info('Utilisateur enregistré avec succès');
-        CustomSnackBar.showSuccess(context, 'Utilisateur enregistré avec succès');
-
-        Navigator.popAndPushNamed(context, '/home');
+        return true;
       } else {
         _logger.severe('Erreur: ${response.body}');
-        CustomSnackBar.showError(context, 'Erreur: ${response.body}');
+        return false;
       }
     } catch (error) {
       _logger.severe('Erreur lors de l\'enregistrement : $error');
-      CustomSnackBar.showError(context, 'Erreur lors de l\'enregistrement');
+      return false;
     }
   }
 }
