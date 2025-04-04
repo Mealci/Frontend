@@ -192,14 +192,16 @@ class _CalendarPageState extends State<CalendarPage> {
                                     if (foods.isNotEmpty)
                                       ...foods.map<Widget>((food) {
                                         return Card(
-                                          margin: const EdgeInsets.symmetric(
-                                              vertical: 5, horizontal: 10),
+                                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                           color: Colors.green[50],
                                           child: ListTile(
                                             title: Text(
-                                              'Food: $food',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
+                                              food['name'] != null ? utf8.decode(food['name'].toString().codeUnits) : 'Food',
+                                              style: const TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                            subtitle: Text(
+                                              'Quantité: ${food['quantity']?.toString() ?? ''} ${food['measure'] ?? ''}\nEtat: ${food['state'] ?? ''}',
+                                              style: const TextStyle(fontSize: 14),
                                             ),
                                           ),
                                         );
