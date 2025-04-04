@@ -11,6 +11,7 @@ class CreateFood extends Food {
     required super.measure,
     required super.brand,
     required super.category,
+    super.barcode = '',
     super.state,
   });
 
@@ -40,6 +41,7 @@ class CreateFood extends Food {
             e.toString().toUpperCase().split('.').last == json['food']['state'],
         orElse: () => StateFood.present,
       ),
+      barcode: json['food']['barcode'],
     );
   }
 }

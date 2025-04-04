@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/components/save_poop_button.dart';
 import 'package:mealci/utils/routes/routes.dart';
 import 'package:mealci/utils/styles/style.dart';
@@ -15,7 +14,8 @@ class PoopTrackerPage extends StatefulWidget {
 
 class _PoopTrackerPageState extends State<PoopTrackerPage> {
   ShakeDetector? _shakeDetector;
-  String _shakeInfo = 'Secoue ton téléphone !'; // Variable d'état pour afficher les infos
+  String _shakeInfo =
+      'Secoue ton téléphone !'; // Variable d'état pour afficher les infos
 
   @override
   void initState() {
@@ -31,14 +31,13 @@ class _PoopTrackerPageState extends State<PoopTrackerPage> {
       onPhoneShake: (ShakeEvent event) {
         setState(() {
           _shakeInfo = 'Direction: ${event.direction}\n'
-                       'Force: ${event.force.toStringAsFixed(2)}\n'
-                       'Time: ${event.timestamp.toString()}';
+              'Force: ${event.force.toStringAsFixed(2)}\n'
+              'Time: ${event.timestamp.toString()}';
         });
 
         // Affiche une snackbar
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Tu as secoué le téléphone ! 🚀'))
-        );
+            const SnackBar(content: Text('Tu as secoué le téléphone ! 🚀')));
 
         Navigator.pushNamed(
           context,

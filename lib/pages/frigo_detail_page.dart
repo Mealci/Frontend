@@ -138,23 +138,7 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
                 FeedFridgeButton(
                   text: "Feed Fridge",
                   onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: const Text('Feed Fridge'),
-                          content: const Text('Feed Fridge page'),
-                          actions: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Close'),
-                            ),
-                          ],
-                        );
-                      },
-                    );
+                    Navigator.pushNamed(context, Routes.scanBarCode);
                   },
                 ),
                 SizedBox(height: 20),
