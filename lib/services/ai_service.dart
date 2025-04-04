@@ -1,11 +1,11 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class AIService {
   final String apiUrl =
       "https://api-inference.huggingface.co/models/facebook/bart-large-mnli";
-  final String apiKey =
-      "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"; // Remplace par ton token Hugging Face
+  final String apiKey = dotenv.env['HUGGING_FACE_API_KEY'] ?? '';
 
   Future<String> classifyFood(List<String> tags) async {
     try {

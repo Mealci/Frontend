@@ -7,6 +7,7 @@ class Food {
   String brand;
   CategoryFood category;
   StateFood state = StateFood.present;
+  String barcode = '';
 
   Food(
       {required this.name,
@@ -14,7 +15,8 @@ class Food {
       required this.measure,
       required this.brand,
       required this.category,
-      this.state = StateFood.present});
+      this.state = StateFood.present,
+      required this.barcode});
 
   String get getName => name;
   double get getQuantity => quantity;
@@ -22,6 +24,7 @@ class Food {
   String get getBrand => brand;
   CategoryFood get getCategory => category;
   StateFood get getState => state;
+  String get getBarcode => barcode;
 
   set setName(String name) => this.name = name;
   set setQuantity(double quantity) => this.quantity = quantity;
@@ -29,6 +32,7 @@ class Food {
   set setBrand(String brand) => this.brand = brand;
   set setCategory(CategoryFood category) => this.category = category;
   set setState(StateFood state) => this.state = state;
+  set setBarcode(String barcode) => this.barcode = barcode;
 
   factory Food.fromJson(Map<String, dynamic> json) {
     return Food(
@@ -52,6 +56,7 @@ class Food {
             e.toString().toUpperCase().split('.').last == json['food']['state'],
         orElse: () => StateFood.present,
       ),
+      barcode: json['food']['barcode'],
     );
   }
 }

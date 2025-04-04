@@ -85,6 +85,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           product?['product_quantity_unit']?.toString() ?? 'piece'),
       brand: product?['brands'] ?? '',
       state: StateFood.present,
+      barcode: widget.barcode,
       category: category,
     );
 
@@ -167,11 +168,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildButton('Cancel', () {
-                  widget.controller.resumeCamera();
                   Navigator.pop(context);
                 }),
                 _buildButton('Add to My Fridge', () async {
-                  widget.controller.resumeCamera();
                   await _createFood();
                   Navigator.pop(context);
                   CustomSnackBar.showInfo(

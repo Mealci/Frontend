@@ -80,7 +80,7 @@ class FrigoService {
           'brand': food.brand,
           'category': category.toString().toUpperCase().split('.').last,
           'state': food.state.toString().toUpperCase().split('.').last,
-          'barcode': "5000159472470"
+          'barcode': food.barcode,
         },
       ),
     );
