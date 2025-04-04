@@ -49,5 +49,8 @@ app.*.map.json
 bin/
 
 # Environment configuration
-/.env
+.env
+
+# Pubspec.lock
 pubspec.lock
+
