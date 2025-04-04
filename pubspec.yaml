@@ -27,6 +27,7 @@ dependencies:
   flutter_secure_storage: ^9.2.4
   another_xlider: ^3.0.2
   flutter_xlider: ^3.5.0
+  shake: ^3.0.0
 
 dev_dependencies:
   flutter_test:
