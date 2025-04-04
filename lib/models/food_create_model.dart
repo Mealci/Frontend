@@ -11,7 +11,7 @@ class CreateFood extends Food {
     required super.measure,
     required super.brand,
     required super.category,
-    required super.barcode,
+    super.barcode = '',
     super.state,
   });
 
