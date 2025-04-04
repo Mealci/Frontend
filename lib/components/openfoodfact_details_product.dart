@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/models/food_enums.dart';
 import 'package:mealci/models/food_model.dart';
+import 'package:mealci/services/ai_service.dart';
 import 'package:mealci/services/openfoodfact_service.dart';
 import 'package:mealci/utils/styles/style.dart';
 import 'package:mealci/services/frigo_service.dart';
@@ -38,21 +40,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       product = data;
       isLoading = false;
     });
-
-    if (product != null) {
-      await _createFood();
-    }
-  }
-
-  CategoryFood getCategory(String foodName) {
-    foodName = foodName
-        .toLowerCase(); // Convertir en minuscule pour éviter les erreurs de casse
-    for (var entry in categoryKeywords.entries) {
-      if (entry.value.any((keyword) => foodName.contains(keyword))) {
-        return entry.key;
-      }
-    }
-    return CategoryFood.prepared_Meals;
   }
 
   MeasureFood _getMeasureFood(String measure) {
@@ -85,22 +72,24 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Future<Food> _createFood() async {
+    List<String> tags = product?['categories_tags']?.cast<String>() ?? [];
+
+    AIService aiService = AIService();
+    String predictedCategory = await aiService.classifyFood(tags);
+    CategoryFood category = mapCategory(predictedCategory);
+
     final food = Food(
-        name: product?['product_name'] ?? '',
-        quantity: double.parse(product?['product_quantity']?.toString() ?? '0'),
-        measure: _getMeasureFood(
-            product?['product_quantity_unit']?.toString() ?? 'piece'),
-        brand: product?['brands'] ?? '',
-        state: StateFood.present,
-        category: getCategory(product?['_keywords']?.toString() ??
-            CategoryFood.prepared_Meals
-                .toString()
-                .toUpperCase()
-                .split('.')
-                .last));
+      name: product?['product_name'] ?? '',
+      quantity: double.parse(product?['product_quantity']?.toString() ?? '0'),
+      measure: _getMeasureFood(
+          product?['product_quantity_unit']?.toString() ?? 'piece'),
+      brand: product?['brands'] ?? '',
+      state: StateFood.present,
+      barcode: widget.barcode,
+      category: category,
+    );
 
     await _frigoService.createFoodFromBarCode(context, food, food.category);
-
     return food;
   }
 
@@ -151,7 +140,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                                 _buildInfoCard(
                                     'Nutri-Score',
                                     _getIconPath(product!['nutriscore_grade']
-                                            ?.toString() ??
+                                            ?.toString()
+                                            .toUpperCase() ??
                                         '')),
                                 const SizedBox(width: 10),
                                 _buildInfoCard(
@@ -178,14 +168,13 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildButton('Cancel', () {
-                  widget.controller.resumeCamera();
                   Navigator.pop(context);
                 }),
-                _buildButton('Add to My Fridge', () {
-                  widget.controller.resumeCamera();
-                  _createFood().then((food) {
-                    Navigator.pop(context);
-                  });
+                _buildButton('Add to My Fridge', () async {
+                  await _createFood();
+                  Navigator.pop(context);
+                  CustomSnackBar.showInfo(
+                      context, 'Produit ajouté à votre frigo');
                 }),
               ],
             ),

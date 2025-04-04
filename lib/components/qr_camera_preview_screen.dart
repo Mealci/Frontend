@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mealci/components/openfoodfact_details_product.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -12,45 +12,46 @@ class QrCameraPreviewScreen extends StatefulWidget {
 }
 
 class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
-  final GlobalKey<_QrCameraPreviewScreenState> qrKey = GlobalKey();
+  final MobileScannerController cameraController = MobileScannerController();
   String barcode = '';
+  bool isScanning = false;
   bool isFlashOn = false;
 
-  void onScan(QRViewController controller) {
-    // Listen for scan data
-    controller.scannedDataStream.listen((scanData) async {
-      // Check if a barcode is detected
-      if (scanData.code != null) {
-        // Pause the camera to stop further scanning
-        controller.pauseCamera();
+  // Quand un code est détecté
+  void onBarcodeDetected(BarcodeCapture capture) async {
+    final code = capture.barcodes.first.rawValue;
+    if (!isScanning && code != null) {
+      setState(() {
+        isScanning = true;
+        barcode = code;
+      });
 
-        setState(() {
-          barcode = scanData.code!;
-        });
-
-        // Fetch product details
-        await fetchProductDetails(barcode, controller);
-      }
-    });
+      cameraController.stop(); // stop la caméra
+      await fetchProductDetails(code);
+    }
   }
 
-  // Méthode pour obtenir les détails du produit depuis Open Food Facts
-  Future<void> fetchProductDetails(
-      String barcode, QRViewController controller) async {
+  Future<void> fetchProductDetails(String barcode) async {
     final url = 'https://world.openfoodfacts.org/api/v0/product/$barcode.json';
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['status'] == 1) {
-        // Navigate to the product details screen
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                ProductDetailsScreen(barcode: barcode, controller: controller),
+            builder: (context) => ProductDetailsScreen(
+              barcode: barcode,
+              controller: null, // QRViewController n'est plus utilisé
+            ),
           ),
-        );
+        ).then((_) {
+          setState(() {
+            isScanning = false;
+          });
+          cameraController.start(); // redémarrer la caméra
+        });
       } else {
         showDialog(
           context: context,
@@ -60,7 +61,13 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
               content: const Text('Produit non trouvé'),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      isScanning = false;
+                    });
+                    cameraController.start();
+                  },
                   child: const Text('Fermer'),
                 ),
               ],
@@ -71,25 +78,20 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
     }
   }
 
-  // Méthode toggle pour activer/désactiver la lampe torche
   void toggleFlash() {
     setState(() {
       isFlashOn = !isFlashOn;
     });
+    cameraController.toggleTorch();
   }
 
-  // Méthode close pour fermer le scanner
   void close() {
     Navigator.pop(context, barcode);
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
+    cameraController.dispose();
     super.dispose();
   }
 
@@ -98,9 +100,9 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
     return Scaffold(
       body: Stack(
         children: [
-          QRView(
-            key: qrKey,
-            onQRViewCreated: onScan,
+          MobileScanner(
+            controller: cameraController,
+            onDetect: onBarcodeDetected,
           ),
           Positioned(
             child: Center(
@@ -109,7 +111,7 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
                 height: 250,
                 decoration: BoxDecoration(
                   border: Border.all(
-                    color: Colors.green, // Vous pouvez changer la couleur ici
+                    color: Colors.green,
                     width: 2,
                   ),
                   borderRadius: BorderRadius.circular(10),
@@ -117,7 +119,6 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
               ),
             ),
           ),
-          // Bouton flash en haut à droite
           Positioned(
             top: 50,
             right: 20,
@@ -137,8 +138,6 @@ class _QrCameraPreviewScreenState extends State<QrCameraPreviewScreen> {
               ),
             ),
           ),
-
-          // Bouton fermer en bas à gauche
           Positioned(
             top: 50,
             left: 20,

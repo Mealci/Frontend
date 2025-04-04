@@ -116,8 +116,11 @@ class LoginThirdPage extends StatelessWidget {
                   icon: Icons.apple,
                   label: LoginThirdPageTranslation.apple,
                   map: LoginThirdPageI18n.loginThirdPageTranslation,
-                  onPressed: () => CustomSnackBar.showInfo(context,
-                      "L'authentification Apple n'est pas encore disponible")),
+                  onPressed: () => 
+                    Navigator.pushNamed(context, "/home"),
+                   //CustomSnackBar.showInfo(context,
+                      //"L'authentification Apple n'est pas encore disponible")),
+              ),
               const SizedBox(height: 20),
 
               ButtonPadding(
