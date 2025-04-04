@@ -96,7 +96,7 @@ class _MyAppState extends State<MyApp> {
     String? token = await SecureStorageManagement().readData("token_jwt");
     if (token != null && token.isNotEmpty) {
       setState(() {
-        isAlreadyLoggedIn = true;
+        isAlreadyLoggedIn = false;
       });
     }
     setState(() {

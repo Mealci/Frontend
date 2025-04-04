@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/models/field_type.dart';
 import 'package:mealci/services/auth_service.dart';
 import '../utils/i18N/register_i18n_translation.dart';
@@ -118,14 +119,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 Buttonloginregister(
                   label: RegisterPageTranslation.register,
                   map: RegisterPageI18n.registerPageTranslations,
-                  onPressed: () {
+                  onPressed: () async {
                     final email = _emailController.text;
                     final password = _passwordController.text;
                     final firstName = _firstNameController.text;
                     final lastName = _lastNameController.text;
                     final age = _ageController.text;
 
-                    AuthService().register(
+                    bool success = await AuthService().register(
                       context,
                       firstName,
                       lastName,
@@ -133,6 +134,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       email,
                       age,
                     );
+
+                    if (success) {
+                      CustomSnackBar.showSuccess(context, 'Utilisateur enregistré avec succès');
+                      Navigator.popAndPushNamed(context, '/home');
+                    } else {
+                      CustomSnackBar.showError(context, 'Erreur lors de l\'enregistrement');
+                    }
                   },
                 ),
               ],

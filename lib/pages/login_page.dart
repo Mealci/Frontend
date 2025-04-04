@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/models/field_type.dart';
 import 'package:mealci/services/auth_service.dart';
 import '../utils/i18N/login_i18n_translation.dart';
@@ -97,10 +98,17 @@ class _LoginPageState extends State<LoginPage> {
                 Buttonloginregister(
                   label: LoginPageTranslation.login,
                   map: LoginPageI18n.loginPageTranslations,
-                  onPressed: () {
+                  onPressed: () async {
                     final username = _emailController.text;
                     final password = _passwordController.text;
-                    AuthService().login(context, username, password);
+                    bool success = await AuthService().login(context, username, password);
+
+                    if (success) {
+                      CustomSnackBar.showSuccess(context, "Connexion réussie");
+                      Navigator.popAndPushNamed(context, '/home');
+                    } else {
+                      CustomSnackBar.showError(context, "Erreur lors de la connexion");
+                    }
                   },
                 ),
               ],
