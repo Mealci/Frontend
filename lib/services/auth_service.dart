@@ -32,7 +32,7 @@ class AuthService {
 
         CustomSnackBar.showSuccess(context, "Connexion réussie");
 
-        Navigator.pushNamed(context, '/home');
+        Navigator.popAndPushNamed(context, '/home');
       } else {
         _logger.severe('Erreur du serveur: ${response.statusCode}');
 
@@ -83,7 +83,7 @@ class AuthService {
         _logger.info('Utilisateur enregistré avec succès');
         CustomSnackBar.showSuccess(context, 'Utilisateur enregistré avec succès');
 
-        Navigator.pushNamed(context, '/home');
+        Navigator.popAndPushNamed(context, '/home');
       } else {
         _logger.severe('Erreur: ${response.body}');
         CustomSnackBar.showError(context, 'Erreur: ${response.body}');

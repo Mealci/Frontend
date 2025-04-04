@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart'; // Import nécessaire pour kDebugMode
 import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/utils/i18N/i18n.dart';
 import 'package:mealci/utils/i18N/login_i18n_translation.dart';
@@ -111,15 +112,23 @@ class LoginThirdPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
+              // Bouton Debug (seulement en mode debug)
+              if (kDebugMode) ...[
+                ButtonPadding(
+                  icon: Icons.bug_report,
+                  label: LoginThirdPageTranslation.dev,
+                  map: LoginThirdPageI18n.loginThirdPageTranslation,
+                  onPressed: () => Navigator.popAndPushNamed(context, "/home"),
+                ),
+                const SizedBox(height: 20),
+              ],
+
               // Boutons tiers (Apple, Google, Facebook)
               ButtonPadding(
                   icon: Icons.apple,
                   label: LoginThirdPageTranslation.apple,
                   map: LoginThirdPageI18n.loginThirdPageTranslation,
-                  onPressed: () => 
-                    Navigator.pushNamed(context, "/home"),
-                   //CustomSnackBar.showInfo(context,
-                      //"L'authentification Apple n'est pas encore disponible")),
+                  onPressed: () => Navigator.popAndPushNamed(context, "/home"),
               ),
               const SizedBox(height: 20),
 
