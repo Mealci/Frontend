@@ -151,7 +151,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                       return Card(
                                         margin: const EdgeInsets.symmetric(
                                             vertical: 5, horizontal: 10),
-                                        color: Colors.orange[50],
+                                        color: Colors.purple[200],
                                         child: ListTile(
                                           title: Text(
                                             'Aspect: ${getPoopDescription(StoolComposition.values.firstWhere((e) => e.toString() == 'StoolComposition.${poop['stoolComposition']}', orElse: () => StoolComposition.TYPE_UNKNOWN))}',
@@ -181,7 +181,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                       return Card(
                                         margin: const EdgeInsets.symmetric(
                                             vertical: 5, horizontal: 10),
-                                        color: Colors.green[50],
+                                        color: Colors.purple[100],
                                         child: ListTile(
                                           title: Text(
                                             food['name'] != null
