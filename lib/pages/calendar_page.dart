@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:mealci/models/poop_enums.dart';
 import 'package:mealci/services/event_service.dart';
 import 'package:mealci/utils/styles/style.dart';
 
@@ -77,6 +78,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       fontFamily: 'Roboto',
                     ),
                   ),
+                  const SizedBox(height: 20),
                   Container(
                     decoration: BoxDecoration(
                       color: Style.styles[AppStyle.primaryColor],
@@ -102,7 +104,6 @@ class _CalendarPageState extends State<CalendarPage> {
                         activeDayColor: Colors.black,
                         activeBackgroundDayColor:
                             Style.styles[AppStyle.activeBackgroundDayColor],
-                        selectableDayPredicate: (date) => date.day != 23,
                         locale: 'fr',
                         fontSize: 35,
                         dotNumber: eventsNumber,
@@ -114,7 +115,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     child: events.isEmpty
                         ? const Center(
                             child: Text(
-                              'No events for this day.',
+                              'Pas d\'événements enregistrés pour cette date.',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.grey),
                             ),
@@ -167,12 +168,12 @@ class _CalendarPageState extends State<CalendarPage> {
                                           color: Colors.orange[50],
                                           child: ListTile(
                                             title: Text(
-                                              'Stool Composition: ${poop['stoolComposition']}',
+                                              'Aspect: ${getPoopDescription(StoolComposition.values.firstWhere((e) => e.toString() == 'StoolComposition.${poop['stoolComposition']}', orElse: () => StoolComposition.TYPE_UNKNOWN))}',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
                                             subtitle: Text(
-                                              'Quantity: ${poop['quantity']}',
+                                              'Quantité: ${poop['quantity']}',
                                               style: TextStyle(fontSize: 14),
                                             ),
                                           ),
@@ -183,7 +184,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: const Text(
-                                          'No poops recorded for this day.',
+                                          'Pas de selles enregistrées.',
                                           style: TextStyle(
                                               fontSize: 16, color: Colors.grey),
                                         ),
@@ -197,9 +198,18 @@ class _CalendarPageState extends State<CalendarPage> {
                                           color: Colors.green[50],
                                           child: ListTile(
                                             title: Text(
-                                              'Food: $food',
-                                              style: TextStyle(
+                                              food['name'] != null
+                                                  ? utf8.decode(food['name']
+                                                      .toString()
+                                                      .codeUnits)
+                                                  : 'Aliment non spécifié',
+                                              style: const TextStyle(
                                                   fontWeight: FontWeight.bold),
+                                            ),
+                                            subtitle: Text(
+                                              'Quantité: ${food['quantity']?.toString() ?? ''} ${food['measure'] ?? ''}',
+                                              style:
+                                                  const TextStyle(fontSize: 14),
                                             ),
                                           ),
                                         );
@@ -209,7 +219,7 @@ class _CalendarPageState extends State<CalendarPage> {
                                       Padding(
                                         padding: const EdgeInsets.all(8.0),
                                         child: const Text(
-                                          'No foods available for this day.',
+                                          'Pas d\'aliments enregistrés.',
                                           style: TextStyle(
                                               fontSize: 16, color: Colors.grey),
                                         ),
@@ -227,5 +237,26 @@ class _CalendarPageState extends State<CalendarPage> {
         ],
       ),
     );
+  }
+
+  String getPoopDescription(StoolComposition stoolComposition) {
+    switch (stoolComposition) {
+      case StoolComposition.TYPE_ONE:
+        return 'Des petites boules dures';
+      case StoolComposition.TYPE_TWO:
+        return 'Une petite boule';
+      case StoolComposition.TYPE_THREE:
+        return 'Une saucisse';
+      case StoolComposition.TYPE_FOUR:
+        return 'Une saucisse lisse';
+      case StoolComposition.TYPE_FIVE:
+        return 'Mou';
+      case StoolComposition.TYPE_SIX:
+        return 'Mou avec morceaux';
+      case StoolComposition.TYPE_SEVEN:
+        return 'Liquide';
+      default:
+        return 'Inconnu';
+    }
   }
 }
