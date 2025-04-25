@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:health/health.dart';
 import 'package:mealci/pages/health_report.dart';
 import 'package:mealci/pages/register_poop_page.dart';
-import 'package:mealci/pages/secret_page.dart';
+// import 'package:mealci/pages/secret_page.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -175,7 +175,7 @@ class _MyAppState extends State<MyApp> {
         Routes.frigoPage: (context) => const FrigoPage(),
         Routes.healthReport: (context) => const HealthReport(),
         Routes.registerPoopPage: (context) => const RegisterPoopPage(),
-        Routes.secretPage: (context) => const HiddenPage(),
+        // Routes.secretPage: (context) => const HiddenPage(),
       },
     );
   }
