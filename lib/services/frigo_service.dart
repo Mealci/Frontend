@@ -81,6 +81,8 @@ class FrigoService {
           'category': category.toString().toUpperCase().split('.').last,
           'state': food.state.toString().toUpperCase().split('.').last,
           'barcode': food.barcode,
+          'novaGroupScore': food.novaGroupScore.toString(),
+          'nutriScore': food.nutriScore.toString(),
         },
       ),
     );

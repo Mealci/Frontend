@@ -8,6 +8,8 @@ class Food {
   CategoryFood category;
   StateFood state = StateFood.present;
   String barcode = '';
+  String novaGroupScore = '';
+  String nutriScore = '';
 
   Food(
       {required this.name,
@@ -16,7 +18,9 @@ class Food {
       required this.brand,
       required this.category,
       this.state = StateFood.present,
-      required this.barcode});
+      required this.barcode,
+      this.novaGroupScore = '',
+      this.nutriScore = ''});
 
   String get getName => name;
   double get getQuantity => quantity;
@@ -25,6 +29,8 @@ class Food {
   CategoryFood get getCategory => category;
   StateFood get getState => state;
   String get getBarcode => barcode;
+  String get getNovaGroupScore => novaGroupScore;
+  String get getNutriScore => nutriScore;
 
   set setName(String name) => this.name = name;
   set setQuantity(double quantity) => this.quantity = quantity;
@@ -33,6 +39,9 @@ class Food {
   set setCategory(CategoryFood category) => this.category = category;
   set setState(StateFood state) => this.state = state;
   set setBarcode(String barcode) => this.barcode = barcode;
+  set setNovaGroupScore(String novaGroupScore) =>
+      this.novaGroupScore = novaGroupScore;
+  set setNutriScore(String nutriScore) => this.nutriScore = nutriScore;
 
   factory Food.fromJson(Map<String, dynamic> json) {
     return Food(
@@ -57,6 +66,8 @@ class Food {
         orElse: () => StateFood.present,
       ),
       barcode: json['food']['barcode'],
+      novaGroupScore: json['food']['novaGroupScore'],
+      nutriScore: json['food']['nutriScore'],
     );
   }
 }
