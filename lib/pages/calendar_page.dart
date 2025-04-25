@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:calendar_timeline/calendar_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:mealci/models/poop_enums.dart';
 import 'package:mealci/services/event_service.dart';
 import 'package:mealci/utils/styles/style.dart';
 
@@ -77,6 +78,7 @@ class _CalendarPageState extends State<CalendarPage> {
                       fontFamily: 'Roboto',
                     ),
                   ),
+                  const SizedBox(height: 20),
                   Container(
                     decoration: BoxDecoration(
                       color: Style.styles[AppStyle.primaryColor],
@@ -102,7 +104,6 @@ class _CalendarPageState extends State<CalendarPage> {
                         activeDayColor: Colors.black,
                         activeBackgroundDayColor:
                             Style.styles[AppStyle.activeBackgroundDayColor],
-                        selectableDayPredicate: (date) => date.day != 23,
                         locale: 'fr',
                         fontSize: 35,
                         dotNumber: eventsNumber,
@@ -114,7 +115,7 @@ class _CalendarPageState extends State<CalendarPage> {
                     child: events.isEmpty
                         ? const Center(
                             child: Text(
-                              'No events for this day.',
+                              'Pas d\'événements enregistrés pour cette date.',
                               style:
                                   TextStyle(fontSize: 16, color: Colors.grey),
                             ),
@@ -141,81 +142,75 @@ class _CalendarPageState extends State<CalendarPage> {
                               List poops = test['poops'] ?? [];
                               List foods = test['foods'] ?? [];
 
-                              return Card(
-                                margin: const EdgeInsets.symmetric(vertical: 8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    // Afficher la date de l'événement
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Afficher les poops s'ils existent
+                                  if (poops.isNotEmpty)
+                                    ...poops.map<Widget>((poop) {
+                                      return Card(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        color: Colors.purple[200],
+                                        child: ListTile(
+                                          title: Text(
+                                            'Aspect: ${getPoopDescription(StoolComposition.values.firstWhere((e) => e.toString() == 'StoolComposition.${poop['stoolComposition']}', orElse: () => StoolComposition.TYPE_UNKNOWN))}',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          subtitle: Text(
+                                            'Quantité: ${poop['quantity']}',
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  // Si pas de poops, afficher un message
+                                  if (poops.isEmpty)
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        eventDate.split("T")[
-                                            0], // Afficher uniquement la date sans l'heure
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                      child: const Text(
+                                        'Pas de selles enregistrées.',
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.grey),
                                       ),
                                     ),
-                                    // Afficher les poops s'ils existent
-                                    if (poops.isNotEmpty)
-                                      ...poops.map<Widget>((poop) {
-                                        return Card(
-                                          margin: const EdgeInsets.symmetric(
-                                              vertical: 5, horizontal: 10),
-                                          color: Colors.orange[50],
-                                          child: ListTile(
-                                            title: Text(
-                                              'Stool Composition: ${poop['stoolComposition']}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                            subtitle: Text(
-                                              'Quantity: ${poop['quantity']}',
-                                              style: TextStyle(fontSize: 14),
-                                            ),
+                                  // Afficher les aliments s'ils existent
+                                  if (foods.isNotEmpty)
+                                    ...foods.map<Widget>((food) {
+                                      return Card(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 5, horizontal: 10),
+                                        color: Colors.purple[100],
+                                        child: ListTile(
+                                          title: Text(
+                                            food['name'] != null
+                                                ? utf8.decode(food['name']
+                                                    .toString()
+                                                    .codeUnits)
+                                                : 'Aliment non spécifié',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
                                           ),
-                                        );
-                                      }),
-                                    // Si pas de poops, afficher un message
-                                    if (poops.isEmpty)
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: const Text(
-                                          'No poops recorded for this day.',
-                                          style: TextStyle(
-                                              fontSize: 16, color: Colors.grey),
-                                        ),
-                                      ),
-                                    // Afficher les aliments s'ils existent
-                                    if (foods.isNotEmpty)
-                                      ...foods.map<Widget>((food) {
-                                        return Card(
-                                          margin: const EdgeInsets.symmetric(
-                                              vertical: 5, horizontal: 10),
-                                          color: Colors.green[50],
-                                          child: ListTile(
-                                            title: Text(
-                                              'Food: $food',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                          subtitle: Text(
+                                            'Quantité: ${food['quantity']?.toString() ?? ''} ${food['measure'] ?? ''}',
+                                            style:
+                                                const TextStyle(fontSize: 14),
                                           ),
-                                        );
-                                      }),
-                                    // Si pas d'aliments, afficher un message
-                                    if (foods.isEmpty)
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: const Text(
-                                          'No foods available for this day.',
-                                          style: TextStyle(
-                                              fontSize: 16, color: Colors.grey),
                                         ),
+                                      );
+                                    }),
+                                  // Si pas d'aliments, afficher un message
+                                  if (foods.isEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: const Text(
+                                        'Pas d\'aliments enregistrés.',
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.grey),
                                       ),
-                                  ],
-                                ),
+                                    ),
+                                ],
                               );
                             },
                           ),
@@ -227,5 +222,26 @@ class _CalendarPageState extends State<CalendarPage> {
         ],
       ),
     );
+  }
+
+  String getPoopDescription(StoolComposition stoolComposition) {
+    switch (stoolComposition) {
+      case StoolComposition.TYPE_ONE:
+        return 'Des petites boules dures';
+      case StoolComposition.TYPE_TWO:
+        return 'Une petite boule';
+      case StoolComposition.TYPE_THREE:
+        return 'Une saucisse';
+      case StoolComposition.TYPE_FOUR:
+        return 'Une saucisse lisse';
+      case StoolComposition.TYPE_FIVE:
+        return 'Mou';
+      case StoolComposition.TYPE_SIX:
+        return 'Mou avec morceaux';
+      case StoolComposition.TYPE_SEVEN:
+        return 'Liquide';
+      default:
+        return 'Inconnu';
+    }
   }
 }
