@@ -12,6 +12,8 @@ class CreateFood extends Food {
     required super.brand,
     required super.category,
     super.barcode = '',
+    super.novaGroupScore = '',
+    super.nutriScore = '',
     super.state,
   });
 
@@ -42,6 +44,8 @@ class CreateFood extends Food {
         orElse: () => StateFood.present,
       ),
       barcode: json['food']['barcode'],
+      novaGroupScore: json['food']['novaGroupScore'],
+      nutriScore: json['food']['nutriScore'],
     );
   }
 }

@@ -28,7 +28,7 @@ class _GenericLayoutState extends State<GenericLayout>
 
     _motionTabBarController = MotionTabBarController(
       initialIndex: 2,
-      length: 5,
+      length: 4,
       vsync: this,
     );
 
@@ -53,7 +53,7 @@ class _GenericLayoutState extends State<GenericLayout>
               const PoopTrackerPage(),
               const FrigoPage(),
               const CalendarPage(),
-              const HealthReport(),
+              // const HealthReport(),
             ],
           ),
       bottomNavigationBar: NavBar(

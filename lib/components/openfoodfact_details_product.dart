@@ -87,6 +87,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       state: StateFood.present,
       barcode: widget.barcode,
       category: category,
+      novaGroupScore: product?['nova_group']?.toString() ?? '',
+      nutriScore: product?['nutriscore_grade']?.toString().toUpperCase() ?? '',
     );
 
     await _frigoService.createFoodFromBarCode(context, food, food.category);
