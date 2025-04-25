@@ -1,4 +1,4 @@
-package com.mealci.mealci
+package com.mealsci.app
 
 import io.flutter.embedding.android.FlutterActivity
 
