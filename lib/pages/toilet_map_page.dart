@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ToiletMapPage extends StatefulWidget {
   const ToiletMapPage({super.key});
@@ -94,13 +95,39 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
   void _addMarkers(List<dynamic> toilets) {
     if (!mounted) return;
 
+    if (toilets.isEmpty) return;
+
+    // Trouver le toilette le plus proche
+    toilets.sort((a, b) {
+      final latA = a['geometry']['location']['lat'];
+      final lngA = a['geometry']['location']['lng'];
+      final latB = b['geometry']['location']['lat'];
+      final lngB = b['geometry']['location']['lng'];
+      final distanceA = Geolocator.distanceBetween(
+        _initialPosition.target.latitude,
+        _initialPosition.target.longitude,
+        latA,
+        lngA,
+      );
+      final distanceB = Geolocator.distanceBetween(
+        _initialPosition.target.latitude,
+        _initialPosition.target.longitude,
+        latB,
+        lngB,
+      );
+      return distanceA.compareTo(distanceB);
+    });
+
+    final closestToilet = toilets.first;
+
     setState(() {
-      _markers.clear();
       for (var toilet in toilets) {
         final lat = toilet['geometry']['location']['lat'];
         final lng = toilet['geometry']['location']['lng'];
         final name = toilet['name'];
         final vicinity = toilet['vicinity'];
+
+        final isClosest = toilet == closestToilet;
 
         _markers.add(
           Marker(
@@ -110,12 +137,30 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
               title: name,
               snippet: vicinity,
             ),
+            icon: isClosest
+                ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
+                : BitmapDescriptor.defaultMarker,
             onTap: () => _showToiletDetails(toilet),
           ),
         );
       }
     });
   }
+
+
+  Future<void> openGoogleMapsApp(double lat, double lng) async {
+    final Uri googleMapsUri = Uri.parse('google.navigation:q=$lat,$lng&mode=d');
+
+    if (await canLaunchUrl(googleMapsUri)) {
+      await launchUrl(googleMapsUri);
+    } else {
+      // Si Google Maps n'est pas installé, fallback sur le navigateur
+      final Uri webUri = Uri.parse('https://www.google.com/maps/dir/?api=1&destination=$lat,$lng');
+      await launchUrl(webUri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+
 
   void _setCameraPosition(Position position) {
     if (!mounted) return;
@@ -136,33 +181,67 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(
-            toilet['name'],
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          content: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildDetailRow('Address:', toilet['vicinity']),
-              const SizedBox(height: 8),
-              _buildDetailRow(
-                  'Rating:', toilet['rating']?.toString() ?? 'Not available'),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).primaryColor),
-              child: const Text('Close'),
+        return Dialog(
+          backgroundColor: Colors.white,
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Center(
+                  child: Text(
+                    toilet['name'],
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepPurple,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _buildDetailRow('📍 Adresse:', toilet['vicinity']),
+                const SizedBox(height: 10),
+                _buildDetailRow('⭐ Note:', toilet['rating']?.toString() ?? 'Pas disponible'),
+                const SizedBox(height: 10),
+                _buildDetailRow(
+                    '⏰ Ouvert maintenant:',
+                    toilet['opening_hours']?['open_now'] == true ? 'Oui' : 'Non'),
+                const SizedBox(height: 20),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    final lat = toilet['geometry']['location']['lat'];
+                    final lng = toilet['geometry']['location']['lng'];
+                    openGoogleMapsApp(lat, lng);
+                  },
+                  icon: const Icon(Icons.navigation, color: Colors.white),
+                  label: const Text('Y aller 🚀'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pinkAccent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    minimumSize: const Size(double.infinity, 45),
+                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.deepPurple,
+                  ),
+                  child: const Text('Fermer'),
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
   }
+
 
   Widget _buildDetailRow(String label, String value) {
     return Row(
@@ -186,7 +265,6 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
         markers: Set<Marker>.of(_markers),
         onMapCreated: (controller) {
           _mapController = controller;
-          _initializeLocation(); // Call only once
         },
       ),
     );

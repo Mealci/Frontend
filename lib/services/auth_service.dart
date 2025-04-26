@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:mealci/components/custom_snak_bar.dart';
 import 'package:mealci/utils/env/environnementvariable.dart';
 import 'package:mealci/utils/logger/logger.dart';
 import 'package:mealci/utils/secure_storage/secure_storage_management.dart';
