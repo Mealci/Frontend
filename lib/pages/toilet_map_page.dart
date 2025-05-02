@@ -4,6 +4,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mealci/components/big_button_text_icon.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ToiletMapPage extends StatefulWidget {
@@ -209,23 +210,19 @@ class _ToiletMapPageState extends State<ToiletMapPage> {
                     '⏰ Ouvert maintenant:',
                     toilet['opening_hours']?['open_now'] == true ? 'Oui' : 'Non'),
                 const SizedBox(height: 20),
-                ElevatedButton.icon(
+                BigTextAndIconButton(
+                  label: 'Itinéraire',
+                  map: {
+                    'Itinéraire': 'Itinéraire',
+                  },
+                  icon: Icons.navigation,
                   onPressed: () {
                     final lat = toilet['geometry']['location']['lat'];
                     final lng = toilet['geometry']['location']['lng'];
                     openGoogleMapsApp(lat, lng);
                   },
-                  icon: const Icon(Icons.navigation, color: Colors.white),
-                  label: const Text('Y aller 🚀'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pinkAccent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    minimumSize: const Size(double.infinity, 45),
-                    textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
                 ),
+
                 const SizedBox(height: 10),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
