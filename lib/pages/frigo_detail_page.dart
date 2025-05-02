@@ -68,29 +68,25 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
     await refreshFoodList();
   }
 
-  void _confirmUpdateFood(int id) {
+  void _confirmDeleteFood(int id) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("Confirmer la suppression"),
-          content: Text("Le produit a-t-il été mangé ou jeté ?"),
+          title: Text("Le produit a-t-il été jeté ?"),
           actions: [
-            TextButton(
-              onPressed: () async {
-                debugPrint("L'aliment a été mangé.");
-                await changeStateFoodById(id, StateFood.eat);
-                Navigator.of(context).pop();
-              },
-              child: Text("Mangé"),
-            ),
-            TextButton(
+            TextButton.icon(
               onPressed: () async {
                 debugPrint("L'aliment a été jeté.");
                 await changeStateFoodById(id, StateFood.discard);
                 Navigator.of(context).pop();
               },
-              child: Text("Jeté"),
+              icon: SvgPicture.asset(
+                CustomMealciAsset.deleteIcon,
+                width: 20,
+                height: 20,
+              ),
+              label: Text("Jeté", style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () {
@@ -102,6 +98,70 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
         );
       },
     );
+  }
+
+  void _confirmEatFood(int id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Le produit a-t-il été mangé ?"),
+          actions: [
+            TextButton.icon(
+              onPressed: () async {
+                debugPrint("L'aliment a été mangé.");
+                await changeStateFoodById(id, StateFood.eat);
+                Navigator.of(context).pop();
+              },
+              icon: SvgPicture.asset(
+                CustomMealciAsset.appleEatenIcon,
+                width: 20,
+                height: 20,
+              ),
+              label: Text("Mangé", style: TextStyle(color: Colors.green)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("Annuler"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String _getNutriScorePath(String? value) {
+    switch (value) {
+      case 'A':
+        return CustomMealciAsset.nutriScoreA;
+      case 'B':
+        return CustomMealciAsset.nutriScoreB;
+      case 'C':
+        return CustomMealciAsset.nutriScoreC;
+      case 'D':
+        return CustomMealciAsset.nutriScoreD;
+      case 'E':
+        return CustomMealciAsset.nutriScoreE;
+      default:
+        return '';
+    }
+  }
+
+  String _getNovaGroupPath(String? value) {
+    switch (value) {
+      case 'ONE':
+        return CustomMealciAsset.novaGroup1;
+      case 'TWO':
+        return CustomMealciAsset.novaGroup2;
+      case 'THREE':
+        return CustomMealciAsset.novaGroup3;
+      case 'FOUR':
+        return CustomMealciAsset.novaGroup4;
+      default:
+        return '';
+    }
   }
 
   @override
@@ -171,29 +231,23 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
                               widget.image,
                             ),
                             subtitle: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  width: 20,
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.greenAccent.shade700,
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      items[index].nutriScore.toString(),
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
+                                SvgPicture.asset(
+                                  _getNutriScorePath(items[index].nutriScore),
+                                  width: 30,
+                                  height: 30,
+                                ),
+                                SizedBox(width: 10),
+                                SvgPicture.asset(
+                                  _getNovaGroupPath(
+                                      items[index].novaGroupScore),
+                                  width: 30,
+                                  height: 30,
                                 ),
                               ],
                             ),
                             title: Text(
-                              '${items[index].name} - ${items[index].quantity} ${items[index].measure.toString().split('.').last}',
+                              items[index].name,
                               style: TextStyle(
                                 color: Colors.black,
                                 fontSize: 15,
@@ -205,30 +259,22 @@ class _FrigoDetailPageState extends State<FrigoDetailPage> {
                               children: [
                                 IconButton(
                                   onPressed: () {
-                                    patchFoodQuantityById(
-                                        context,
-                                        items[index].id,
-                                        items[index].quantity + 1);
+                                    _confirmEatFood(items[index].id);
                                   },
-                                  icon: Icon(
-                                    Icons.add,
-                                    color: Colors.black,
+                                  icon: SvgPicture.asset(
+                                    CustomMealciAsset.appleEatenIcon,
+                                    width: 30,
+                                    height: 30,
                                   ),
                                 ),
                                 IconButton(
                                   onPressed: () {
-                                    if (items[index].quantity > 1) {
-                                      patchFoodQuantityById(
-                                          context,
-                                          items[index].id,
-                                          items[index].quantity - 1);
-                                    } else {
-                                      _confirmUpdateFood(items[index].id);
-                                    }
+                                    _confirmDeleteFood(items[index].id);
                                   },
-                                  icon: Icon(
-                                    Icons.remove,
-                                    color: Colors.black,
+                                  icon: SvgPicture.asset(
+                                    CustomMealciAsset.deleteIcon,
+                                    width: 30,
+                                    height: 30,
                                   ),
                                 ),
                               ],
