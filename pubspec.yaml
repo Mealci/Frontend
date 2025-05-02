@@ -61,17 +61,18 @@ flutter:
     - assets/svg/meat_icon.svg # Meat Icon
     - assets/svg/fish_icon.svg # Seafood Icon
     - assets/svg/toilet_icon.svg # Toilet Icon
-    - assets/svg/min.svg
-    - assets/svg/nutri-score-A.svg
-    - assets/svg/nutri-score-B.svg
-    - assets/svg/nutri-score-C.svg
-    - assets/svg/nutri-score-D.svg
-    - assets/svg/nutri-score-E.svg
-    - assets/svg/nova-group-1.svg
-    - assets/svg/nova-group-2.svg
-    - assets/svg/nova-group-3.svg
-    - assets/svg/nova-group-4.svg
-
+    - assets/svg/min.svg # Min Icon
+    - assets/svg/nutri-score-A.svg # Nutri Score A Icon
+    - assets/svg/nutri-score-B.svg # Nutri Score B Icon
+    - assets/svg/nutri-score-C.svg # Nutri Score C Icon
+    - assets/svg/nutri-score-D.svg # Nutri Score D Icon
+    - assets/svg/nutri-score-E.svg # Nutri Score E Icon
+    - assets/svg/nova-group-1.svg # Nova Group 1 Icon
+    - assets/svg/nova-group-2.svg # Nova Group 2 Icon
+    - assets/svg/nova-group-3.svg # Nova Group 3 Icon
+    - assets/svg/nova-group-4.svg # Nova Group 4 Icon
+    - assets/svg/delete_icon.svg # Delete Icon
+    - assets/svg/green_apple_icon.svg # Green Apple Icon
   fonts:
     - family: Voltaire
       fonts:
