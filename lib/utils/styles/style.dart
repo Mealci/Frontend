@@ -59,4 +59,6 @@ class CustomMealciAsset {
   static const String novaGroup2 = 'assets/svg/nova-group-2.svg';
   static const String novaGroup3 = 'assets/svg/nova-group-3.svg';
   static const String novaGroup4 = 'assets/svg/nova-group-4.svg';
+  static const String deleteIcon = 'assets/svg/delete_icon.svg';
+  static const String appleEatenIcon = 'assets/svg/green_apple_icon.svg';
 }
