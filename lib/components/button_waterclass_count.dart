@@ -84,9 +84,26 @@ class _WaterClassCountButtonState extends State<WaterClassCountButton> with Tick
                 },
               ),
               Center(
-                child: Text(
-                  "$currentCount / $goal",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '$currentCount',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Verres',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
                 ),
               ),
               ConfettiWidget(

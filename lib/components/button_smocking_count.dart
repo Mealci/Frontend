@@ -70,16 +70,12 @@ class _SmokingCountButtonState extends State<SmokingCountButton> with TickerProv
         width: 160,
         height: 100,
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(2, 2))
-          ],
+          color: Colors.brown.shade100,
+          borderRadius: BorderRadius.circular(16)
         ),
         child: Stack(
           alignment: Alignment.center,
           children: [
-            // Cigarette
             AnimatedBuilder(
               animation: _burnAnimation,
               builder: (context, child) {
