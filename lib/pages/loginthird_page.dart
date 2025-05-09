@@ -120,17 +120,35 @@ class LoginThirdPage extends StatelessWidget {
                   label: LoginThirdPageTranslation.dev,
                   map: LoginThirdPageI18n.loginThirdPageTranslation,
                   onPressed: () async => {
-                    if (await AuthService().register(context, 'firstName', 'lastName', 'Password123!', 'email@email.com', '20') == true) {
-                      CustomSnackBar.showSuccess(context, "Inscription réussie"),
-                      Navigator.popAndPushNamed(context, "/home"),
-                    } else {
-                      if (await AuthService().login(context, 'email@email.com', 'Password123!') == true) {
-                        CustomSnackBar.showSuccess(context, "Connexion réussie"),
+                    if (await AuthService().register(
+                            context,
+                            'firstName',
+                            'lastName',
+                            'Password123!',
+                            'email@email.com',
+                            '20') ==
+                        true)
+                      {
+                        CustomSnackBar.showSuccess(
+                            context, "Inscription réussie"),
                         Navigator.popAndPushNamed(context, "/home"),
-                      } else {
-                        CustomSnackBar.showError(context, "Erreur lors de la connexion"),
                       }
-                    }
+                    else
+                      {
+                        if (await AuthService().login(
+                                context, 'email@email.com', 'Password123!') ==
+                            true)
+                          {
+                            CustomSnackBar.showSuccess(
+                                context, "Connexion réussie"),
+                            Navigator.popAndPushNamed(context, "/home"),
+                          }
+                        else
+                          {
+                            CustomSnackBar.showError(
+                                context, "Erreur lors de la connexion"),
+                          }
+                      }
                   },
                 ),
                 const SizedBox(height: 20),
@@ -141,8 +159,8 @@ class LoginThirdPage extends StatelessWidget {
                   icon: Icons.apple,
                   label: LoginThirdPageTranslation.apple,
                   map: LoginThirdPageI18n.loginThirdPageTranslation,
-                  onPressed: () => Navigator.popAndPushNamed(context, "/home"),
-              ),
+                  onPressed: () => CustomSnackBar.showInfo(context,
+                      "L'authentification Apple n'est pas encore disponible")),
               const SizedBox(height: 20),
 
               ButtonPadding(
